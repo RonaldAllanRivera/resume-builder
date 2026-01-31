@@ -1,4 +1,52 @@
-# Payload Website Template
+# Resume + Portfolio CMS (Impress Employers)
+
+This repository is being built to help you maintain a high-quality, SEO-friendly resume + portfolio site designed to impress employers.
+
+It is based on the official Payload Website Template (Payload + Next.js in a single app) and is being adapted into a resume/portfolio CMS.
+
+## Project quick start (this repo)
+
+### Prerequisites
+
+- Node.js (see `package.json` engines)
+- Docker Desktop (for local PostgreSQL)
+
+### Local development
+
+1. Start PostgreSQL:
+
+   ```bash
+   docker compose up -d postgres
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm ci
+   ```
+
+3. Run the app:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open:
+
+   - `http://localhost:3000` (frontend)
+   - `http://localhost:3000/admin` (Payload admin)
+
+### Environment variables
+
+- Local development uses `.env` (gitignored) and `.env.example` as a template.
+- For Vercel deployments, set secrets in Vercel Project Environment Variables.
+
+Required integrations (later phases):
+
+- `BLOB_READ_WRITE_TOKEN` (Vercel Blob)
+- `OPENAI_API_KEY`
+- `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64`
+- `GOOGLE_DRIVE_FOLDER_ID`
 
 This is the official [Payload Website Template](https://github.com/payloadcms/payload/blob/main/templates/website). Use it to power websites, blogs, or portfolios from small to enterprise. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
 
@@ -34,14 +82,14 @@ If you have not done so already, you need to have standalone copy of this repo o
 Use the `create-payload-app` CLI to clone this template directly to your machine:
 
 ```bash
-pnpx create-payload-app my-project -t website
+npx create-payload-app@latest my-project -t website
 ```
 
 ### Development
 
 1. First [clone the repo](#clone) if you have not done so already
 1. `cd my-project && cp .env.example .env` to copy the example environment variables
-1. `pnpm install && pnpm dev` to install dependencies and start the dev server
+1. `npm ci && npm run dev` to install dependencies and start the dev server
 1. open `http://localhost:3000` to open the app in your browser
 
 That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.

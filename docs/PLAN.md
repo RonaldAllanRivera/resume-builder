@@ -2,6 +2,14 @@
 
 This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deployed on Vercel with Neon Postgres, Vercel Blob storage, multi-user auth, SEO-first public pages, and an AI workflow that generates tailored resume/application content and exports it to Google Docs.
 
+## Current status
+
+- Repo scaffolded from Payload Website Template (Payload 3.74.0 / Next.js 15)
+- Local Postgres running via Docker
+- App running locally:
+  - `http://localhost:3000` (frontend)
+  - `http://localhost:3000/admin` (Payload admin)
+
 ## Phase 0 — Decisions + prerequisites
 
 - **Architecture**
@@ -35,6 +43,8 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - ESLint + Prettier
   - Environment variable validation (e.g. `zod` or similar)
 
+Status: Completed
+
 ## Phase 2 — Environment variables + secrets (best practice)
 
 - **Local**
@@ -49,12 +59,14 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
 - **Required env vars (initial)**
   - `DATABASE_URL` (Neon)
   - `PAYLOAD_SECRET`
-  - `NEXT_PUBLIC_SITE_URL`
+  - `NEXT_PUBLIC_SERVER_URL`
   - `BLOB_READ_WRITE_TOKEN` (Vercel Blob)
   - `OPENAI_API_KEY`
   - Google Docs credentials (service account default):
     - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64`
     - `GOOGLE_DRIVE_FOLDER_ID`
+
+Status: In progress
 
 ## Phase 3 — Payload data model (resume + portfolio)
 
@@ -77,6 +89,8 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - `certifications`
   - `media`
     - backed by Vercel Blob for images/certificates
+
+Status: Next
 
 - **Access control (minimal roles)**
   - **admin**: full access
@@ -121,6 +135,8 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - Rate limiting + audit logging.
   - Prompt versioning stored with output.
 
+Status: Later
+
 ## Phase 6 — Google Docs export
 
 - Implement “Export to Google Docs” on an `aiGeneration`:
@@ -133,6 +149,8 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - Service account: share a folder; docs created there.
 - Future upgrade option:
   - OAuth: docs created under the exporting user’s Drive.
+
+Status: Later
 
 ## Phase 7 — Deployment on Vercel
 
