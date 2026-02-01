@@ -20,7 +20,7 @@ const collections: CollectionSlug[] = [
   'search',
 ]
 
-const globals: GlobalSlug[] = ['header', 'footer']
+const globals = ['header', 'footer'] as const satisfies readonly GlobalSlug[]
 
 const categories = ['Technology', 'News', 'Finance', 'Design', 'Software', 'Engineering']
 
@@ -55,6 +55,8 @@ export const seed = async ({
         context: {
           disableRevalidate: true,
         },
+        overrideAccess: true,
+        req,
       }),
     ),
   )
@@ -101,10 +103,13 @@ export const seed = async ({
   const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
     payload.create({
       collection: 'users',
+      overrideAccess: true,
+      req,
       data: {
         name: 'Demo Author',
         email: 'demo-author@example.com',
         password: 'password',
+        roles: ['admin'],
       },
     }),
     payload.create({

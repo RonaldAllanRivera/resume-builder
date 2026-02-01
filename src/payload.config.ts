@@ -5,12 +5,18 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { Certifications } from './collections/Certifications'
+import { Educations } from './collections/Educations'
+import { Experiences } from './collections/Experiences'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Projects } from './collections/Projects'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { ResumeProfile } from './ResumeProfile/config'
+import { SiteSettings } from './SiteSettings/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -62,14 +68,50 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Experiences,
+    Educations,
+    Projects,
+    Certifications,
+    Users,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, SiteSettings, ResumeProfile],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+  onInit: async (payload) => {
+    const users = await payload.find({
+      collection: 'users',
+      depth: 0,
+      limit: 100,
+      overrideAccess: true,
+      sort: 'createdAt',
+    })
+
+    const hasAdmin = users.docs.some(
+      (u) =>
+        Array.isArray((u as { roles?: string[] }).roles) &&
+        (u as { roles?: string[] }).roles?.includes('admin'),
+    )
+
+    if (!hasAdmin && users.docs.length > 0) {
+      await payload.update({
+        collection: 'users',
+        id: users.docs[0].id,
+        data: {
+          roles: ['admin'],
+        } as unknown as Record<string, unknown>,
+        overrideAccess: true,
+      })
+    }
   },
   jobs: {
     access: {
