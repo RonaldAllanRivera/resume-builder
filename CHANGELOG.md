@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- TBD
+
+## [0.1.0] - 2026-02-01
+
+- Implemented initial resume/portfolio CMS data model (collections + globals).
+- Added minimal RBAC (`admin`, `editor`) to `users`.
+- Enforced private-by-default resume contact fields with publish toggles.
+- Updated seed endpoint to match new global typings and RBAC.
 - Updated `.env.example` to reflect PostgreSQL and include placeholders for Vercel Blob, OpenAI, and Google Docs.
 - Completed Google Docs service account setup for Drive exports (shared folder + env vars populated).
 

@@ -1,8 +1,85 @@
-# Resume + Portfolio CMS (Impress Employers)
+# Resume + Portfolio CMS
 
-This repository is being built to help you maintain a high-quality, SEO-friendly resume + portfolio site designed to impress employers.
+TypeScript-first resume + portfolio CMS built as a single Next.js app with an embedded Payload admin.
 
-It is based on the official Payload Website Template (Payload + Next.js in a single app) and is being adapted into a resume/portfolio CMS.
+## Overview
+
+This project is a practical, production-style implementation of a content-driven personal site:
+
+- Resume + portfolio content managed in a CMS
+- Public site rendered with SEO-friendly patterns
+- Minimal role-based access control for multi-user editing
+
+It is based on the Payload Website Template (Payload + Next.js in a single app) and has been extended with a resume/portfolio data model.
+
+## Key features
+
+- Structured resume data model (separate collections for SEO-friendly querying)
+- Draft/publish workflow for content
+- Minimal RBAC (`admin`, `editor`) for the CMS
+- Private-by-default personal fields with explicit publish toggles
+
+## Tech stack
+
+- Next.js (App Router)
+- Payload CMS
+- TypeScript
+- PostgreSQL (local via Docker; production via managed Postgres)
+
+## Architecture
+
+- Single repo and single deployment target
+- Next.js serves:
+  - Public site
+  - Payload Admin (`/admin`) and API routes
+
+## Routes
+
+### Public site routes
+
+- `/`
+  - Renders the `pages` collection entry with slug `home`.
+- `/[slug]`
+  - Renders any published entry in the `pages` collection.
+  - Uses `generateStaticParams` to statically generate published pages.
+  - Uses `generateMetadata` (via the SEO plugin fields on Pages).
+- `/posts`
+  - Lists published `posts`.
+- `/posts/[slug]`
+  - Renders a published `post`.
+- `/search`
+  - Searches the `search` index (Payload search plugin).
+- `/admin`
+  - Payload Admin UI.
+
+## Data model (Payload)
+
+- **Globals**
+  - `siteSettings`
+    - Site name + default SEO fields + social links.
+  - `resumeProfile`
+    - Resume identity + summary + contact fields.
+    - Private-by-default enforcement:
+      - `email`, `phone`, `address`, `dateOfBirth` are only publicly readable if their matching `publish*` toggle is enabled.
+
+- **Collections**
+  - `experiences`
+  - `educations`
+  - `projects`
+  - `certifications`
+  - `media` (uploads)
+  - `users` (auth)
+    - Minimal RBAC via a `roles` field (`admin`, `editor`).
+    - Editors can manage resume/portfolio content.
+    - Only admins can manage users/roles.
+
+## Developer workflow
+
+- Install deps: `npm ci`
+- Run dev: `npm run dev`
+- After schema changes:
+  - `npm run generate:types`
+  - `npx tsc --noEmit`
 
 ## Project quick start (this repo)
 

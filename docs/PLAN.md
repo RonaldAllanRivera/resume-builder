@@ -9,6 +9,7 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
 - App running locally:
   - `http://localhost:3000` (frontend)
   - `http://localhost:3000/admin` (Payload admin)
+- Resume/portfolio CMS data model implemented (collections + globals + minimal RBAC)
 
 ## Phase 0 — Decisions + prerequisites
 
@@ -91,7 +92,7 @@ Status: In progress
   - `media`
     - backed by Vercel Blob for images/certificates
 
-Status: Next
+Status: Completed
 
 - **Access control (minimal roles)**
   - **admin**: full access
