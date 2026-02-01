@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- TBD
+- Updated `.env.example` to reflect PostgreSQL and include placeholders for Vercel Blob, OpenAI, and Google Docs.
+- Completed Google Docs service account setup for Drive exports (shared folder + env vars populated).
 
 ## 2026-01-31
 

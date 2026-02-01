@@ -29,6 +29,7 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - **Service account** (best for “personal internal tool”, easiest server-to-server)
     - You’ll share a Google Drive folder with the service-account email.
     - All CMS users export into the same shared folder (simplest v1).
+    - Status: Completed (Drive folder shared + env vars populated)
   - Future upgrade option: **OAuth (3-legged)** if you want exports to go to each user’s own Drive.
 
 ## Phase 1 — Repo scaffold (local dev + Docker)
