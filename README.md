@@ -33,6 +33,14 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Public site
   - Payload Admin (`/admin`) and API routes
 
+## This repo (start here)
+
+- Quick start: see [Quick start (this repo)](#quick-start-this-repo)
+- Common workflows:
+  - Reset local DB volume: see [Full database reset (hard reset)](#troubleshooting)
+  - Migrate local Docker data to online Postgres: see [Migrating local Docker data to online PostgreSQL](#migrating-local-docker-data-to-online-postgresql)
+  - Admin utility: delete document versions: see [Delete versions menu item](#troubleshooting)
+
 ## Routes
 
 ### Public site routes
@@ -79,6 +87,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 
 - Install deps: `npm ci`
 - Run dev: `npm run dev`
+- Seed resume data:
+  - CLI: `npm run seed:resume`
+  - Admin UI: open `/admin` and click “Seed resume data” (admin-only)
 - After schema changes:
   - `npm run generate:types`
   - `npx tsc --noEmit`
@@ -93,7 +104,19 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - It safely deletes all stored versions for the current document only.
   - If you don’t see it, ensure you’re logged in as an admin and the document has versions.
 
-## Project quick start (this repo)
+- **Full database reset (hard reset)**
+  - Stop and remove the Docker volume, then start Postgres again:
+    ```bash
+    docker compose down -v
+    docker compose up -d postgres
+    ```
+  - Re-seed demo data (optional):
+    ```bash
+    curl -X POST http://localhost:3000/next/seed -H "Content-Type: application/json"
+    ```
+  - Use this when you want a completely clean database or after schema changes that require a fresh start.
+
+## Quick start (this repo)
 
 ### Prerequisites
 
@@ -158,6 +181,10 @@ psql "postgresql://user:pass@host/dbname" < local-backup.sql
 - Cons: Bypasses Payload hooks; you may need to run `payload generate:types` and ensure sequences match
 
 Choose Option 1 if you only added data via Payload. Choose Option 2 for zero friction if you don’t mind raw DB copy.
+
+## Template reference (Payload Website Template)
+
+The sections below are the upstream template documentation kept for reference.
 
 This is the official [Payload Website Template](https://github.com/payloadcms/payload/blob/main/templates/website). Use it to power websites, blogs, or portfolios from small to enterprise. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
 

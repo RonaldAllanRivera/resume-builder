@@ -105,6 +105,11 @@ Status: Completed
   - Deletes all stored versions for the current document only; safe and admin‑only.
   - Backed by a secure `/next/delete-versions` endpoint.
 
+- **Admin UX: Resume seeding**
+  - Added an admin-only dashboard action to seed resume data from `resume.txt`.
+  - Includes a CLI script for reliable seeding outside HTTP.
+  - Backed by a secure `/next/seed-resume` endpoint.
+
 ## Phase 4 — Public site pages (SEO-first)
 
 - Build public routes (App Router):

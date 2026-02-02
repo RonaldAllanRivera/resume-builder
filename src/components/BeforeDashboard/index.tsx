@@ -1,6 +1,7 @@
 import { Banner } from '@payloadcms/ui/elements/Banner'
 import React from 'react'
 
+import { ResumeSeedButton } from './ResumeSeedButton'
 import { SeedButton } from './SeedButton'
 import './index.scss'
 
@@ -21,6 +22,10 @@ const BeforeDashboard: React.FC = () => {
             visit your website
           </a>
           {' to see the results.'}
+        </li>
+        <li>
+          <ResumeSeedButton />
+          {' to populate experiences, projects, and certifications from resume.txt.'}
         </li>
         <li>
           {'Modify your '}

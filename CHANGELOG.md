@@ -6,6 +6,11 @@
 - Deletes all stored versions for the current document only via a secure `/next/delete-versions` endpoint.
 - Fixed Projects admin create/edit crash caused by the experimental slug UI field requiring `ServerFunctionsProvider`.
 - Updated `projects` to use a plain `slug` text field with automatic generation from `title`.
+- Added resume seeding utilities:
+  - Admin-only dashboard button (“Seed resume data”).
+  - Admin-only endpoint: `POST /next/seed-resume`.
+  - CLI command: `npm run seed:resume`.
+- Fixed markdown escaping artifacts in seeded resume content (e.g. `\\-` in titles).
 
 ## [0.1.0] - 2026-02-01
 
