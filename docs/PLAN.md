@@ -10,6 +10,7 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - `http://localhost:3000` (frontend)
   - `http://localhost:3000/admin` (Payload admin)
 - Resume/portfolio CMS data model implemented (collections + globals + minimal RBAC)
+- Projects admin create/edit working (uses a plain `slug` text field with automatic generation from `title`)
 
 ## Phase 0 — Decisions + prerequisites
 

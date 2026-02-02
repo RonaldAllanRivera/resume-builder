@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- TBD
+- Fixed Projects admin create/edit crash caused by the experimental slug UI field requiring `ServerFunctionsProvider`.
+- Updated `projects` to use a plain `slug` text field with automatic generation from `title`.
 
 ## [0.1.0] - 2026-02-01
 

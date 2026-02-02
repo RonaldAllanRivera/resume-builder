@@ -26,6 +26,10 @@ export const Certifications: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'duration',
+      type: 'text',
+    },
+    {
       name: 'issueDate',
       type: 'date',
     },

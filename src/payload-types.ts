@@ -877,6 +877,7 @@ export interface Education {
 export interface Project {
   id: number;
   title: string;
+  slug: string;
   summary?: string | null;
   content?: {
     root: {
@@ -904,11 +905,6 @@ export interface Project {
   repoUrl?: string | null;
   liveUrl?: string | null;
   publishedAt?: string | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -921,6 +917,7 @@ export interface Certification {
   id: number;
   title: string;
   issuer?: string | null;
+  duration?: string | null;
   issueDate?: string | null;
   expirationDate?: string | null;
   credentialId?: string | null;
@@ -1554,6 +1551,7 @@ export interface EducationsSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   summary?: T;
   content?: T;
   featured?: T;
@@ -1567,8 +1565,6 @@ export interface ProjectsSelect<T extends boolean = true> {
   repoUrl?: T;
   liveUrl?: T;
   publishedAt?: T;
-  generateSlug?: T;
-  slug?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1580,6 +1576,7 @@ export interface ProjectsSelect<T extends boolean = true> {
 export interface CertificationsSelect<T extends boolean = true> {
   title?: T;
   issuer?: T;
+  duration?: T;
   issueDate?: T;
   expirationDate?: T;
   credentialId?: T;

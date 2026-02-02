@@ -66,6 +66,8 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - `experiences`
   - `educations`
   - `projects`
+    - `slug` is a plain `text` field and is auto-generated from `title` on save when empty.
+    - This avoids reliance on the experimental slug UI component that requires server functions context.
   - `certifications`
   - `media` (uploads)
   - `users` (auth)
@@ -80,6 +82,11 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - After schema changes:
   - `npm run generate:types`
   - `npx tsc --noEmit`
+
+## Troubleshooting
+
+- **Admin crashes on Projects create/edit**
+  - If you see `useServerFunctions must be used within a ServerFunctionsProvider`, ensure the `projects` collection is using the plain `slug` text field (not the experimental slug UI field) and restart `npm run dev`.
 
 ## Project quick start (this repo)
 
@@ -124,6 +131,28 @@ Required integrations (later phases):
 - `OPENAI_API_KEY`
 - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64`
 - `GOOGLE_DRIVE_FOLDER_ID`
+
+### Migrating local Docker data to online PostgreSQL
+
+You can easily export your local Docker PostgreSQL data to an online PostgreSQL (e.g., Neon, Vercel Postgres, AWS RDS).
+
+#### Option 1: Payload backup/restore (recommended)
+- From local: Use Payload’s admin or a script to dump each collection/globals to JSON
+- To online: Run a one-time import script that creates docs via Payload API
+- Pros: Keeps access control, versions, and hooks intact. No raw SQL.
+
+#### Option 2: pg_dump + psql (fastest)
+```bash
+# From local Docker
+docker exec -i resume-builder-postgres-1 pg_dump -U postgres your_db_name > local-backup.sql
+
+# To online (after creating the DB)
+psql "postgresql://user:pass@host/dbname" < local-backup.sql
+```
+- Pros: One command, preserves all tables
+- Cons: Bypasses Payload hooks; you may need to run `payload generate:types` and ensure sequences match
+
+Choose Option 1 if you only added data via Payload. Choose Option 2 for zero friction if you don’t mind raw DB copy.
 
 This is the official [Payload Website Template](https://github.com/payloadcms/payload/blob/main/templates/website). Use it to power websites, blogs, or portfolios from small to enterprise. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
 

@@ -2,7 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
 import { adminOrEditor } from '../access/adminOrEditor'
-import { slugField } from 'payload'
+
+const formatSlug = (input: string): string => {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -21,6 +28,16 @@ export const Projects: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      index: true,
+      unique: true,
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'summary',
@@ -81,8 +98,26 @@ export const Projects: CollectionConfig = {
         ],
       },
     },
-    slugField(),
   ],
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data
+
+        const title = typeof data.title === 'string' ? data.title : ''
+        const slug = typeof data.slug === 'string' ? data.slug : ''
+
+        if (!slug && title) {
+          return {
+            ...data,
+            slug: formatSlug(title),
+          }
+        }
+
+        return data
+      },
+    ],
+  },
   versions: {
     drafts: {
       autosave: {
