@@ -122,11 +122,20 @@ Status: Completed
   - Use `generateMetadata` per route
   - `sitemap.xml` generated from Payload content
   - `robots.txt`
-  - JSON-LD structured data:
-    - `Person` for profile
-    - `CreativeWork` for projects
+  - OpenGraph + Twitter card metadata on all public pages
+  - JSON-LD structured data (entity-first):
+    - `Person` for profile (include `sameAs` links)
+    - `WebSite` + `WebPage`
+    - Projects: `SoftwareApplication` when applicable (fallback to `CreativeWork`)
   - Canonicals + clean slugs
   - Prefer static rendering/ISR for speed
+  - Internal linking (build a “topic graph”):
+    - Link experiences to related projects/skills
+    - Link projects to related certifications/skills
+  - Content formatting for extraction:
+    - Clear headings, short summaries near the top of each page
+    - Prefer structured lists for skills/tech stacks
+  - (Optional) Add `llms.txt` that points to the most important pages for AI crawlers
 
 ## Phase 5 — Job Ads + AI generation workflow
 
