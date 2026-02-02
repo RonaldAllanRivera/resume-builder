@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added admin-only “Delete versions…” menu item in the 3‑dot edit menu for all versioned collections.
+- Deletes all stored versions for the current document only via a secure `/next/delete-versions` endpoint.
 - Fixed Projects admin create/edit crash caused by the experimental slug UI field requiring `ServerFunctionsProvider`.
 - Updated `projects` to use a plain `slug` text field with automatic generation from `title`.
 

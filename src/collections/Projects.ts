@@ -22,6 +22,11 @@ export const Projects: CollectionConfig = {
   admin: {
     defaultColumns: ['title', 'slug', 'featured', 'updatedAt'],
     useAsTitle: 'title',
+    components: {
+      edit: {
+        editMenuItems: ['@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem'],
+      },
+    },
   },
   fields: [
     {

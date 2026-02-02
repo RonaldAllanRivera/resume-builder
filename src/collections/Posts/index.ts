@@ -64,6 +64,11 @@ export const Posts: CollectionConfig<'posts'> = {
         req,
       }),
     useAsTitle: 'title',
+    components: {
+      edit: {
+        editMenuItems: ['@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem'],
+      },
+    },
   },
   fields: [
     {

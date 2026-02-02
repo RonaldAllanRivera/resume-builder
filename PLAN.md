@@ -100,6 +100,11 @@ Status: Completed
   - **editor**: can CRUD resume/portfolio content; cannot manage users/roles
   - Public read access only for “published” fields/docs
 
+- **Admin UX: Delete versions**
+  - Added “Delete versions…” in the 3‑dot edit menu for admins on all versioned collections.
+  - Deletes all stored versions for the current document only; safe and admin‑only.
+  - Backed by a secure `/next/delete-versions` endpoint.
+
 ## Phase 4 — Public site pages (SEO-first)
 
 - Build public routes (App Router):

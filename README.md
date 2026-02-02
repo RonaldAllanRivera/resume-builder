@@ -88,6 +88,11 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Admin crashes on Projects create/edit**
   - If you see `useServerFunctions must be used within a ServerFunctionsProvider`, ensure the `projects` collection is using the plain `slug` text field (not the experimental slug UI field) and restart `npm run dev`.
 
+- **Delete versions menu item**
+  - An admin-only “Delete versions…” action appears in the 3‑dot edit menu on versioned collections.
+  - It safely deletes all stored versions for the current document only.
+  - If you don’t see it, ensure you’re logged in as an admin and the document has versions.
+
 ## Project quick start (this repo)
 
 ### Prerequisites
