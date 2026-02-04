@@ -113,10 +113,42 @@ Status: Completed
 ## Phase 4 — Public site pages (SEO-first)
 
 - Build public routes (App Router):
-  - `/` Home (summary + featured projects)
-  - `/projects` + `/projects/[slug]`
-  - `/experience`
-  - `/certifications`
+  - `/` Home/overview (summary + featured projects)
+  - `/experience` Experience timeline/list
+  - `/education` Education history
+  - `/projects` Project grid/list
+  - `/projects/[slug]` Project detail
+  - `/certifications` Certifications (grid + rail + modal)
+  - Optional later:
+    - `/about`
+    - `/contact`
+    - `/resume.pdf`
+
+- Template system (best-practice for extensibility):
+  - Choose template via a public setting (e.g. `siteSettings.publicTemplate`) with a safe allowlist.
+  - Support preview override via query param (e.g. `?template=modern`) without changing persisted settings.
+  - Implement templates via a registry (map template key -> layout/components) so adding a new template is a file-only change.
+  - Keep core data fetching shared; templates should only change presentation.
+
+- Data fetching (public pages):
+  - Prefer Server Components for page shells.
+  - Read data via Payload Local API on the server.
+  - Enforce access control for public reads (`overrideAccess: false`) and query only published docs.
+  - Use stable sorting for timelines and rails (e.g. `-publishedAt`, `-startDate`).
+  - Add a lightweight “view model” layer (formatting dates, building absolute media URLs) so templates stay dumb.
+
+- Navigation/UI:
+  - Server-rendered navigation, with accessible section highlighting (`aria-current="page"`).
+  - Dynamic sections pulled from settings (e.g. show/hide Education, Certifications).
+
+- External project links (privacy + safety):
+  - For outbound links (repo URL / live URL), render anchors with:
+    - `rel="nofollow noopener noreferrer"`
+    - `referrerPolicy="no-referrer"`
+    - `target="_blank"` (optional; recommended if you want to keep visitors on your site)
+  - Note: this prevents sending a `Referer` header and avoids `window.opener` attacks, but the destination can still see the visitor’s IP and user agent.
+  - Optional hardening:
+    - Set a global `Referrer-Policy: no-referrer` header at the Next.js app level (still keep per-link attributes for clarity).
 
 - SEO requirements:
   - Use `generateMetadata` per route
@@ -136,6 +168,22 @@ Status: Completed
     - Clear headings, short summaries near the top of each page
     - Prefer structured lists for skills/tech stacks
   - (Optional) Add `llms.txt` that points to the most important pages for AI crawlers
+
+- Certifications UI (best-practice UX + a11y):
+  - “Netflix-style” horizontal rail with arrow controls and keyboard support.
+  - Responsive toggle: rail view vs grid view.
+  - Modal detail view implemented as a route-friendly pattern:
+    - Prefer App Router intercepting/parallel routes so modals are deep-linkable.
+  - Deterministic gradients/icons per certification (derived from a stable hash of the cert ID/title).
+
+- Animated background (optional, progressive enhancement):
+  - Render at layout level so it persists across navigation.
+  - Honor `prefers-reduced-motion` and provide an easy disable toggle.
+
+- Design system:
+  - Dark, liquid-responsive layout with high contrast and strong typography.
+  - Brand colors via CSS variables sourced from `siteSettings` with sensible defaults.
+  - Tailwind (or similar) is fine, but keep token values centralized (CSS vars -> Tailwind config).
 
 ## Phase 5 — Job Ads + AI generation workflow
 

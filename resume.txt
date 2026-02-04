@@ -116,10 +116,6 @@ Permanent Residence: Philippines
 | Latest Projects  |
 | :---- |
 
-**Meet Assistant \- Full-Stack AI Systems Developer**  
-[https://github.com/RonaldAllanRivera/meet-ai-assistant](https://github.com/RonaldAllanRivera/meet-ai-assistant)   
-Built a caption-aware Chrome extension with a secure backend that detects questions from live Google Meet captions and returns short, contextual AI-generated answers in real time. Designed a privacy-first, captions-only pipeline with no audio capture or transcript storage. Implemented a production-ready serverless API with install tokens, rate limiting, and abuse protection, ensuring controlled access and reliable operation. Focused on low-latency responses, secure client–backend communication, and practical AI integration in a real-time environment.
-
 **Forex Signals Platform (D1/W1/MN1) \- Full-Stack Laravel Developer**  
 [https://github.com/RonaldAllanRivera/forex](https://github.com/RonaldAllanRivera/forex)   
 Built a production-minded Laravel 12 application for higher-timeframe Forex analysis, featuring secure session-based auth, resilient market data ingestion, background job orchestration, and a clean JSON API. The system syncs daily, weekly, and monthly candlestick data with idempotent upserts, renders MT4-style charts using TradingView Lightweight Charts, and generates AI-assisted BUY/SELL/WAIT signals with persisted reasoning and trade snapshots. Delivered scheduler-first automation, admin-only trade review workflows, daily email digests, and testable service boundaries, all containerized with Docker for reliable local and production deployment.
@@ -160,10 +156,6 @@ A small Python app with a Tkinter UI that lets you bulk delete Cloudflare domain
 [https://github.com/RonaldAllanRivera/httrack-clone](https://github.com/RonaldAllanRivera/httrack-clone)   
 Developed a Tkinter desktop tool to mirror single web pages into clean, portable folders with rewritten local paths and automatic PHP content generation. Implemented robust asset resolution and CSS rewriting for url() and @import references, preview mode for quick sanity checks, and error aggregation with one-click copy. Delivered progress-tracked UI with cancel support, SSL toggle, and PyInstaller builds for Windows, producing fully localized HTML (index.html, local-index.html, content.php) with structured asset folders for offline use.
 
-**AI-Powered Real-Time Interview Assistant \- Full-Stack Software Developer**  
-[https://github.com/RonaldAllanRivera/ai-powered-real-time-interview-assistant](https://github.com/RonaldAllanRivera/ai-powered-real-time-interview-assistant)   
-Developed a local-first interview assistant with a Python (PySide6) desktop app for live system-audio transcription, always-on-top UI, and one-click AI answer suggestions in saved personas. Engineered persistent Q\&A and transcript storage with MySQL/SQLite, integrated backend APIs (Laravel \+ OpenAI) for persona profiles, correction learning, and session management, and optimized for reliability, transparency, and seamless real-time performance across Zoom, Meet, and YouTube.
-
 **Used Cars Search \- WordPress Plugin Developer**  
 [https://github.com/RonaldAllanRivera/used-cars-search](https://github.com/RonaldAllanRivera/used-cars-search)   
 Developed a production-ready search and comparison WordPress plugin for large used-car inventories. Delivered instant autosuggest, sortable grid/list views, responsive 4-car comparison, and rich vehicle profiles (year, make, model, trim, price, mileage, engine, transmission). Integrated OpenAI for AI-powered generation of titles, descriptions, and SEO metadata in both single-post and bulk modes. Built conflict-safe SEO output, custom REST endpoints for integration, and an optimized, scalable architecture with selective asset loading and admin tools for data management.
@@ -178,10 +170,6 @@ Designed and developed a responsive, SEO-friendly website for Everything Used Ca
 **Popular AI Software Search \- WordPress Plugin Developer**  
 [https://github.com/RonaldAllanRivera/software-search](https://github.com/RonaldAllanRivera/software-search)   
 A modern, AJAX-powered WordPress plugin for advanced post searching. Built for scale, with fast keyword autosuggest, category filtering, sortable results, and robust admin controls. No jQuery, no frameworks—just Vanilla JavaScript (ES6+) and the Fetch API for maximum speed and compatibility.
-
-**AIWriter – AI Content SaaS \- Full-Stack Developer**  
-[https://github.com/RonaldAllanRivera/aiwriter](https://github.com/RonaldAllanRivera/aiwriter)   
-AIWriter is a fully SaaS-ready Django web app powered by OpenAI and Stripe. It allows small business owners to generate high-quality content like blog posts, FAQs, product descriptions, and ads using AI.
 
 **Interactive Map Scraper (GUI Tool for Mapbox Popups) – Software Developer**  
 [https://github.com/RonaldAllanRivera/mapscraper](https://github.com/RonaldAllanRivera/mapscraper)   
@@ -205,9 +193,6 @@ Created a professional WordPress site for a consulting firm dedicated to empower
 
 **24Aries.com – Full-Stack Web Developer**  
 Developed a WordPress site showcasing advanced technology products, including smart insoles, mesh technology, perimeter surveillance radar, and digital twin solutions.
-
-**OrionECI.com – Full-Stack Web Developer**  
-Built a WordPress site for a company providing security solutions such as optical turnstiles, tailgating detection systems, and occupancy sensors for various facilities.
 
 **PulseIQ.com – Full-Stack Web Developer**  
 Developed a WordPress site for a company offering energy benchmarking, ASHRAE energy audits, energy management software solutions, and smart mesh network thermostats to enhance property efficiency.
