@@ -19,3 +19,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Python
+Build a resume AI assistant with OpenAI, Gemini, & Pydantic.ipynb
