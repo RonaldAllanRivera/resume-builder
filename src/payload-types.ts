@@ -75,6 +75,10 @@ export interface Config {
     educations: Education;
     projects: Project;
     certifications: Certification;
+    resumeProfiles: ResumeProfile;
+    companies: Company;
+    jobAds: JobAd;
+    generations: Generation;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -101,6 +105,10 @@ export interface Config {
     educations: EducationsSelect<false> | EducationsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     certifications: CertificationsSelect<false> | CertificationsSelect<true>;
+    resumeProfiles: ResumeProfilesSelect<false> | ResumeProfilesSelect<true>;
+    companies: CompaniesSelect<false> | CompaniesSelect<true>;
+    jobAds: JobAdsSelect<false> | JobAdsSelect<true>;
+    generations: GenerationsSelect<false> | GenerationsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -121,13 +129,17 @@ export interface Config {
     header: Header;
     footer: Footer;
     siteSettings: SiteSetting;
-    resumeProfile: ResumeProfile;
+    resumeProfile: ResumeProfile1;
+    coverLetterSettings: CoverLetterSetting;
+    aiGenerationSettings: AiGenerationSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     resumeProfile: ResumeProfileSelect<false> | ResumeProfileSelect<true>;
+    coverLetterSettings: CoverLetterSettingsSelect<false> | CoverLetterSettingsSelect<true>;
+    aiGenerationSettings: AiGenerationSettingsSelect<false> | AiGenerationSettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -931,6 +943,85 @@ export interface Certification {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resumeProfiles".
+ */
+export interface ResumeProfile {
+  id: number;
+  name: string;
+  /**
+   * Optional. Use this for profile focus / constraints (e.g. “WordPress-focused”, “Laravel-heavy”, “Highlight ACF + performance”).
+   */
+  resumeText?: string | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies".
+ */
+export interface Company {
+  id: number;
+  name: string;
+  website?: string | null;
+  about?: string | null;
+  toneNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobAds".
+ */
+export interface JobAd {
+  id: number;
+  title: string;
+  company?: (number | null) | Company;
+  jobUrl?: string | null;
+  location?: string | null;
+  posterName?: string | null;
+  jobDescription: string;
+  status: 'new' | 'ready' | 'generating' | 'done' | 'failed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generations".
+ */
+export interface Generation {
+  id: number;
+  jobAd: number | JobAd;
+  resumeProfile: number | ResumeProfile;
+  status: 'draft' | 'generating' | 'ready_for_review' | 'approved' | 'exported' | 'failed';
+  resumeDraft?: string | null;
+  applicationLetter?: string | null;
+  /**
+   * Optional. Tone/voice notes for this attempt (overrides company tone notes and defaults).
+   */
+  toneNotes?: string | null;
+  /**
+   * Optional. Paste your preferred letter style here to override the global default for this attempt.
+   */
+  applicationLetterStyle?: string | null;
+  /**
+   * Optional override. Example: Hi Mike,
+   */
+  coverLetterGreeting?: string | null;
+  coverLetterHeader?: string | null;
+  coverLetterFooter?: string | null;
+  promptVersion?: string | null;
+  model?: string | null;
+  temperature?: number | null;
+  inputHash?: string | null;
+  resumeGoogleDocUrl?: string | null;
+  coverLetterGoogleDocUrl?: string | null;
+  exportedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1150,6 +1241,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'certifications';
         value: number | Certification;
+      } | null)
+    | ({
+        relationTo: 'resumeProfiles';
+        value: number | ResumeProfile;
+      } | null)
+    | ({
+        relationTo: 'companies';
+        value: number | Company;
+      } | null)
+    | ({
+        relationTo: 'jobAds';
+        value: number | JobAd;
+      } | null)
+    | ({
+        relationTo: 'generations';
+        value: number | Generation;
       } | null)
     | ({
         relationTo: 'users';
@@ -1590,6 +1697,69 @@ export interface CertificationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resumeProfiles_select".
+ */
+export interface ResumeProfilesSelect<T extends boolean = true> {
+  name?: T;
+  resumeText?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies_select".
+ */
+export interface CompaniesSelect<T extends boolean = true> {
+  name?: T;
+  website?: T;
+  about?: T;
+  toneNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "jobAds_select".
+ */
+export interface JobAdsSelect<T extends boolean = true> {
+  title?: T;
+  company?: T;
+  jobUrl?: T;
+  location?: T;
+  posterName?: T;
+  jobDescription?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generations_select".
+ */
+export interface GenerationsSelect<T extends boolean = true> {
+  jobAd?: T;
+  resumeProfile?: T;
+  status?: T;
+  resumeDraft?: T;
+  applicationLetter?: T;
+  toneNotes?: T;
+  applicationLetterStyle?: T;
+  coverLetterGreeting?: T;
+  coverLetterHeader?: T;
+  coverLetterFooter?: T;
+  promptVersion?: T;
+  model?: T;
+  temperature?: T;
+  inputHash?: T;
+  resumeGoogleDocUrl?: T;
+  coverLetterGoogleDocUrl?: T;
+  exportedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -1968,7 +2138,7 @@ export interface SiteSetting {
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "resumeProfile".
  */
-export interface ResumeProfile {
+export interface ResumeProfile1 {
   id: number;
   fullName: string;
   headline?: string | null;
@@ -1981,6 +2151,34 @@ export interface ResumeProfile {
   publishAddress?: boolean | null;
   dateOfBirth?: string | null;
   publishDateOfBirth?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coverLetterSettings".
+ */
+export interface CoverLetterSetting {
+  id: number;
+  defaultGreetingTemplate: string;
+  defaultHeader?: string | null;
+  defaultFooter?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "aiGenerationSettings".
+ */
+export interface AiGenerationSetting {
+  id: number;
+  promptVersion: string;
+  model: string;
+  temperature: number;
+  systemPrompt: string;
+  resumePrompt: string;
+  coverLetterStyle?: string | null;
+  coverLetterPrompt: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2065,6 +2263,34 @@ export interface ResumeProfileSelect<T extends boolean = true> {
   publishAddress?: T;
   dateOfBirth?: T;
   publishDateOfBirth?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coverLetterSettings_select".
+ */
+export interface CoverLetterSettingsSelect<T extends boolean = true> {
+  defaultGreetingTemplate?: T;
+  defaultHeader?: T;
+  defaultFooter?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "aiGenerationSettings_select".
+ */
+export interface AiGenerationSettingsSelect<T extends boolean = true> {
+  promptVersion?: T;
+  model?: T;
+  temperature?: T;
+  systemPrompt?: T;
+  resumePrompt?: T;
+  coverLetterStyle?: T;
+  coverLetterPrompt?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

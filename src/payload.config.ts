@@ -6,13 +6,19 @@ import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
 import { Certifications } from './collections/Certifications'
+import { Companies } from './collections/Companies'
 import { Educations } from './collections/Educations'
 import { Experiences } from './collections/Experiences'
+import { Generations } from './collections/Generations'
+import { JobAds } from './collections/JobAds'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
+import { ResumeProfiles } from './collections/ResumeProfiles'
 import { Users } from './collections/Users'
+import { AIGenerationSettings } from './AIGenerationSettings/config'
+import { CoverLetterSettings } from './CoverLetterSettings/config'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { ResumeProfile } from './ResumeProfile/config'
@@ -77,10 +83,14 @@ export default buildConfig({
     Educations,
     Projects,
     Certifications,
+    ResumeProfiles,
+    Companies,
+    JobAds,
+    Generations,
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, SiteSettings, ResumeProfile],
+  globals: [Header, Footer, SiteSettings, ResumeProfile, CoverLetterSettings, AIGenerationSettings],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

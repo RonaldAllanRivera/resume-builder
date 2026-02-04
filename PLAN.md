@@ -187,6 +187,66 @@ Status: Completed
 
 ## Phase 5 — Job Ads + AI generation workflow
 
+- Priority: Start here next. Public site + SEO pages can be implemented later.
+
+- Requirements (admin-first workflow):
+  - Create and manage job ads and company info in the Payload admin.
+  - Support multiple resume “profiles” (e.g. Full-Stack, AI Systems, Laravel) and select one per generation attempt.
+  - Support multiple attempts per job ad (store each attempt as its own generation record).
+  - OpenAI only (for v1).
+  - In admin, review/edit:
+    - tailored resume
+    - application letter / cover letter
+    - before exporting to Google Docs.
+  - Cover letter composition settings:
+    - Recipient name / greeting (e.g. “Hi Mike,”)
+    - Header (optional)
+    - Footer/signature block (multi-line) with a dynamic “Resume:” link that uses the exported Google Docs URL.
+
+- CMS data model (suggested):
+  - `resumeProfiles`
+    - A structured, canonical resume source (per profile) used as the only facts the generator may reference.
+  - `companies`
+    - company notes (tone, values, about) to guide the cover letter.
+  - `jobAds`
+    - relationship to `companies`
+    - job poster name (e.g. recruiter / hiring manager) for the greeting
+    - job description (raw)
+  - `generations` (hasMany under a `jobAd`)
+    - relationship to `jobAds`
+    - relationship to `resumeProfiles`
+    - status (`draft | generating | ready_for_review | approved | exported | failed`)
+    - gap analysis output
+    - tailored resume draft
+    - cover letter draft
+    - prompt version + model metadata + temperature
+    - input hash (resume profile snapshot + job ad) to detect duplicates
+    - google doc IDs/URLs after export
+
+- Prompting + output best practices:
+  - Structured outputs for all steps (validated schema), not free-form text.
+  - Hard “no hallucinations” rule:
+    - Only use facts present in the selected resume profile + the job ad + company notes.
+    - If missing, omit or mark as unknown.
+  - Prefer a 3-step pipeline:
+    - Extract requirements/keywords (structured)
+    - Generate tailored resume draft
+    - Generate cover letter draft (tone-aware)
+  - Store prompt versioning and run metadata with each attempt for reproducibility.
+
+- Admin actions (buttons) + security:
+  - Admin/editor-only “Generate attempt” button on a job ad (creates a new generation record).
+  - Admin/editor-only “Regenerate” button on a generation (creates a new attempt).
+  - Admin/editor-only “Export to Google Docs” button on a generation.
+  - Export should use the reviewed/edited CMS fields, not raw model output.
+
+- Google Docs export (service account):
+  - Create:
+    - Resume doc
+    - Cover letter doc
+  - Store exported URLs on the generation.
+  - After creating the resume doc, inject the resume URL into the cover letter footer block (dynamic “Resume:” line).
+
 - New collections:
   - `jobAds`
     - title, company name, job url
