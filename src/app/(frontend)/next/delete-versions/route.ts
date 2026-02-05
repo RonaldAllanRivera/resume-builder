@@ -4,19 +4,25 @@ import { headers } from 'next/headers'
 
 import { isAdmin } from '../../../../access/adminOnly'
 
+import type { CollectionSlug } from 'payload'
+
 type Body = {
   collection: string
   id: number | string
 }
 
-const allowedCollections = new Set([
+const allowedCollectionList = [
   'certifications',
   'educations',
   'experiences',
   'pages',
   'posts',
   'projects',
-])
+] as const
+
+type AllowedCollection = (typeof allowedCollectionList)[number]
+
+const allowedCollections = new Set<string>(allowedCollectionList)
 
 const isValidID = (value: unknown): value is number | string => {
   if (typeof value === 'number') return Number.isFinite(value)
@@ -49,10 +55,12 @@ export async function POST(req: Request): Promise<Response> {
     return new Response('Invalid request.', { status: 400 })
   }
 
+  const collection = body.collection as AllowedCollection
+
   const payloadReq = await createLocalReq({ user }, payload)
 
   await payload.db.deleteVersions({
-    collection: body.collection,
+    collection: collection as unknown as CollectionSlug,
     req: payloadReq,
     where: {
       parent: {

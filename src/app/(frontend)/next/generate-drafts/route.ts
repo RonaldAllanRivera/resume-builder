@@ -3,7 +3,7 @@ import config from '@payload-config'
 import { headers } from 'next/headers'
 import { createHash } from 'node:crypto'
 
-import { openAIChat } from '../../../../utilities/openai'
+import { openAIChat, parseJsonFromString } from '../../../../utilities/openai'
 
 type UserWithRoles = {
   roles?: unknown
@@ -36,6 +36,19 @@ const joinNonEmpty = (parts: Array<string | undefined | null>, separator: string
     .map((p) => (typeof p === 'string' ? p.trim() : ''))
     .filter(Boolean)
     .join(separator)
+}
+
+const uniqueStrings = (items: string[]): string[] => {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const item of items) {
+    const k = item.trim()
+    if (!k) continue
+    if (seen.has(k)) continue
+    seen.add(k)
+    out.push(k)
+  }
+  return out
 }
 
 export const maxDuration = 60
@@ -177,6 +190,15 @@ export async function POST(req: Request): Promise<Response> {
       dateOfBirth?: string
     }
 
+    const siteSettings = (await payload.findGlobal({
+      slug: 'siteSettings',
+      depth: 0,
+      overrideAccess: false,
+      req: payloadReq,
+    })) as unknown as {
+      socialLinks?: Array<{ label?: string; url?: string }>
+    }
+
     const experiences = (await payload.find({
       collection: 'experiences',
       depth: 0,
@@ -186,6 +208,7 @@ export async function POST(req: Request): Promise<Response> {
       req: payloadReq,
     })) as unknown as {
       docs?: Array<{
+        id?: string | number
         title?: string
         company?: string
         location?: string
@@ -205,6 +228,7 @@ export async function POST(req: Request): Promise<Response> {
       req: payloadReq,
     })) as unknown as {
       docs?: Array<{
+        id?: string | number
         title?: string
         summary?: string
         repoUrl?: string
@@ -222,6 +246,7 @@ export async function POST(req: Request): Promise<Response> {
       req: payloadReq,
     })) as unknown as {
       docs?: Array<{
+        id?: string | number
         title?: string
         issuer?: string
         duration?: string
@@ -239,6 +264,7 @@ export async function POST(req: Request): Promise<Response> {
       req: payloadReq,
     })) as unknown as {
       docs?: Array<{
+        id?: string | number
         school?: string
         degree?: string
         fieldOfStudy?: string
@@ -264,10 +290,22 @@ export async function POST(req: Request): Promise<Response> {
     if (resumeProfileGlobal.dateOfBirth)
       resumeFactsParts.push(`Date of Birth: ${formatDate(resumeProfileGlobal.dateOfBirth)}`)
 
+    const socialLinks = Array.isArray(siteSettings.socialLinks) ? siteSettings.socialLinks : []
+    const socialLines = uniqueStrings(
+      socialLinks
+        .map((l) => joinNonEmpty([l?.label, l?.url], ': '))
+        .filter((v): v is string => typeof v === 'string' && v.trim().length > 0),
+    )
+    if (socialLines.length) {
+      resumeFactsParts.push('Social Links:')
+      for (const line of socialLines) resumeFactsParts.push(`- ${line}`)
+    }
+
     const expDocs = Array.isArray(experiences.docs) ? experiences.docs : []
     if (expDocs.length) {
       resumeFactsParts.push('\nEXPERIENCE')
       for (const exp of expDocs) {
+        const expId = exp.id != null ? String(exp.id) : ''
         const datePart = joinNonEmpty(
           [formatDate(exp.startDate), exp.current ? 'Present' : formatDate(exp.endDate)],
           ' - ',
@@ -276,7 +314,7 @@ export async function POST(req: Request): Promise<Response> {
           [joinNonEmpty([exp.title, exp.company], ' @ '), exp.location, datePart],
           ' | ',
         )
-        if (header) resumeFactsParts.push(`- ${header}`)
+        if (header) resumeFactsParts.push(`- [exp:${expId}] ${header}`.trim())
         const highlights = Array.isArray(exp.highlights) ? exp.highlights : []
         for (const h of highlights) {
           if (h?.text) resumeFactsParts.push(`  - ${h.text}`)
@@ -288,9 +326,10 @@ export async function POST(req: Request): Promise<Response> {
     if (projDocs.length) {
       resumeFactsParts.push('\nPROJECTS')
       for (const p of projDocs) {
+        const projId = p.id != null ? String(p.id) : ''
         const urls = joinNonEmpty([p.repoUrl, p.liveUrl], ' | ')
         const header = joinNonEmpty([p.title, urls], ' — ')
-        if (header) resumeFactsParts.push(`- ${header}`)
+        if (header) resumeFactsParts.push(`- [proj:${projId}] ${header}`.trim())
         if (p.summary) resumeFactsParts.push(`  - ${p.summary}`)
         const tech = (Array.isArray(p.techStack) ? p.techStack : [])
           .map((t) => (t?.name ?? '').trim())
@@ -303,9 +342,10 @@ export async function POST(req: Request): Promise<Response> {
     if (certDocs.length) {
       resumeFactsParts.push('\nCERTIFICATIONS')
       for (const c of certDocs) {
+        const certId = c.id != null ? String(c.id) : ''
         const meta = joinNonEmpty([c.issuer, c.duration, formatDate(c.issueDate)], ' | ')
         const header = joinNonEmpty([c.title, meta], ' — ')
-        if (header) resumeFactsParts.push(`- ${header}`)
+        if (header) resumeFactsParts.push(`- [cert:${certId}] ${header}`.trim())
         if (c.credentialUrl) resumeFactsParts.push(`  - ${c.credentialUrl}`)
       }
     }
@@ -314,12 +354,13 @@ export async function POST(req: Request): Promise<Response> {
     if (eduDocs.length) {
       resumeFactsParts.push('\nEDUCATION')
       for (const e of eduDocs) {
+        const eduId = e.id != null ? String(e.id) : ''
         const datePart = joinNonEmpty([formatDate(e.startDate), formatDate(e.endDate)], ' - ')
         const header = joinNonEmpty(
           [e.school, joinNonEmpty([e.degree, e.fieldOfStudy], ', '), e.location, datePart],
           ' | ',
         )
-        if (header) resumeFactsParts.push(`- ${header}`)
+        if (header) resumeFactsParts.push(`- [edu:${eduId}] ${header}`.trim())
         const highlights = Array.isArray(e.highlights) ? e.highlights : []
         for (const h of highlights) {
           if (h?.text) resumeFactsParts.push(`  - ${h.text}`)
@@ -332,10 +373,6 @@ export async function POST(req: Request): Promise<Response> {
       return new Response('Missing resume facts in database.', { status: 400 })
     }
 
-    const inputHash = createHash('sha256')
-      .update(JSON.stringify({ resumeFacts, jdText, posterName, profileFocus }))
-      .digest('hex')
-
     const model = aiSettings.model || 'gpt-4o-mini'
     const temperature = typeof aiSettings.temperature === 'number' ? aiSettings.temperature : 0.2
     const promptVersion = aiSettings.promptVersion || 'phase5-v1'
@@ -343,13 +380,152 @@ export async function POST(req: Request): Promise<Response> {
       aiSettings.systemPrompt ||
       'You are a strict resume and cover letter drafting assistant. Do not invent facts. Only use information provided in the resume profile and job ad. If something is missing, omit it.'
 
+    type SelectionJson = {
+      experienceIds?: string[]
+      projectIds?: string[]
+      certificationIds?: string[]
+      educationIds?: string[]
+    }
+
+    let selected: SelectionJson | null = null
+    try {
+      const raw = await openAIChat({
+        apiKey,
+        model,
+        temperature: 0,
+        responseFormat: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: system },
+          {
+            role: 'user',
+            content: [
+              'Select ONLY the resume items that are most relevant to the job ad.',
+              '',
+              'Rules:',
+              '- Use ONLY IDs that appear in the Resume Facts in tags like [exp:ID], [proj:ID], [cert:ID], [edu:ID]',
+              '- Prefer Python/automation/API/LLM workflow items when the job asks for those',
+              '- Return JSON only with arrays (empty arrays allowed)',
+              '',
+              'Return JSON shape:',
+              '{"experienceIds":[],"projectIds":[],"certificationIds":[],"educationIds":[]}',
+              '',
+              `Job Title: ${jobAd.title ?? ''}`,
+              '',
+              `Job Ad:\n${jdText}`,
+              '',
+              `Resume Facts:\n${resumeFacts}`,
+            ].join('\n'),
+          },
+        ],
+        maxTokens: 400,
+      })
+
+      selected = parseJsonFromString<SelectionJson>(raw)
+    } catch {
+      selected = null
+    }
+
+    const selectionCount =
+      (selected?.experienceIds?.length ?? 0) +
+      (selected?.projectIds?.length ?? 0) +
+      (selected?.certificationIds?.length ?? 0) +
+      (selected?.educationIds?.length ?? 0)
+    if (selected && selectionCount === 0) selected = null
+
+    const keepExp = new Set((selected?.experienceIds ?? []).map(String))
+    const keepProj = new Set((selected?.projectIds ?? []).map(String))
+    const keepCert = new Set((selected?.certificationIds ?? []).map(String))
+    const keepEdu = new Set((selected?.educationIds ?? []).map(String))
+
+    const buildSelectedFacts = (): string => {
+      const parts: string[] = []
+
+      if (!selected) return resumeFactsParts.join('\n').trim()
+
+      let currentType: null | 'exp' | 'proj' | 'cert' | 'edu' = null
+      let keepCurrent = true
+
+      const resetItem = (): void => {
+        currentType = null
+        keepCurrent = true
+      }
+
+      const isSectionHeading = (line: string): boolean => {
+        const t = line.trim()
+        return (
+          t === 'EXPERIENCE' ||
+          t === 'PROJECTS' ||
+          t === 'CERTIFICATIONS' ||
+          t === 'EDUCATION' ||
+          t === 'Social Links:'
+        )
+      }
+
+      for (const line of resumeFactsParts) {
+        if (isSectionHeading(line)) {
+          resetItem()
+          parts.push(line)
+          continue
+        }
+
+        const taggedHeader = line.match(/^-\s+\[(exp|proj|cert|edu):([^\]]*)\]/)
+        if (taggedHeader) {
+          const type = taggedHeader[1] as 'exp' | 'proj' | 'cert' | 'edu'
+          const id = (taggedHeader[2] ?? '').trim()
+
+          currentType = type
+          if (!id) {
+            keepCurrent = true
+          } else if (type === 'exp') {
+            keepCurrent = keepExp.has(id)
+          } else if (type === 'proj') {
+            keepCurrent = keepProj.has(id)
+          } else if (type === 'cert') {
+            keepCurrent = keepCert.has(id)
+          } else {
+            keepCurrent = keepEdu.has(id)
+          }
+
+          if (keepCurrent) parts.push(line)
+          continue
+        }
+
+        if (currentType && !keepCurrent && line.startsWith('  -')) {
+          continue
+        }
+
+        parts.push(line)
+      }
+
+      return parts.join('\n').trim()
+    }
+
+    const selectedResumeFacts = buildSelectedFacts()
+
+    const inputHash = createHash('sha256')
+      .update(JSON.stringify({ resumeFacts, jdText, posterName, profileFocus }))
+      .digest('hex')
+
+    const headline = (resumeProfileGlobal.headline ?? '').trim() || (jobAd.title ?? '').trim()
+    const contactBlock = uniqueStrings(
+      [
+        resumeProfileGlobal.address,
+        resumeProfileGlobal.email,
+        resumeProfileGlobal.phone,
+        ...socialLines,
+      ].filter((v): v is string => typeof v === 'string' && v.trim().length > 0),
+    ).join('\n')
+
     const baseVars: Record<string, string> = {
       jdText,
       posterName,
-      resumeFacts,
+      resumeFacts: selectedResumeFacts,
       profileFocus,
       jobTitle: jobAd.title ?? '',
       companyName: company?.name ?? '',
+      fullName,
+      headline,
+      contactBlock,
     }
 
     const resumeDraft = await openAIChat({
