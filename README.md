@@ -15,6 +15,8 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 ## Key features
 
 - Structured resume data model (separate collections for SEO-friendly querying)
+- Job Ads + AI-assisted generation workflow (tailored resume + application letter)
+- CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content
 - Minimal RBAC (`admin`, `editor`) for the CMS
 - Private-by-default personal fields with explicit publish toggles
@@ -60,6 +62,17 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - `/admin`
   - Payload Admin UI.
 
+### Internal (admin/editor) utility routes
+
+- `POST /next/generate-drafts`
+  - Generates a tailored `resumeDraft` and `applicationLetter` for a Generation record.
+  - Uses OpenAI + prompt templates stored in `Globals → AI Generation Settings`.
+  - Enforces “database facts only” and stores metadata (`promptVersion`, `model`, `temperature`, `inputHash`).
+- `POST /next/seed-resume`
+  - Admin-only endpoint to seed resume collections from `resume.txt`.
+- `POST /next/delete-versions`
+  - Admin-only endpoint to delete stored versions for a single document.
+
 ## Data model (Payload)
 
 - **Globals**
@@ -69,6 +82,14 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - Resume identity + summary + contact fields.
     - Private-by-default enforcement:
       - `email`, `phone`, `address`, `dateOfBirth` are only publicly readable if their matching `publish*` toggle is enabled.
+  - `coverLetterSettings`
+    - Default greeting/header/footer templates used for application letters.
+  - `aiGenerationSettings`
+    - Default OpenAI config + prompt templates:
+      - `promptVersion`, `model`, `temperature`, `systemPrompt`, `resumePrompt`, `coverLetterStyle`, `coverLetterPrompt`
+    - Includes in-admin help:
+      - Collapsible shortcode reference (hidden by default)
+      - Collapsible explanations for `promptVersion`, `model`, and `temperature`
 
 - **Collections**
   - `experiences`
@@ -77,6 +98,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - `slug` is a plain `text` field and is auto-generated from `title` on save when empty.
     - This avoids reliance on the experimental slug UI component that requires server functions context.
   - `certifications`
+  - `resumeProfiles`
+    - Optional focus/notes used to steer generation (not the canonical resume facts).
+  - `companies`
+  - `jobAds`
+  - `generations`
+    - Stores `resumeDraft` + `applicationLetter` and prompt metadata for a specific job ad/profile.
   - `media` (uploads)
   - `users` (auth)
     - Minimal RBAC via a `roles` field (`admin`, `editor`).
@@ -93,6 +120,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - After schema changes:
   - `npm run generate:types`
   - `npx tsc --noEmit`
+
+- After adding or changing Payload admin components:
+  - `npm run generate:importmap`
 
 ## Troubleshooting
 

@@ -12,6 +12,22 @@
   - CLI command: `npm run seed:resume`.
 - Fixed markdown escaping artifacts in seeded resume content (e.g. `\\-` in titles).
 
+- Added Phase 5 “Job Ads → Generations” AI workflow:
+  - New collections: `companies`, `jobAds`, `resumeProfiles`, `generations`.
+  - New globals: `coverLetterSettings`, `aiGenerationSettings`.
+  - Admin/editor-only endpoint: `POST /next/generate-drafts`.
+  - Generates `resumeDraft` + `applicationLetter` using database facts only.
+  - Adds an AI selection step to pick job-relevant experiences/projects/certs/education by ID.
+
+- Added admin UX documentation helpers in `Globals → AI Generation Settings`:
+  - Collapsible shortcode reference (hidden by default) for prompt templates.
+  - Collapsible help for `promptVersion`, `model`, and `temperature` (allowed values + cost guidance).
+  - Added Job Ad + Company prompt variables/shortcodes (e.g. `{{jobAdTitle}}`, `{{companyWebsite}}`).
+
+- Fixed TypeScript build issues:
+  - Avoid exporting `serverFunction` from Payload layout module.
+  - Narrowed `deleteVersions` route collection typing to satisfy Payload `CollectionSlug`.
+
 ## [0.1.0] - 2026-02-01
 
 - Implemented initial resume/portfolio CMS data model (collections + globals).

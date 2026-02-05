@@ -189,6 +189,8 @@ Status: Completed
 
 - Priority: Start here next. Public site + SEO pages can be implemented later.
 
+Status: In progress (core generation workflow implemented; export + additional admin actions pending)
+
 - Requirements (admin-first workflow):
   - Create and manage job ads and company info in the Payload admin.
   - Support multiple resume “profiles” (e.g. Full-Stack, AI Systems, Laravel) and select one per generation attempt.
@@ -202,6 +204,24 @@ Status: Completed
     - Recipient name / greeting (e.g. “Hi Mike,”)
     - Header (optional)
     - Footer/signature block (multi-line) with a dynamic “Resume:” link that uses the exported Google Docs URL.
+
+- Implemented (current):
+  - Collections + globals for Phase 5:
+    - Collections: `companies`, `jobAds`, `resumeProfiles`, `generations`
+    - Globals: `aiGenerationSettings`, `coverLetterSettings`
+  - Prompt templates + model defaults managed in CMS:
+    - `promptVersion`, `model`, `temperature`, `systemPrompt`, `resumePrompt`, `coverLetterStyle`, `coverLetterPrompt`
+  - Generation pipeline (server-side):
+    - Admin/editor-only `POST /next/generate-drafts`
+    - Builds structured `resumeFacts` from database collections
+    - Runs a selection step (JSON) to pick job-relevant experiences/projects/certs/education by ID
+    - Generates `resumeDraft` (ATS-friendly) + `applicationLetter`
+    - Stores run metadata (`promptVersion`, `model`, `temperature`, `inputHash`) on the Generation record
+  - Admin UX / documentation:
+    - `Globals → AI Generation Settings` includes collapsible (hidden by default) help:
+      - Shortcode reference (one shortcode per line)
+      - Explanations for `promptVersion`, `model`, `temperature` (allowed values + cost guidance)
+    - Note: after adding/changing admin components, run `npm run generate:importmap`
 
 - CMS data model (suggested):
   - `resumeProfiles`

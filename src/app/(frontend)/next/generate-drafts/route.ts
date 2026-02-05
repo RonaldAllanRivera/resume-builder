@@ -526,6 +526,14 @@ export async function POST(req: Request): Promise<Response> {
       fullName,
       headline,
       contactBlock,
+      jobAdTitle: jobAd.title ?? '',
+      jobAdLocation: jobAd.location ?? '',
+      jobAdUrl: jobAd.jobUrl ?? '',
+      jobAdPosterName: jobAd.posterName ?? '',
+      jobAdStatus: (jobAd as { status?: string }).status ?? '',
+      companyWebsite: company?.website ?? '',
+      companyAbout: company?.about ?? '',
+      companyToneNotes: company?.toneNotes ?? '',
     }
 
     const resumeDraft = await openAIChat({
