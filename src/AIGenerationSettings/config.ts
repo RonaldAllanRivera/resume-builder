@@ -4,15 +4,139 @@ import { adminOrEditor } from '../access/adminOrEditor'
 
 export const DEFAULT_AI_GENERATION_PROMPT_VERSION = 'phase5-v1'
 
-export const DEFAULT_AI_GENERATION_MODEL = 'gpt-4o-mini'
+export const DEFAULT_AI_GENERATION_MODEL = 'gpt-4o'
 
-export const DEFAULT_AI_GENERATION_TEMPERATURE = 0.2
+export const DEFAULT_AI_GENERATION_TEMPERATURE = 0.0
 
-export const DEFAULT_AI_GENERATION_SYSTEM_PROMPT =
-  'You are a strict resume and cover letter drafting assistant. Do not invent facts. Only use information provided in the resume profile and job ad. If something is missing, omit it.'
+export const DEFAULT_AI_GENERATION_SYSTEM_PROMPT = `You are a strict resume and cover letter drafting assistant.
 
-export const DEFAULT_AI_GENERATION_RESUME_PROMPT =
-  'Rewrite the resume into a clean, modern, AI-specialist resume that is ATS-friendly and easy for humans to scan.\n\nHard rules (must follow):\n- Output ONLY the final resume text (no explanations, no preface, no "great decision", no advice sections)\n- Do NOT invent facts (no new companies, dates, titles, tools, skills, degrees, certifications, metrics, links, locations)\n- Only include skills/tech/tools that appear in Resume Facts (experience highlights, project tech stack, certifications, education)\n- Prefer relevance to the Job Ad over completeness\n- Use short bullets, avoid long paragraphs\n- No tables, no emojis, no decorative characters\n\nTarget role: {{jobTitle}}\nCompany: {{companyName}}\n\nFormatting requirements (use this exact section order; omit empty sections):\n# {{fullName}}\n**{{headline}}**\n{{contactBlock}}\n\n## Professional Summary\nWrite 3 to 5 sentences. Position the candidate as a hands-on, delivery-focused AI specialist / applied AI engineer / AI software engineer (only if supported by facts). Align to the Job Ad responsibilities: LLM-powered tools, automation agents, data ingestion/pipelines, analytics enablement, integrations with existing platforms. If a responsibility/tool is not supported by Resume Facts, do not claim it.\n\n## Core Skills\nCreate 3 to 6 skill groups. For each group, use a bold label then 3 to 6 bullets. Example groups (only if supported by Resume Facts):\n- **AI & LLM Systems**\n- **Automation & Data Pipelines**\n- **Backend & APIs**\n- **Frontend / Full-Stack Delivery**\n- **DevOps / Reliability**\n- **Analytics / Experimentation**\n\n## Professional Experience\nUse reverse-chronological order, but prioritize the most relevant roles first. For each role:\n- Role line: "### <Title>" then next line "<Company> — <Context>" then next line "<Dates>" (if dates are available)\n- Include 4 to 7 bullets max focused on measurable outcomes, automation, AI integrations, and production delivery\n- Mention specific tools only if present in Resume Facts\n\n## Selected Projects\nInclude 3 to 6 projects most relevant to AI systems, automation, data pipelines, analytics tooling, LLM integration. For each project:\n- "### <Project title>"\n- 2 to 4 bullets (what it does, what you built, what impact)\n- Include repo/live URLs if present in Resume Facts\n\n## Education\n\n## Certifications (Selected)\nList up to 6 certifications most relevant to AI, cloud, devops, and backend engineering. If the Resume Facts contain a large list, select only the most relevant and add one last line: "Full list available on request" (only if a larger list exists in facts).\n\n## Earlier Experience\nOptional. If Resume Facts contain many older roles, compress them to single-line entries: "<Title> — <Company> (<Years>)".\n\nProfile focus / constraints (optional):\n{{profileFocus}}\n\nJob Ad:\n{{jdText}}\n\nResume Facts (from database):\n{{resumeFacts}}\n\nOutput: Return ONLY the final resume text in markdown.'
+Non-negotiable rules:
+- Do NOT invent facts.
+- Do NOT create new jobs/clients/projects/certifications/skills that are not explicitly present in the provided Resume Facts.
+- Do NOT change company names, job titles, locations, or date ranges. Copy them exactly from Resume Facts or omit if missing.
+- If a fact is missing, omit it (do not guess).
+- Output must be plain text / markdown only.`
+
+export const DEFAULT_AI_GENERATION_RESUME_PROMPT = `Rewrite the resume into a clean, modern resume that is ATS-friendly and easy for humans to scan.
+
+Hard rules (must follow):
+- Output ONLY the final resume text (no explanations, no preface, no advice sections)
+- Do NOT invent facts.
+- You may ONLY use content that appears in Resume Facts.
+- Do NOT create any new roles such as "Self-Employed" or new companies.
+- Do NOT create any new projects (no made-up product names).
+- Do NOT change company names, job titles, locations, or date ranges.
+- Bullet points must be grounded in the specific role/project highlights from Resume Facts.
+- No tables, no emojis.
+
+CRITICAL: How to use Resume Facts
+- Resume Facts contain tagged entries like "- [proj:123] Project Title — URL" and "- [cert:123] Certification — Issuer"
+- ONLY use projects that have "- [proj:" tags in Resume Facts
+- ONLY use certifications that have "- [cert:" tags in Resume Facts
+- ONLY use education that have "- [edu:" tags in Resume Facts
+- Copy names, issuers, locations, and dates EXACTLY as shown in Resume Facts
+- Use the bullet points (indented lines) under each tagged entry as your highlights
+
+CRITICAL: Experience blocks are pre-formatted
+- The following shortcodes are already formatted from the database:
+  - {{professionalExperienceBlocks}}
+  - {{earlierExperienceLines}}
+- You MUST include them EXACTLY as provided.
+- Do NOT rewrite them.
+- Do NOT re-order bullets.
+- Do NOT change dates/titles/companies.
+- Do NOT add missing details.
+
+Target role: {{jobTitle}}
+Company: {{companyName}}
+
+Job Ad (use only to choose emphasis, NOT to add facts):
+{{jdText}}
+
+Resume Facts (authoritative source of truth):
+{{resumeFacts}}
+
+Profile focus / constraints (optional):
+{{profileFocus}}
+
+First, generate a professional headline (1 line, 10-15 words) that positions the candidate for the target role based on Resume Facts and Job Ad. Make it specific to the job requirements while staying true to Resume Facts.
+
+Output: Return ONLY the final resume text in markdown using this EXACT layout:
+
+# {{fullName}}
+**[Generated Headline Here]**
+📍 {{address}}
+📧 {{email}} | 📞 {{phone}}
+🌐 Portfolio: https://{{portfolioUrl}}
+💼 LinkedIn: https://{{linkedinUrl}}
+💻 GitHub: https://{{githubUrl}}
+
+---
+
+## Professional Summary
+
+Write 3 to 5 sentences.
+- Must be consistent with Resume Facts.
+- Emphasize skills and experience relevant to the target role/job ad.
+- If the job targets AI/LLM/automation, highlight those skills IF present in Resume Facts.
+- If the job targets Laravel/WordPress/Full-Stack, highlight those skills IF present in Resume Facts.
+- Do not invent skills or experience not present in Resume Facts.
+
+---
+
+## Core Skills
+
+Create 3 to 5 skill groups with bold labels.
+Each group should have 4 to 6 bullet points.
+Only list tools/tech explicitly present in Resume Facts.
+
+---
+
+## Professional Experience
+
+{{professionalExperienceBlocks}}
+
+---
+
+## Latest Projects
+
+Extract ONLY from Resume Facts entries that start with "- [proj:".
+Pick 3 to 6 most relevant to the Job Ad (prioritize automation, AI-assisted systems, Python tools, APIs, backend reliability).
+Format each project exactly as:
+### **{{projectTitle}} ({{techStack}})**
+
+Write 2 to 4 bullets grounded in that project's summary/tech listed in Resume Facts.
+
+---
+
+## Earlier Experience
+
+{{earlierExperienceLines}}
+
+---
+
+## Education
+
+Extract ONLY from Resume Facts entries that start with "- [edu:".
+Format exactly as:
+**{{degree}}**
+{{institution}} — {{location}}
+
+---
+
+## Certifications (Selected)
+
+Extract ONLY from Resume Facts entries that start with "- [cert:".
+Pick up to 6 most relevant certifications that match the target role.
+Format as bullet points with *:
+* {{certification1}}
+* {{certification2}}
+* {{certification3}}
+* {{certification4}}
+* {{certification5}}
+* {{certification6}}
+
+*(Full certification list available on LinkedIn)*`
 
 export const DEFAULT_AI_GENERATION_COVER_LETTER_STYLE = ''
 
@@ -191,6 +315,33 @@ export const AIGenerationSettings: GlobalConfig = {
               description: 'From Globals → Resume Profile → headline (fallback: Job Ad title)',
             },
             {
+              code: '{{address}}',
+              description: 'From Globals → Resume Profile → address',
+            },
+            {
+              code: '{{email}}',
+              description: 'From Globals → Resume Profile → email',
+            },
+            {
+              code: '{{phone}}',
+              description: 'From Globals → Resume Profile → phone',
+            },
+            {
+              code: '{{portfolioUrl}}',
+              description:
+                'Derived from Globals → Site Settings → socialLinks (Portfolio/Website URL; normalized, no protocol)',
+            },
+            {
+              code: '{{linkedinUrl}}',
+              description:
+                'Derived from Globals → Site Settings → socialLinks (LinkedIn URL; normalized, no protocol)',
+            },
+            {
+              code: '{{githubUrl}}',
+              description:
+                'Derived from Globals → Site Settings → socialLinks (GitHub URL; normalized, no protocol)',
+            },
+            {
               code: '{{contactBlock}}',
               description:
                 'Combined contact lines (Globals → Resume Profile: address/email/phone + Globals → Site Settings → socialLinks)',
@@ -203,6 +354,53 @@ export const AIGenerationSettings: GlobalConfig = {
               code: '{{resumeFacts}}',
               description:
                 'Structured resume facts built from database collections (experiences/projects/certifications/educations); may be pre-filtered to the most job-relevant items',
+            },
+            {
+              code: '{{professionalExperienceBlocks}}',
+              description:
+                'Pre-formatted blocks for CURRENT experiences (experiences.current=true), joined with "---" separators, matching the new-resume.txt “Professional Experience” layout',
+            },
+            {
+              code: '{{professionalExperience1Block}}',
+              description:
+                'First CURRENT experience block (current=true). Use when you want explicit control over ordering/placement',
+            },
+            {
+              code: '{{professionalExperience2Block}}',
+              description: 'Second CURRENT experience block (current=true)',
+            },
+            {
+              code: '{{earlierExperienceLines}}',
+              description:
+                'Pre-formatted one-line entries for PAST experiences (experiences.current=false), one per line, matching the new-resume.txt “Earlier Experience” format',
+            },
+            {
+              code: '{{earlierExperience1Line}}',
+              description: 'First PAST experience one-liner (current=false)',
+            },
+            {
+              code: '{{earlierExperience2Line}}',
+              description: 'Second PAST experience one-liner (current=false)',
+            },
+            {
+              code: '{{earlierExperience3Line}}',
+              description: 'Third PAST experience one-liner (current=false)',
+            },
+            {
+              code: '{{earlierExperience4Line}}',
+              description: 'Fourth PAST experience one-liner (current=false)',
+            },
+            {
+              code: '{{earlierExperience5Line}}',
+              description: 'Fifth PAST experience one-liner (current=false)',
+            },
+            {
+              code: '{{earlierExperience6Line}}',
+              description: 'Sixth PAST experience one-liner (current=false)',
+            },
+            {
+              code: '{{earlierExperience7Line}}',
+              description: 'Seventh PAST experience one-liner (current=false)',
             },
             {
               code: '{{jobTitle}}',

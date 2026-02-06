@@ -31,6 +31,26 @@ const formatDate = (value: unknown): string => {
   return d.toISOString().slice(0, 10)
 }
 
+const formatMonthYear = (value: unknown): string => {
+  if (!value) return ''
+  const d = value instanceof Date ? value : new Date(String(value))
+  if (Number.isNaN(d.getTime())) return ''
+  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(d)
+}
+
+const formatYear = (value: unknown): string => {
+  if (!value) return ''
+  const d = value instanceof Date ? value : new Date(String(value))
+  if (Number.isNaN(d.getTime())) return ''
+  return String(d.getUTCFullYear())
+}
+
+const normalizeUrlForDisplay = (value: string): string => {
+  const v = value.trim()
+  if (!v) return ''
+  return v.replace(/^https?:\/\//i, '').replace(/^www\./i, '')
+}
+
 const joinNonEmpty = (parts: Array<string | undefined | null>, separator: string): string => {
   return parts
     .map((p) => (typeof p === 'string' ? p.trim() : ''))
@@ -49,6 +69,16 @@ const uniqueStrings = (items: string[]): string[] => {
     out.push(k)
   }
   return out
+}
+
+const getSocialUrl = (links: Array<{ label?: string; url?: string }>, matcher: RegExp): string => {
+  for (const link of links) {
+    const label = (link?.label ?? '').trim()
+    const url = (link?.url ?? '').trim()
+    if (!url) continue
+    if (matcher.test(label) || matcher.test(url)) return url
+  }
+  return ''
 }
 
 export const maxDuration = 60
@@ -296,12 +326,83 @@ export async function POST(req: Request): Promise<Response> {
         .map((l) => joinNonEmpty([l?.label, l?.url], ': '))
         .filter((v): v is string => typeof v === 'string' && v.trim().length > 0),
     )
+
+    const portfolioUrl = normalizeUrlForDisplay(
+      getSocialUrl(socialLinks, /portfolio|website|site/i) ||
+        getSocialUrl(socialLinks, /allanwebdesign\.com/i),
+    )
+    const linkedinUrl = normalizeUrlForDisplay(getSocialUrl(socialLinks, /linkedin/i))
+    const githubUrl = normalizeUrlForDisplay(getSocialUrl(socialLinks, /github/i))
     if (socialLines.length) {
       resumeFactsParts.push('Social Links:')
       for (const line of socialLines) resumeFactsParts.push(`- ${line}`)
     }
 
     const expDocs = Array.isArray(experiences.docs) ? experiences.docs : []
+
+    const formatProfessionalExperienceBlock = (exp: {
+      title?: string
+      company?: string
+      location?: string
+      startDate?: string
+      endDate?: string
+      current?: boolean
+      highlights?: Array<{ text?: string }>
+    }): string => {
+      const roleTitle = (exp.title ?? '').trim()
+      const companyName = (exp.company ?? '').trim()
+      const descriptor = (exp.location ?? '').trim()
+      const datePart = joinNonEmpty(
+        [formatMonthYear(exp.startDate), exp.current ? 'Present' : formatMonthYear(exp.endDate)],
+        ' – ',
+      )
+
+      const headerLines = [
+        roleTitle ? `### **${roleTitle}**` : '',
+        companyName ? `**${companyName}**${descriptor ? ` — ${descriptor}` : ''}` : '',
+        datePart ? `*${datePart}*` : '',
+      ].filter(Boolean)
+
+      const highlights = Array.isArray(exp.highlights) ? exp.highlights : []
+      const bullets = highlights
+        .map((h) => (h?.text ?? '').trim())
+        .filter(Boolean)
+        .map((t) => `* ${t}`)
+
+      return [...headerLines, '', ...bullets].join('\n').trim()
+    }
+
+    const formatEarlierExperienceLine = (exp: {
+      title?: string
+      company?: string
+      startDate?: string
+      endDate?: string
+      current?: boolean
+    }): string => {
+      const title = (exp.title ?? '').trim()
+      const company = (exp.company ?? '').trim()
+      const startYear = formatYear(exp.startDate)
+      const endYear = exp.current ? 'Present' : formatYear(exp.endDate)
+      const yearRange = joinNonEmpty([startYear, endYear], '–')
+
+      const left = title ? `**${title}**` : ''
+      const mid = company ? ` — ${company}` : ''
+      const right = yearRange ? ` (${yearRange})` : ''
+      return `${left}${mid}${right}`.trim()
+    }
+
+    const professionalExpDocs = expDocs.filter((e) => Boolean(e?.current))
+    const earlierExpDocs = expDocs.filter((e) => !e?.current)
+
+    const professionalExperienceBlocks = professionalExpDocs
+      .map(formatProfessionalExperienceBlock)
+      .filter(Boolean)
+      .join('\n\n---\n\n')
+
+    const earlierExperienceLines = earlierExpDocs
+      .map(formatEarlierExperienceLine)
+      .filter(Boolean)
+      .join('\n')
     if (expDocs.length) {
       resumeFactsParts.push('\nEXPERIENCE')
       for (const exp of expDocs) {
@@ -516,6 +617,35 @@ export async function POST(req: Request): Promise<Response> {
       ].filter((v): v is string => typeof v === 'string' && v.trim().length > 0),
     ).join('\n')
 
+    const professionalExperience1Block = professionalExpDocs[0]
+      ? formatProfessionalExperienceBlock(professionalExpDocs[0])
+      : ''
+    const professionalExperience2Block = professionalExpDocs[1]
+      ? formatProfessionalExperienceBlock(professionalExpDocs[1])
+      : ''
+
+    const earlierExperience1Line = earlierExpDocs[0]
+      ? formatEarlierExperienceLine(earlierExpDocs[0])
+      : ''
+    const earlierExperience2Line = earlierExpDocs[1]
+      ? formatEarlierExperienceLine(earlierExpDocs[1])
+      : ''
+    const earlierExperience3Line = earlierExpDocs[2]
+      ? formatEarlierExperienceLine(earlierExpDocs[2])
+      : ''
+    const earlierExperience4Line = earlierExpDocs[3]
+      ? formatEarlierExperienceLine(earlierExpDocs[3])
+      : ''
+    const earlierExperience5Line = earlierExpDocs[4]
+      ? formatEarlierExperienceLine(earlierExpDocs[4])
+      : ''
+    const earlierExperience6Line = earlierExpDocs[5]
+      ? formatEarlierExperienceLine(earlierExpDocs[5])
+      : ''
+    const earlierExperience7Line = earlierExpDocs[6]
+      ? formatEarlierExperienceLine(earlierExpDocs[6])
+      : ''
+
     const baseVars: Record<string, string> = {
       jdText,
       posterName,
@@ -526,6 +656,23 @@ export async function POST(req: Request): Promise<Response> {
       fullName,
       headline,
       contactBlock,
+      address: resumeProfileGlobal.address ?? '',
+      email: resumeProfileGlobal.email ?? '',
+      phone: resumeProfileGlobal.phone ?? '',
+      portfolioUrl,
+      linkedinUrl,
+      githubUrl,
+      professionalExperienceBlocks,
+      professionalExperience1Block,
+      professionalExperience2Block,
+      earlierExperienceLines,
+      earlierExperience1Line,
+      earlierExperience2Line,
+      earlierExperience3Line,
+      earlierExperience4Line,
+      earlierExperience5Line,
+      earlierExperience6Line,
+      earlierExperience7Line,
       jobAdTitle: jobAd.title ?? '',
       jobAdLocation: jobAd.location ?? '',
       jobAdUrl: jobAd.jobUrl ?? '',
