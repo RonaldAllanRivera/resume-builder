@@ -2177,6 +2177,7 @@ export interface AiGenerationSetting {
   temperature: number;
   systemPrompt: string;
   resumePrompt: string;
+  experienceRewritePrompt: string;
   coverLetterStyle?: string | null;
   coverLetterPrompt: string;
   updatedAt?: string | null;
@@ -2289,6 +2290,7 @@ export interface AiGenerationSettingsSelect<T extends boolean = true> {
   temperature?: T;
   systemPrompt?: T;
   resumePrompt?: T;
+  experienceRewritePrompt?: T;
   coverLetterStyle?: T;
   coverLetterPrompt?: T;
   updatedAt?: T;

@@ -184,6 +184,7 @@ export async function POST(req: Request): Promise<Response> {
       temperature?: number
       systemPrompt?: string
       resumePrompt?: string
+      experienceRewritePrompt?: string
       coverLetterStyle?: string
       coverLetterPrompt?: string
     }
@@ -359,7 +360,7 @@ export async function POST(req: Request): Promise<Response> {
 
       const headerLines = [
         roleTitle ? `### **${roleTitle}**` : '',
-        companyName ? `**${companyName}**${descriptor ? ` — ${descriptor}` : ''}` : '',
+        companyName ? `**${companyName}**${descriptor ? ` - ${descriptor}` : ''}` : '',
         datePart ? `*${datePart}*` : '',
       ].filter(Boolean)
 
@@ -386,7 +387,7 @@ export async function POST(req: Request): Promise<Response> {
       const yearRange = joinNonEmpty([startYear, endYear], '–')
 
       const left = title ? `**${title}**` : ''
-      const mid = company ? ` — ${company}` : ''
+      const mid = company ? ` - ${company}` : ''
       const right = yearRange ? ` (${yearRange})` : ''
       return `${left}${mid}${right}`.trim()
     }
@@ -429,7 +430,7 @@ export async function POST(req: Request): Promise<Response> {
       for (const p of projDocs) {
         const projId = p.id != null ? String(p.id) : ''
         const urls = joinNonEmpty([p.repoUrl, p.liveUrl], ' | ')
-        const header = joinNonEmpty([p.title, urls], ' — ')
+        const header = joinNonEmpty([p.title, urls], ' - ')
         if (header) resumeFactsParts.push(`- [proj:${projId}] ${header}`.trim())
         if (p.summary) resumeFactsParts.push(`  - ${p.summary}`)
         const tech = (Array.isArray(p.techStack) ? p.techStack : [])
@@ -445,7 +446,7 @@ export async function POST(req: Request): Promise<Response> {
       for (const c of certDocs) {
         const certId = c.id != null ? String(c.id) : ''
         const meta = joinNonEmpty([c.issuer, c.duration, formatDate(c.issueDate)], ' | ')
-        const header = joinNonEmpty([c.title, meta], ' — ')
+        const header = joinNonEmpty([c.title, meta], ' - ')
         if (header) resumeFactsParts.push(`- [cert:${certId}] ${header}`.trim())
         if (c.credentialUrl) resumeFactsParts.push(`  - ${c.credentialUrl}`)
       }
@@ -603,6 +604,198 @@ export async function POST(req: Request): Promise<Response> {
 
     const selectedResumeFacts = buildSelectedFacts()
 
+    type ExperienceRewriteJson = {
+      experiences?: Array<{
+        id?: string
+        roleTitle?: string
+        highlights?: string[]
+      }>
+    }
+
+    const rewriteCurrentExperiences = async (): Promise<
+      Map<string, { roleTitle: string; highlights: string[] }>
+    > => {
+      const out = new Map<string, { roleTitle: string; highlights: string[] }>()
+      if (!professionalExpDocs.length) return out
+
+      const payloadForAI = professionalExpDocs
+        .map((e) => {
+          const id = e.id != null ? String(e.id) : ''
+          const title = (e.title ?? '').trim()
+          const company = (e.company ?? '').trim()
+          const descriptor = (e.location ?? '').trim()
+          const dates = joinNonEmpty(
+            [formatMonthYear(e.startDate), e.current ? 'Present' : formatMonthYear(e.endDate)],
+            ' – ',
+          )
+          const highlights = (Array.isArray(e.highlights) ? e.highlights : [])
+            .map((h) => (h?.text ?? '').trim())
+            .filter(Boolean)
+          return {
+            id,
+            title,
+            company,
+            descriptor,
+            dates,
+            highlights,
+          }
+        })
+        .filter((e) => e.id && (e.title || e.highlights.length))
+
+      if (!payloadForAI.length) return out
+
+      const currentExperiencesJson = JSON.stringify(payloadForAI, null, 2)
+
+      const rewritePrompt = renderTemplate(
+        aiSettings.experienceRewritePrompt ||
+          [
+            'Rewrite CURRENT work experiences to better match the job ad while staying strictly factual.',
+            '',
+            'Rules:',
+            '- Do NOT invent facts',
+            '- Do NOT change company names or dates',
+            '- Do NOT add or imply freelance, self-employed, contractor, contractual, or project-based roles',
+            '- You MAY rewrite the role title (wording only) to align with the job ad',
+            '- If helpful and justified by the provided facts, you MAY append ONE aligned title variant using: "<Original Title> | <Aligned Title Variant>"',
+            '- You MAY rewrite each highlight bullet for clarity and relevance, but you must preserve the meaning, align it with the job ad',
+            '- Highlights must be plain text strings (do NOT include leading "*" or "-" bullet markers)',
+            '- Keep highlights concise, action-oriented, and ATS-friendly',
+            '- Keep bullet count <= original bullet count for that experience',
+            '- Return JSON only',
+            '',
+            'Return JSON shape:',
+            '{"experiences":[{"id":"<expId>","roleTitle":"<custom title>","highlights":["..."]}]}',
+            '',
+            'Job Title: {{jobTitle}}',
+            '',
+            'Job Ad:',
+            '{{jdText}}',
+            '',
+            'Current Experiences (authoritative source):',
+            '{{currentExperiencesJson}}',
+          ].join('\n'),
+        {
+          jobTitle: jobAd.title ?? '',
+          jdText,
+          currentExperiencesJson,
+        },
+      )
+
+      let rewritten: ExperienceRewriteJson | null = null
+      try {
+        const raw = await openAIChat({
+          apiKey,
+          model,
+          temperature: 0,
+          responseFormat: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: system },
+            {
+              role: 'user',
+              content: rewritePrompt,
+            },
+          ],
+          maxTokens: 900,
+        })
+
+        rewritten = parseJsonFromString<ExperienceRewriteJson>(raw)
+      } catch {
+        rewritten = null
+      }
+
+      const items = Array.isArray(rewritten?.experiences) ? rewritten?.experiences : []
+      for (const item of items) {
+        const id = (item?.id ?? '').trim()
+        if (!id) continue
+        const roleTitle = (item?.roleTitle ?? '').trim()
+        const highlights = Array.isArray(item?.highlights)
+          ? item.highlights
+              .map((h) => String(h).trim())
+              .map((h) => h.replace(/^[-*•]+\s*/u, '').trim())
+              .filter(Boolean)
+          : []
+        if (!roleTitle && !highlights.length) continue
+        out.set(id, { roleTitle, highlights })
+      }
+
+      return out
+    }
+
+    const rewrittenCurrent = await rewriteCurrentExperiences()
+
+    const formatProfessionalExperienceBlockCustom = (exp: {
+      id?: string | number
+      title?: string
+      company?: string
+      location?: string
+      startDate?: string
+      endDate?: string
+      current?: boolean
+      highlights?: Array<{ text?: string }>
+    }): string => {
+      const expId = exp.id != null ? String(exp.id) : ''
+      const override = expId ? rewrittenCurrent.get(expId) : undefined
+
+      const roleTitle = (override?.roleTitle ?? '').trim() || (exp.title ?? '').trim()
+      const companyName = (exp.company ?? '').trim()
+      const descriptor = (exp.location ?? '').trim()
+      const datePart = joinNonEmpty(
+        [formatMonthYear(exp.startDate), exp.current ? 'Present' : formatMonthYear(exp.endDate)],
+        ' – ',
+      )
+
+      const headerLines = [
+        roleTitle ? `### **${roleTitle}**` : '',
+        companyName ? `**${companyName}**${descriptor ? ` — ${descriptor}` : ''}` : '',
+        datePart ? `*${datePart}*` : '',
+      ].filter(Boolean)
+
+      const originalHighlights = (Array.isArray(exp.highlights) ? exp.highlights : [])
+        .map((h) => (h?.text ?? '').trim())
+        .filter(Boolean)
+      const allowedCount = originalHighlights.length
+      const highlightLines = (
+        override?.highlights?.length ? override.highlights : originalHighlights
+      )
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .slice(0, allowedCount || undefined)
+        .map((t) => `* ${t}`)
+
+      return [...headerLines, '', ...highlightLines].join('\n').trim()
+    }
+
+    const getCustomizedHighlightsMarkdown = (exp: {
+      id?: string | number
+      highlights?: Array<{ text?: string }>
+    }): string => {
+      const expId = exp.id != null ? String(exp.id) : ''
+      const override = expId ? rewrittenCurrent.get(expId) : undefined
+      const originalHighlights = (Array.isArray(exp.highlights) ? exp.highlights : [])
+        .map((h) => (h?.text ?? '').trim())
+        .filter(Boolean)
+      const allowedCount = originalHighlights.length
+      const highlightLines = (
+        override?.highlights?.length ? override.highlights : originalHighlights
+      )
+        .map((t) => String(t).trim())
+        .filter(Boolean)
+        .slice(0, allowedCount || undefined)
+        .map((t) => `* ${t}`)
+      return highlightLines.join('\n').trim()
+    }
+
+    const professionalExperienceBlocksCustomized = professionalExpDocs
+      .map(formatProfessionalExperienceBlockCustom)
+      .filter(Boolean)
+      .join('\n\n---\n\n')
+
+    const getCustomizedRoleTitle = (exp: { id?: string | number; title?: string }): string => {
+      const expId = exp.id != null ? String(exp.id) : ''
+      const override = expId ? rewrittenCurrent.get(expId) : undefined
+      return (override?.roleTitle ?? '').trim() || (exp.title ?? '').trim()
+    }
+
     const inputHash = createHash('sha256')
       .update(JSON.stringify({ resumeFacts, jdText, posterName, profileFocus }))
       .digest('hex')
@@ -622,6 +815,27 @@ export async function POST(req: Request): Promise<Response> {
       : ''
     const professionalExperience2Block = professionalExpDocs[1]
       ? formatProfessionalExperienceBlock(professionalExpDocs[1])
+      : ''
+
+    const professionalExperience1BlockCustomized = professionalExpDocs[0]
+      ? formatProfessionalExperienceBlockCustom(professionalExpDocs[0])
+      : ''
+    const professionalExperience2BlockCustomized = professionalExpDocs[1]
+      ? formatProfessionalExperienceBlockCustom(professionalExpDocs[1])
+      : ''
+
+    const professionalExperience1TitleCustomized = professionalExpDocs[0]
+      ? getCustomizedRoleTitle(professionalExpDocs[0])
+      : ''
+    const professionalExperience2TitleCustomized = professionalExpDocs[1]
+      ? getCustomizedRoleTitle(professionalExpDocs[1])
+      : ''
+
+    const professionalExperience1HighlightsCustomized = professionalExpDocs[0]
+      ? getCustomizedHighlightsMarkdown(professionalExpDocs[0])
+      : ''
+    const professionalExperience2HighlightsCustomized = professionalExpDocs[1]
+      ? getCustomizedHighlightsMarkdown(professionalExpDocs[1])
       : ''
 
     const earlierExperience1Line = earlierExpDocs[0]
@@ -665,6 +879,13 @@ export async function POST(req: Request): Promise<Response> {
       professionalExperienceBlocks,
       professionalExperience1Block,
       professionalExperience2Block,
+      professionalExperienceBlocksCustomized,
+      professionalExperience1BlockCustomized,
+      professionalExperience2BlockCustomized,
+      professionalExperience1TitleCustomized,
+      professionalExperience2TitleCustomized,
+      professionalExperience1HighlightsCustomized,
+      professionalExperience2HighlightsCustomized,
       earlierExperienceLines,
       earlierExperience1Line,
       earlierExperience2Line,

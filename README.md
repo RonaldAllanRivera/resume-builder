@@ -86,10 +86,13 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - Default greeting/header/footer templates used for application letters.
   - `aiGenerationSettings`
     - Default OpenAI config + prompt templates:
-      - `promptVersion`, `model`, `temperature`, `systemPrompt`, `resumePrompt`, `coverLetterStyle`, `coverLetterPrompt`
+      - `promptVersion`, `model`, `temperature`, `systemPrompt`, `resumePrompt`, `experienceRewritePrompt`, `coverLetterStyle`, `coverLetterPrompt`
     - Includes in-admin help:
       - Collapsible shortcode reference (hidden by default)
       - Collapsible explanations for `promptVersion`, `model`, and `temperature`
+    - Experience templating notes:
+      - Current experiences can be rendered as pre-formatted blocks and inserted verbatim into the resume prompt.
+      - Optional AI rewrite step (configured via `experienceRewritePrompt`) can tailor role titles and highlight bullets to the job ad while keeping company + dates locked.
 
 - **Collections**
   - `experiences`

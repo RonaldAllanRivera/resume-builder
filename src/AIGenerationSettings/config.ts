@@ -4,7 +4,7 @@ import { adminOrEditor } from '../access/adminOrEditor'
 
 export const DEFAULT_AI_GENERATION_PROMPT_VERSION = 'phase5-v1'
 
-export const DEFAULT_AI_GENERATION_MODEL = 'gpt-4o'
+export const DEFAULT_AI_GENERATION_MODEL = 'gpt-4o-mini'
 
 export const DEFAULT_AI_GENERATION_TEMPERATURE = 0.0
 
@@ -13,9 +13,37 @@ export const DEFAULT_AI_GENERATION_SYSTEM_PROMPT = `You are a strict resume and 
 Non-negotiable rules:
 - Do NOT invent facts.
 - Do NOT create new jobs/clients/projects/certifications/skills that are not explicitly present in the provided Resume Facts.
-- Do NOT change company names, job titles, locations, or date ranges. Copy them exactly from Resume Facts or omit if missing.
+- Do NOT change company names, locations, or date ranges. Copy them exactly from Resume Facts or omit if missing.
+- Do NOT change job titles unless the prompt explicitly instructs you to reword them (wording only; no new facts).
 - If a fact is missing, omit it (do not guess).
 - Output must be plain text / markdown only.`
+
+export const DEFAULT_AI_GENERATION_EXPERIENCE_REWRITE_PROMPT = `Rewrite CURRENT work experiences to better match the job ad while staying strictly factual.
+
+Rules:
+- Do NOT invent facts
+- Do NOT change company names or dates
+- You MAY rewrite the role title (wording only) to align with the job ad
+- If helpful and justified by the provided facts, you MAY append ONE aligned title variant using this exact format:
+  "<Original Title> | <Aligned Title Variant>"
+  Otherwise, keep the original title.
+- Do NOT add or imply freelance, self-employed, contractor, contractual, or project-based roles
+- You MAY rewrite each highlight bullet for clarity and relevance, but you must preserve the meaning
+- Highlights must be plain text strings (do NOT include leading "*" or "-" bullet markers)
+- Keep highlights concise, action-oriented, and ATS-friendly
+- Keep bullet count <= original bullet count for that experience
+- Return JSON only
+
+Return JSON shape:
+{"experiences":[{"id":"<expId>","roleTitle":"<custom title>","highlights":["..."]}]}
+
+Job Title: {{jobTitle}}
+
+Job Ad:
+{{jdText}}
+
+Current Experiences (authoritative source):
+{{currentExperiencesJson}}`
 
 export const DEFAULT_AI_GENERATION_RESUME_PROMPT = `Rewrite the resume into a clean, modern resume that is ATS-friendly and easy for humans to scan.
 
@@ -40,6 +68,7 @@ CRITICAL: How to use Resume Facts
 CRITICAL: Experience blocks are pre-formatted
 - The following shortcodes are already formatted from the database:
   - {{professionalExperienceBlocks}}
+  - {{professionalExperienceBlocksCustomized}}
   - {{earlierExperienceLines}}
 - You MUST include them EXACTLY as provided.
 - Do NOT rewrite them.
@@ -63,7 +92,7 @@ First, generate a professional headline (1 line, 10-15 words) that positions the
 
 Output: Return ONLY the final resume text in markdown using this EXACT layout:
 
-# {{fullName}}
+# **{{fullName}}**
 **[Generated Headline Here]**
 📍 {{address}}
 📧 {{email}} | 📞 {{phone}}
@@ -73,7 +102,7 @@ Output: Return ONLY the final resume text in markdown using this EXACT layout:
 
 ---
 
-## Professional Summary
+## **Professional Summary**
 
 Write 3 to 5 sentences.
 - Must be consistent with Resume Facts.
@@ -84,21 +113,26 @@ Write 3 to 5 sentences.
 
 ---
 
-## Core Skills
+## **Core Skills**
 
-Create 3 to 5 skill groups with bold labels.
-Each group should have 4 to 6 bullet points.
-Only list tools/tech explicitly present in Resume Facts.
+Output exactly ONE line in this format (no bullets, no subheadings, no extra blank lines):
+**Core Skills:** skill1, skill2, skill3, ...
+
+Rules:
+- Use ONLY tools/tech explicitly present in Resume Facts
+- Prioritize skills most relevant to the Job Ad
+- Keep it short: 12 to 18 skills max
+- Comma + space separators only
 
 ---
 
-## Professional Experience
+## **Professional Experience**
 
-{{professionalExperienceBlocks}}
+{{professionalExperienceBlocksCustomized}}
 
 ---
 
-## Latest Projects
+## **Latest Projects**
 
 Extract ONLY from Resume Facts entries that start with "- [proj:".
 Pick 3 to 6 most relevant to the Job Ad (prioritize automation, AI-assisted systems, Python tools, APIs, backend reliability).
@@ -109,13 +143,13 @@ Write 2 to 4 bullets grounded in that project's summary/tech listed in Resume Fa
 
 ---
 
-## Earlier Experience
+## **Earlier Experience**
 
 {{earlierExperienceLines}}
 
 ---
 
-## Education
+## **Education**
 
 Extract ONLY from Resume Facts entries that start with "- [edu:".
 Format exactly as:
@@ -124,7 +158,7 @@ Format exactly as:
 
 ---
 
-## Certifications (Selected)
+## **Certifications (Selected)**
 
 Extract ONLY from Resume Facts entries that start with "- [cert:".
 Pick up to 6 most relevant certifications that match the target role.
@@ -361,6 +395,11 @@ export const AIGenerationSettings: GlobalConfig = {
                 'Pre-formatted blocks for CURRENT experiences (experiences.current=true), joined with "---" separators, matching the new-resume.txt “Professional Experience” layout',
             },
             {
+              code: '{{professionalExperienceBlocksCustomized}}',
+              description:
+                'AI-customized version of current experience blocks. Company + dates remain from the database, but the role title + highlight bullets may be rewritten to better match the job ad (still no invented facts).',
+            },
+            {
               code: '{{professionalExperience1Block}}',
               description:
                 'First CURRENT experience block (current=true). Use when you want explicit control over ordering/placement',
@@ -368,6 +407,36 @@ export const AIGenerationSettings: GlobalConfig = {
             {
               code: '{{professionalExperience2Block}}',
               description: 'Second CURRENT experience block (current=true)',
+            },
+            {
+              code: '{{professionalExperience1BlockCustomized}}',
+              description:
+                'AI-customized first CURRENT experience block (title + bullets rewritten for the job ad; company + dates unchanged)',
+            },
+            {
+              code: '{{professionalExperience2BlockCustomized}}',
+              description:
+                'AI-customized second CURRENT experience block (title + bullets rewritten for the job ad; company + dates unchanged)',
+            },
+            {
+              code: '{{professionalExperience1TitleCustomized}}',
+              description:
+                'AI-customized role title for the first CURRENT experience (wording only; no new facts)',
+            },
+            {
+              code: '{{professionalExperience2TitleCustomized}}',
+              description:
+                'AI-customized role title for the second CURRENT experience (wording only; no new facts)',
+            },
+            {
+              code: '{{professionalExperience1HighlightsCustomized}}',
+              description:
+                'AI-customized markdown bullets for the first CURRENT experience (rewritten for relevance; no new facts)',
+            },
+            {
+              code: '{{professionalExperience2HighlightsCustomized}}',
+              description:
+                'AI-customized markdown bullets for the second CURRENT experience (rewritten for relevance; no new facts)',
             },
             {
               code: '{{earlierExperienceLines}}',
@@ -450,6 +519,36 @@ export const AIGenerationSettings: GlobalConfig = {
         },
       },
       defaultValue: DEFAULT_AI_GENERATION_RESUME_PROMPT,
+    },
+    {
+      name: 'experienceRewritePrompt',
+      type: 'textarea',
+      required: true,
+      admin: {
+        components: {
+          Description:
+            '@/components/FieldDescriptions/ShortcodeReferenceDescription#ShortcodeReferenceDescription',
+        },
+        custom: {
+          shortcodeTitle: 'Shortcodes (click to expand)',
+          shortcodes: [
+            {
+              code: '{{jobTitle}}',
+              description: 'From Generation → Job Ad → title',
+            },
+            {
+              code: '{{jdText}}',
+              description: 'From Generation → Job Ad → jobDescription',
+            },
+            {
+              code: '{{currentExperiencesJson}}',
+              description:
+                'JSON payload of CURRENT experiences from the database (current=true), including id/title/company/location/dates/highlights',
+            },
+          ],
+        },
+      },
+      defaultValue: DEFAULT_AI_GENERATION_EXPERIENCE_REWRITE_PROMPT,
     },
     {
       name: 'coverLetterStyle',

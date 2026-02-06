@@ -210,18 +210,26 @@ Status: In progress (core generation workflow implemented; export + additional a
     - Collections: `companies`, `jobAds`, `resumeProfiles`, `generations`
     - Globals: `aiGenerationSettings`, `coverLetterSettings`
   - Prompt templates + model defaults managed in CMS:
-    - `promptVersion`, `model`, `temperature`, `systemPrompt`, `resumePrompt`, `coverLetterStyle`, `coverLetterPrompt`
+    - `promptVersion`, `model`, `temperature`, `systemPrompt`, `resumePrompt`, `experienceRewritePrompt`, `coverLetterStyle`, `coverLetterPrompt`
   - Generation pipeline (server-side):
     - Admin/editor-only `POST /next/generate-drafts`
     - Builds structured `resumeFacts` from database collections
     - Runs a selection step (JSON) to pick job-relevant experiences/projects/certs/education by ID
     - Generates `resumeDraft` (ATS-friendly) + `applicationLetter`
     - Stores run metadata (`promptVersion`, `model`, `temperature`, `inputHash`) on the Generation record
+    - Pre-formats current and past experiences server-side into shortcodes to reduce hallucinations and enforce layout:
+      - Current experience blocks: `{{professionalExperienceBlocks}}`
+      - Past experience one-liners: `{{earlierExperienceLines}}`
+    - Adds an AI rewrite step for CURRENT experiences (optional) to tailor role title + highlight bullets to the job ad (still factual):
+      - Output shortcodes: `{{professionalExperienceBlocksCustomized}}`, `{{professionalExperience1BlockCustomized}}`, `{{professionalExperience1TitleCustomized}}`, `{{professionalExperience1HighlightsCustomized}}` (and `2*` variants)
   - Admin UX / documentation:
     - `Globals → AI Generation Settings` includes collapsible (hidden by default) help:
       - Shortcode reference (one shortcode per line)
       - Explanations for `promptVersion`, `model`, `temperature` (allowed values + cost guidance)
     - Note: after adding/changing admin components, run `npm run generate:importmap`
+    - Default resume output formatting tuned for a shorter resume:
+      - Uses `{{professionalExperienceBlocksCustomized}}` by default
+      - Core Skills rendered as a single comma-separated line
 
 - CMS data model (suggested):
   - `resumeProfiles`

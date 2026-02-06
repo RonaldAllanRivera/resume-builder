@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.2.0] - 2026-02-06
+
 - Added admin-only “Delete versions…” menu item in the 3‑dot edit menu for all versioned collections.
 - Deletes all stored versions for the current document only via a secure `/next/delete-versions` endpoint.
 - Fixed Projects admin create/edit crash caused by the experimental slug UI field requiring `ServerFunctionsProvider`.
@@ -23,6 +25,18 @@
   - Collapsible shortcode reference (hidden by default) for prompt templates.
   - Collapsible help for `promptVersion`, `model`, and `temperature` (allowed values + cost guidance).
   - Added Job Ad + Company prompt variables/shortcodes (e.g. `{{jobAdTitle}}`, `{{companyWebsite}}`).
+
+- Improved resume prompt templating + formatting:
+  - Added configurable `experienceRewritePrompt` to `aiGenerationSettings` to allow a dedicated AI rewrite step for CURRENT experiences.
+  - Added AI-customized experience shortcodes (current experiences):
+    - `{{professionalExperienceBlocksCustomized}}`
+    - `{{professionalExperience1BlockCustomized}}`, `{{professionalExperience2BlockCustomized}}`
+    - `{{professionalExperience1TitleCustomized}}`, `{{professionalExperience2TitleCustomized}}`
+    - `{{professionalExperience1HighlightsCustomized}}`, `{{professionalExperience2HighlightsCustomized}}`
+  - Sanitized AI-returned highlights to avoid double bullet markers.
+  - Adjusted default resume output formatting to be shorter:
+    - Core Skills rendered as a single comma-separated line.
+  - Updated system prompt defaults to avoid conflicts with the experience rewrite step while keeping “no hallucinations” constraints.
 
 - Fixed TypeScript build issues:
   - Avoid exporting `serverFunction` from Payload layout module.
