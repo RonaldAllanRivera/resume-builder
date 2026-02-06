@@ -284,6 +284,7 @@ export async function POST(req: Request): Promise<Response> {
         duration?: string
         issueDate?: string
         credentialUrl?: string
+        order?: number
       }>
     }
 
@@ -506,7 +507,11 @@ export async function POST(req: Request): Promise<Response> {
               '',
               'Rules:',
               '- Use ONLY IDs that appear in the Resume Facts in tags like [exp:ID], [proj:ID], [cert:ID], [edu:ID]',
-              '- Prefer Python/automation/API/LLM workflow items when the job asks for those',
+              '- Select items that directly match the job ad requirements, skills, tools, and domain keywords',
+              '- Certifications: pick the most job-relevant certifications (skills/tools/stack alignment)',
+              '- Prefer certifications whose titles clearly match job keywords (e.g. Python/Django/DRF/REST APIs/PostgreSQL/MySQL OR PHP/Laravel/WordPress OR Node.js/React/Vue/Next.js)',
+              '- If those exist, do NOT select unrelated topics (e.g. Node.js, WordPress, Vue, React) unless the job ad explicitly calls for them',
+              '- For certifications, return up to 5 IDs in order from MOST relevant to LEAST relevant',
               '- Return JSON only with arrays (empty arrays allowed)',
               '',
               'Return JSON shape:',
@@ -800,6 +805,349 @@ export async function POST(req: Request): Promise<Response> {
 
     const latestProjectsBlocks = buildLatestProjectsBlocks()
 
+    const pickTopCertifications = (): typeof certDocs => {
+      const allCerts = certDocs
+      if (!allCerts.length) return []
+
+      const selectedIds = Array.isArray(selected?.certificationIds)
+        ? selected.certificationIds.map((id) => String(id).trim()).filter(Boolean)
+        : []
+
+      const byId = new Map<string, (typeof allCerts)[number]>()
+      for (const c of allCerts) {
+        const id = c?.id != null ? String(c.id) : ''
+        if (id) byId.set(id, c)
+      }
+
+      const parseTime = (input?: string): number => {
+        const t = (input ?? '').trim()
+        if (!t) return 0
+        const ms = new Date(t).getTime()
+        return Number.isFinite(ms) ? ms : 0
+      }
+
+      const sortByLatest = (a: (typeof allCerts)[number], b: (typeof allCerts)[number]): number => {
+        const diff = parseTime(b?.issueDate) - parseTime(a?.issueDate)
+        if (diff) return diff
+        const ao = typeof a?.order === 'number' ? a.order : 0
+        const bo = typeof b?.order === 'number' ? b.order : 0
+        if (ao !== bo) return ao - bo
+        const at = (a?.title ?? '').trim().toLowerCase()
+        const bt = (b?.title ?? '').trim().toLowerCase()
+        return at.localeCompare(bt)
+      }
+
+      const tokenize = (input: string): string[] => {
+        return (input ?? '')
+          .toLowerCase()
+          .replace(/[^a-z0-9+#.\-\s]/g, ' ')
+          .split(/\s+/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+      }
+
+      const stopwords = new Set([
+        'the',
+        'and',
+        'or',
+        'to',
+        'of',
+        'in',
+        'for',
+        'with',
+        'on',
+        'at',
+        'as',
+        'a',
+        'an',
+        'by',
+        'is',
+        'are',
+        'be',
+        'will',
+        'you',
+        'we',
+        'our',
+        'your',
+        'this',
+        'that',
+        'from',
+        'into',
+        'across',
+        'using',
+        'use',
+        'used',
+        'job',
+        'role',
+        'work',
+        'working',
+        'team',
+        'teams',
+        'years',
+        'year',
+        'experience',
+        'skill',
+        'skills',
+        'required',
+        'requirements',
+        'preferred',
+        'plus',
+        'responsibilities',
+        'responsibility',
+        'ability',
+        'abilities',
+        'strong',
+        'knowledge',
+        'understanding',
+        'including',
+        'include',
+        'must',
+        'nice',
+        'good',
+        'training',
+        'learning',
+        'course',
+        'courses',
+        'certificate',
+        'certification',
+        'certifications',
+        'essential',
+        'basics',
+        'fundamentals',
+        'intro',
+        'introduction',
+      ])
+
+      const buildJobKeywords = (): Set<string> => {
+        const raw = [jobAd.title ?? '', jdText].join(' ')
+
+        const techFromRaw = new Set<string>()
+        for (const match of raw.matchAll(/\b[A-Z][A-Za-z0-9.+#\-]{1,}\b/g)) {
+          const v = (match?.[0] ?? '').trim().toLowerCase()
+          if (v && !stopwords.has(v)) techFromRaw.add(v)
+        }
+        for (const match of raw.matchAll(/\b[a-z0-9]+\.[a-z0-9.\-]+\b/gi)) {
+          const v = (match?.[0] ?? '').trim().toLowerCase()
+          if (v && !stopwords.has(v)) techFromRaw.add(v)
+        }
+
+        const tokens = tokenize(raw)
+        const out = new Set<string>()
+        for (const t of tokens) {
+          if (stopwords.has(t)) continue
+          if (t.length >= 3) out.add(t)
+          if (t === 'ai' || t === 'ml') out.add(t)
+        }
+
+        for (const t of techFromRaw) out.add(t)
+
+        const normalized = raw.toLowerCase()
+        if (normalized.includes('artificial intelligence')) out.add('ai')
+        if (normalized.includes('machine learning')) out.add('ml')
+        if (
+          normalized.includes('large language model') ||
+          normalized.includes('large-language model')
+        )
+          out.add('llm')
+        if (normalized.includes('generative ai') || normalized.includes('genai')) out.add('genai')
+
+        return out
+      }
+
+      const jobKeywords = buildJobKeywords()
+
+      const techKeywordSet = new Set(
+        Array.from(jobKeywords).filter(
+          (kw) => /[.+#\-]/.test(kw) || /\d/.test(kw) || kw.length >= 6,
+        ),
+      )
+
+      const primaryStackKeywords = new Set([
+        'python',
+        'django',
+        'drf',
+        'rest',
+        'api',
+        'apis',
+        'restful',
+        'php',
+        'laravel',
+        'wordpress',
+        'node',
+        'node.js',
+        'react',
+        'react.js',
+        'vue',
+        'vue.js',
+        'nuxt',
+        'nuxt.js',
+        'next',
+        'next.js',
+        'typescript',
+        'javascript',
+        'express',
+        'graphql',
+        'htmx',
+        'tailwind',
+        'tailwindcss',
+        'postgres',
+        'postgresql',
+        'mysql',
+        'docker',
+        'git',
+        'github',
+        'github-actions',
+        'aws',
+        'gcp',
+        'kubernetes',
+      ])
+
+      const scoreCert = (
+        c: (typeof allCerts)[number],
+      ): { tech: number; general: number; total: number } => {
+        const titleTokens = new Set(tokenize((c?.title ?? '').trim()))
+        const issuerTokens = new Set(tokenize((c?.issuer ?? '').trim()))
+
+        const matchesKw = (tokenSet: Set<string>, kw: string): boolean => {
+          if (tokenSet.has(kw)) return true
+          for (const tok of tokenSet) {
+            if (tok.startsWith(`${kw}.`) || tok.startsWith(`${kw}-`)) return true
+            if (kw.startsWith(`${tok}.`) || kw.startsWith(`${tok}-`)) return true
+          }
+          return false
+        }
+
+        let tech = 0
+        let general = 0
+        for (const kw of jobKeywords) {
+          if (kw === 'ai' && titleTokens.has('training')) continue
+          const isTech = techKeywordSet.has(kw)
+
+          const matchTitle = matchesKw(titleTokens, kw)
+          const matchIssuer = matchesKw(issuerTokens, kw)
+          if (!matchTitle && !matchIssuer) continue
+
+          const isPrimary = primaryStackKeywords.has(kw)
+          if (isPrimary) {
+            if (matchTitle) tech += isTech ? 10 : 6
+            if (matchIssuer) tech += isTech ? 4 : 2
+          } else {
+            if (matchTitle) general += isTech ? 4 : 1
+            if (matchIssuer) general += isTech ? 2 : 1
+          }
+        }
+
+        return { tech, general, total: tech + general }
+      }
+      const selectedIdSet = new Set(selectedIds)
+
+      const scoredAll = allCerts.map((doc) => {
+        const id = doc?.id != null ? String(doc.id) : ''
+        const parts = scoreCert(doc)
+        const base = parts.total
+        const bonus = id && selectedIdSet.has(id) ? 1 : 0
+        return { doc, score: base + bonus, base, tech: parts.tech }
+      })
+
+      const hasPrimaryMatches = scoredAll.some((c) => c.tech > 0)
+      const eligible = hasPrimaryMatches
+        ? scoredAll.filter((c) => c.tech > 0)
+        : scoredAll.filter((c) => c.base > 0)
+
+      if (eligible.length) {
+        return eligible
+          .slice()
+          .sort((a, b) => {
+            if (hasPrimaryMatches && b.tech !== a.tech) return b.tech - a.tech
+            if (b.score !== a.score) return b.score - a.score
+            return sortByLatest(a.doc, b.doc)
+          })
+          .map((c) => c.doc)
+          .slice(0, 5)
+      }
+
+      const selectedDocs = selectedIds
+        .map((id) => byId.get(id))
+        .filter((c): c is (typeof allCerts)[number] => Boolean(c))
+        .slice(0, 5)
+
+      if (selectedDocs.length) return selectedDocs
+
+      return allCerts.slice().sort(sortByLatest).slice(0, 5)
+    }
+
+    const topCertifications = pickTopCertifications()
+
+    const normalizeCertificationUrl = (input: string): string => {
+      const t = (input ?? '').trim()
+      if (!t) return ''
+      return t
+    }
+
+    const formatCertificationBlock = (cert: {
+      title?: string
+      issuer?: string
+      duration?: string
+      issueDate?: string
+      credentialUrl?: string
+    }): string => {
+      const formatCertIssueDate = (value: unknown): string => {
+        if (!value) return ''
+        const d = value instanceof Date ? value : new Date(String(value))
+        if (Number.isNaN(d.getTime())) return ''
+
+        const long = new Intl.DateTimeFormat('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        }).format(d)
+
+        return long
+      }
+
+      const title = (cert.title ?? '').trim()
+      const credentialUrl = normalizeCertificationUrl(cert.credentialUrl ?? '')
+      const duration = (cert.duration ?? '').trim()
+      const issueDate = formatCertIssueDate(cert.issueDate)
+
+      const issuerRaw = (cert.issuer ?? '').trim()
+      const issuer = (() => {
+        const issuerLower = issuerRaw.toLowerCase()
+        const urlLower = credentialUrl.toLowerCase()
+
+        if (
+          urlLower.includes('linkedin.com/learning') ||
+          issuerLower === 'linkedin learning' ||
+          issuerLower === 'linkedin.com'
+        ) {
+          return 'LinkedIn Learning'
+        }
+
+        if (urlLower.includes('udemy.com') || issuerLower.includes('udemy')) {
+          return 'Udemy'
+        }
+
+        return issuerRaw
+      })()
+
+      const metaParts: string[] = []
+      if (issuer) metaParts.push(`From ${issuer}`)
+      if (duration) metaParts.push(`it took me ${duration}`)
+      if (issueDate) metaParts.push(`last ${issueDate}`)
+      const metaLine = metaParts.join(', ').trim()
+
+      const lines: string[] = []
+      if (title) lines.push(`### **${title}**`)
+      if (metaLine) lines.push(metaLine)
+      if (credentialUrl) lines.push(credentialUrl)
+      return lines.join('\n').trim()
+    }
+
+    const certificationBlocks = topCertifications
+      .map(formatCertificationBlock)
+      .filter(Boolean)
+      .join('\n\n')
+
     type ExperienceRewriteJson = {
       experiences?: Array<{
         id?: string
@@ -1056,6 +1404,36 @@ export async function POST(req: Request): Promise<Response> {
       ? formatEarlierExperienceLine(earlierExpDocs[6])
       : ''
 
+    const formatEducationBlock = (edu: {
+      degree?: string
+      fieldOfStudy?: string
+      school?: string
+      location?: string
+      startDate?: string
+      endDate?: string
+    }): string => {
+      const degreePart = (edu.degree ?? '').trim()
+      const field = (edu.fieldOfStudy ?? '').trim()
+      const degreeLine = joinNonEmpty([degreePart, field ? `${field}` : ''], ' ')
+      const school = (edu.school ?? '').trim()
+      const location = (edu.location ?? '').trim()
+      const schoolLine = joinNonEmpty([school, location], ' - ')
+      const start = formatMonthYear(edu.startDate)
+      const end = formatMonthYear(edu.endDate)
+      const dateLine = joinNonEmpty([start, end], ' to ')
+
+      const lines: string[] = []
+      if (degreeLine) lines.push(`**${degreeLine}**`)
+      if (schoolLine) lines.push(schoolLine)
+      if (dateLine) lines.push(dateLine)
+      return lines.join('\n').trim()
+    }
+
+    const educationBlocks = (Array.isArray(educations.docs) ? educations.docs : [])
+      .map(formatEducationBlock)
+      .filter(Boolean)
+      .join('\n\n')
+
     const baseVars: Record<string, string> = {
       jdText,
       posterName,
@@ -1066,6 +1444,8 @@ export async function POST(req: Request): Promise<Response> {
       fullName,
       headline,
       contactBlock,
+      educationBlocks,
+      certificationBlocks,
       address: resumeProfileGlobal.address ?? '',
       email: resumeProfileGlobal.email ?? '',
       phone: resumeProfileGlobal.phone ?? '',

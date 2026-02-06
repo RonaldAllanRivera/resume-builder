@@ -95,6 +95,8 @@ CRITICAL: Some sections are pre-formatted
   - {{professionalExperienceBlocksCustomized}}
   - {{earlierExperienceLines}}
   - {{latestProjectsBlocks}}
+  - {{educationBlocks}}
+  - {{certificationBlocks}}
 - You MUST include them EXACTLY as provided.
 - Do NOT rewrite them.
 - Do NOT re-order bullets.
@@ -171,24 +173,13 @@ Rules:
 
 ## **Education**
 
-Extract ONLY from Resume Facts entries that start with "- [edu:".
-Format exactly as:
-**{{degree}}**
-{{institution}} — {{location}}
+{{educationBlocks}}
 
 ---
 
 ## **Certifications (Selected)**
 
-Extract ONLY from Resume Facts entries that start with "- [cert:".
-Pick up to 6 most relevant certifications that match the target role.
-Format as bullet points with *:
-* {{certification1}}
-* {{certification2}}
-* {{certification3}}
-* {{certification4}}
-* {{certification5}}
-* {{certification6}}
+{{certificationBlocks}}
 
 *(Full certification list available on LinkedIn)*`
 
@@ -423,6 +414,16 @@ export const AIGenerationSettings: GlobalConfig = {
               code: '{{latestProjectsBlocks}}',
               description:
                 'Pre-formatted top 3 job-relevant projects (selected via the selection step when available). Includes title, repo/live URL, tech stack line, and bullets. Must be included verbatim.',
+            },
+            {
+              code: '{{educationBlocks}}',
+              description:
+                'Pre-formatted education entries in a strict 3-line format: degree, school-location, and date range (e.g. "May 2001 to May 2004"). Must be included verbatim.',
+            },
+            {
+              code: '{{certificationBlocks}}',
+              description:
+                'Pre-formatted top 5 job-ad-relevant certifications (selected via the selection step when available). Each entry includes title, a single metadata line (issuer, duration, issue date), and credential URL. Must be included verbatim.',
             },
             {
               code: '{{professionalExperience1Block}}',
