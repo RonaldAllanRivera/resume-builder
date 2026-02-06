@@ -2,6 +2,23 @@ import type { GlobalConfig } from 'payload'
 
 import { adminOrEditor } from '../access/adminOrEditor'
 
+export const DEFAULT_AI_GENERATION_PROMPT_VERSION = 'phase5-v1'
+
+export const DEFAULT_AI_GENERATION_MODEL = 'gpt-4o-mini'
+
+export const DEFAULT_AI_GENERATION_TEMPERATURE = 0.2
+
+export const DEFAULT_AI_GENERATION_SYSTEM_PROMPT =
+  'You are a strict resume and cover letter drafting assistant. Do not invent facts. Only use information provided in the resume profile and job ad. If something is missing, omit it.'
+
+export const DEFAULT_AI_GENERATION_RESUME_PROMPT =
+  'Rewrite the resume into a clean, modern, AI-specialist resume that is ATS-friendly and easy for humans to scan.\n\nHard rules (must follow):\n- Output ONLY the final resume text (no explanations, no preface, no "great decision", no advice sections)\n- Do NOT invent facts (no new companies, dates, titles, tools, skills, degrees, certifications, metrics, links, locations)\n- Only include skills/tech/tools that appear in Resume Facts (experience highlights, project tech stack, certifications, education)\n- Prefer relevance to the Job Ad over completeness\n- Use short bullets, avoid long paragraphs\n- No tables, no emojis, no decorative characters\n\nTarget role: {{jobTitle}}\nCompany: {{companyName}}\n\nFormatting requirements (use this exact section order; omit empty sections):\n# {{fullName}}\n**{{headline}}**\n{{contactBlock}}\n\n## Professional Summary\nWrite 3 to 5 sentences. Position the candidate as a hands-on, delivery-focused AI specialist / applied AI engineer / AI software engineer (only if supported by facts). Align to the Job Ad responsibilities: LLM-powered tools, automation agents, data ingestion/pipelines, analytics enablement, integrations with existing platforms. If a responsibility/tool is not supported by Resume Facts, do not claim it.\n\n## Core Skills\nCreate 3 to 6 skill groups. For each group, use a bold label then 3 to 6 bullets. Example groups (only if supported by Resume Facts):\n- **AI & LLM Systems**\n- **Automation & Data Pipelines**\n- **Backend & APIs**\n- **Frontend / Full-Stack Delivery**\n- **DevOps / Reliability**\n- **Analytics / Experimentation**\n\n## Professional Experience\nUse reverse-chronological order, but prioritize the most relevant roles first. For each role:\n- Role line: "### <Title>" then next line "<Company> — <Context>" then next line "<Dates>" (if dates are available)\n- Include 4 to 7 bullets max focused on measurable outcomes, automation, AI integrations, and production delivery\n- Mention specific tools only if present in Resume Facts\n\n## Selected Projects\nInclude 3 to 6 projects most relevant to AI systems, automation, data pipelines, analytics tooling, LLM integration. For each project:\n- "### <Project title>"\n- 2 to 4 bullets (what it does, what you built, what impact)\n- Include repo/live URLs if present in Resume Facts\n\n## Education\n\n## Certifications (Selected)\nList up to 6 certifications most relevant to AI, cloud, devops, and backend engineering. If the Resume Facts contain a large list, select only the most relevant and add one last line: "Full list available on request" (only if a larger list exists in facts).\n\n## Earlier Experience\nOptional. If Resume Facts contain many older roles, compress them to single-line entries: "<Title> — <Company> (<Years>)".\n\nProfile focus / constraints (optional):\n{{profileFocus}}\n\nJob Ad:\n{{jdText}}\n\nResume Facts (from database):\n{{resumeFacts}}\n\nOutput: Return ONLY the final resume text in markdown.'
+
+export const DEFAULT_AI_GENERATION_COVER_LETTER_STYLE = ''
+
+export const DEFAULT_AI_GENERATION_COVER_LETTER_PROMPT =
+  'Write an application letter based on the resume and the job ad.\n\nRules:\n- 3 to 5 short paragraphs\n- Do not invent facts\n- Use the greeting, header, and footer EXACTLY as provided\n- Match the provided letter style and tone notes\n\nLetter style (example to mimic):\n{{coverLetterStyle}}\n\nTone notes:\n{{toneNotes}}\n\nHeader (may be empty):\n{{resolvedHeader}}\n\nGreeting:\n{{resolvedGreeting}}\n\nFooter (must include as-is):\n{{resolvedFooter}}\n\n{{companyBlock}}\n\nGenerated Resume:\n{{generatedResume}}\n\nJob Ad:\n{{jdText}}\n\nOutput: Return the full application letter text including header (if present), greeting, body, and footer.'
+
 export const AIGenerationSettings: GlobalConfig = {
   slug: 'aiGenerationSettings',
   access: {
@@ -9,6 +26,16 @@ export const AIGenerationSettings: GlobalConfig = {
     update: adminOrEditor,
   },
   fields: [
+    {
+      name: 'resetToDefaults',
+      type: 'ui',
+      admin: {
+        components: {
+          Field:
+            '@/components/Globals/AIGenerationSettingsResetButton#AIGenerationSettingsResetButton',
+        },
+      },
+    },
     {
       name: 'promptVersion',
       type: 'text',
@@ -45,7 +72,7 @@ export const AIGenerationSettings: GlobalConfig = {
           ],
         },
       },
-      defaultValue: 'phase5-v1',
+      defaultValue: DEFAULT_AI_GENERATION_PROMPT_VERSION,
     },
     {
       name: 'model',
@@ -91,7 +118,7 @@ export const AIGenerationSettings: GlobalConfig = {
           ],
         },
       },
-      defaultValue: 'gpt-4o-mini',
+      defaultValue: DEFAULT_AI_GENERATION_MODEL,
     },
     {
       name: 'temperature',
@@ -135,14 +162,13 @@ export const AIGenerationSettings: GlobalConfig = {
           ],
         },
       },
-      defaultValue: 0.2,
+      defaultValue: DEFAULT_AI_GENERATION_TEMPERATURE,
     },
     {
       name: 'systemPrompt',
       type: 'textarea',
       required: true,
-      defaultValue:
-        'You are a strict resume and cover letter drafting assistant. Do not invent facts. Only use information provided in the resume profile and job ad. If something is missing, omit it.',
+      defaultValue: DEFAULT_AI_GENERATION_SYSTEM_PROMPT,
     },
     {
       name: 'resumePrompt',
@@ -225,13 +251,12 @@ export const AIGenerationSettings: GlobalConfig = {
           ],
         },
       },
-      defaultValue:
-        'Create a job-targeted resume using ONLY the resume facts provided (from database) and the job ad.\n\nHard rules (must follow):\n- Do NOT invent facts (no new companies, dates, titles, tools, skills, degrees, certifications, metrics, links)\n- Only use skills/tools that appear in the Resume Facts (highlights or tech stack)\n- Select ONLY the most relevant experiences/projects/certifications for this role\n- If a section has no relevant items, omit it\n- Output must be ATS-friendly and readable in plain text markdown\n\nFormatting goal: Match this structure closely:\n# {{fullName}}\n**{{headline}}**\n\n{{contactBlock}}\n\n## PROFESSIONAL SUMMARY\n(3–5 sentences, role-specific, no fluff)\n\n## CORE SKILLS\n(bullets grouped, derived only from Resume Facts; prioritize job ad keywords)\n\n## PROFESSIONAL EXPERIENCE\n(Most relevant roles first; include 3–6 bullets per role max)\n\n## SELECTED PROJECTS\n(Only projects relevant to the job; include repo/live URLs if present)\n\n## EDUCATION\n\n## CERTIFICATIONS (Selected)\n\n## ADDITIONAL\n(optional, only if backed by Resume Facts or provided notes)\n\nProfile focus / constraints (optional):\n{{profileFocus}}\n\nJob Title (must align headline and summary to this):\n{{jobTitle}}\n\nCompany:\n{{companyName}}\n\nJob Ad:\n{{jdText}}\n\nResume Facts (from database):\n{{resumeFacts}}\n\nOutput: Return ONLY the final resume text in the format above.',
+      defaultValue: DEFAULT_AI_GENERATION_RESUME_PROMPT,
     },
     {
       name: 'coverLetterStyle',
       type: 'textarea',
-      defaultValue: '',
+      defaultValue: DEFAULT_AI_GENERATION_COVER_LETTER_STYLE,
     },
     {
       name: 'coverLetterPrompt',
@@ -304,8 +329,7 @@ export const AIGenerationSettings: GlobalConfig = {
           ],
         },
       },
-      defaultValue:
-        'Write an application letter based on the resume and the job ad.\n\nRules:\n- 3 to 5 short paragraphs\n- Do not invent facts\n- Use the greeting, header, and footer EXACTLY as provided\n- Match the provided letter style and tone notes\n\nLetter style (example to mimic):\n{{coverLetterStyle}}\n\nTone notes:\n{{toneNotes}}\n\nHeader (may be empty):\n{{resolvedHeader}}\n\nGreeting:\n{{resolvedGreeting}}\n\nFooter (must include as-is):\n{{resolvedFooter}}\n\n{{companyBlock}}\n\nGenerated Resume:\n{{generatedResume}}\n\nJob Ad:\n{{jdText}}\n\nOutput: Return the full application letter text including header (if present), greeting, body, and footer.',
+      defaultValue: DEFAULT_AI_GENERATION_COVER_LETTER_PROMPT,
     },
   ],
 }

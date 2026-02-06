@@ -1,0 +1,161 @@
+Great decision. I’ll give you a **clean, modern, AI-focused resume rewrite** that is **market-ready** and positions you correctly as a **senior, applied AI engineer**, not a junior career switcher.
+
+Below is a **2-page equivalent resume** (you can paste this directly into Word / Google Docs / PDF).
+I rewrote, trimmed, and repositioned your experience based on what hiring managers actually scan.
+
+---
+
+# **Ronald Allan Rivera**
+
+**AI Software Engineer / Full-Stack Engineer (LLMs, Automation, Backend Systems)**
+
+📍 La Union, Philippines
+📧 [jaeron.rivera@gmail.com](mailto:jaeron.rivera@gmail.com) | 📞 +63-927-023-8592
+🌐 Portfolio: [https://allanwebdesign.com](https://allanwebdesign.com)
+💼 LinkedIn: [https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63](https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63)
+💻 GitHub: [https://github.com/RonaldAllanRivera](https://github.com/RonaldAllanRivera)
+
+---
+
+## **Professional Summary**
+
+AI-focused Software Engineer with **20+ years of production experience** building scalable web platforms, backend systems, and AI-powered tools. Specialized in **LLM integration, AI automation, Python and Django systems, Laravel backends, and full-stack application delivery**. Proven ability to ship real-world AI solutions—covering prompt pipelines, OCR, agents, automation, and deployment—while maintaining reliability, performance, and cost awareness. Strong background in SaaS, marketing platforms, data automation, and developer tooling.
+
+---
+
+## **Core Skills**
+
+**AI & Automation**
+
+* LLM integration (OpenAI-compatible APIs)
+* Prompt engineering & agent workflows
+* OCR (easyocr), AI-assisted decision pipelines
+* AI feature fallback, retries, and reliability handling
+* AI-powered content, analytics, and automation tools
+
+**Backend & Full-Stack**
+
+* Python, Django, Flask (automation & APIs)
+* PHP, Laravel (service architecture, queues, jobs)
+* REST APIs, authentication, background processing
+* React, Vue, Next.js, Inertia
+* WordPress (custom plugins, Gutenberg, Elementor)
+
+**DevOps & Data**
+
+* Docker, CI/CD fundamentals
+* Cloudflare, CDN, security hardening
+* AWS fundamentals (EC2, CloudFormation concepts)
+* MySQL, SQLite, MongoDB
+* Selenium, Playwright, headless automation
+
+---
+
+## **Professional Experience**
+
+### **Senior AI Software Engineer / Full-Stack Engineer**
+
+**LogicMedia BV** — Online Marketing Agency
+*June 2015 – Present*
+
+* Lead end-to-end development of **AI-enhanced marketing platforms and internal tools**, partnering directly with the CEO.
+* Built full-stack systems using **Python, Django, React, and Next.js** to automate workflows and improve operational efficiency.
+* Designed **LLM-powered content pipelines** for landing pages and campaigns, optimizing prompt strategies for conversion and consistency.
+* Developed backend services with job queues, background workers, and API integrations for automation and reporting.
+* Managed hosting, domains, and **Cloudflare security/CDN**, improving performance and uptime across multiple properties.
+* Produced technical documentation and internal training materials for non-technical teams.
+
+---
+
+### **Senior Web Programmer / Automation Engineer**
+
+**PulseIQ.com** — Energy Management & SaaS Platform
+*July 2007 – Present*
+
+* Led development of **custom WordPress solutions and plugins** supporting SaaS marketing and partner platforms.
+* Built **Python automation and data extraction tools** (Selenium, Playwright, Tkinter) to collect and process large datasets.
+* Integrated AI tools (ChatGPT, Gemini) to generate **SEO-optimized content**, reducing production time by up to 80%.
+* Designed automation pipelines using **Make.com and Zapier**, connecting WordPress, Google Sheets, and AI services.
+* Implemented analytics, SEO tracking, and performance optimization across high-traffic properties.
+
+---
+
+## **Selected AI & Engineering Projects**
+
+### **AI-Powered Real-Time Interview Assistant (Python)**
+
+* Built a local-first desktop application (PySide6) for **real-time audio transcription** and AI answer suggestions.
+* Integrated persistent transcript storage, persona-based responses, and OpenAI-compatible APIs.
+* Focused on latency, reliability, transparency, and fallback handling in live environments.
+
+### **Forex Signals Platform (Laravel 12)**
+
+* Developed a **production-grade AI-assisted trading analysis system** with secure auth, background jobs, and scheduled data ingestion.
+* Generated AI-supported BUY/SELL/WAIT signals with persisted reasoning and historical snapshots.
+* Dockerized for consistent local and production deployment.
+
+### **Profile Picture Generator (Python)**
+
+* Desktop and CLI tool generating professional headshots using **Replicate (PhotoMaker, InstantID)**.
+* Implemented API fallback strategies and identity control handling without custom model training.
+
+### **Book Reader & AI Quiz Assistant (Python)**
+
+* Automated browser-based reading workflows with Selenium and OCR.
+* Used transcribed text as context for AI-driven quiz answer generation with structured configuration and logging.
+
+### **AI Content SaaS (Django)**
+
+* Built a SaaS platform with **OpenAI integration and Stripe billing** for content generation (blogs, FAQs, ads).
+* Designed for scalability, security, and multi-tenant usage.
+
+---
+
+## **Earlier Experience**
+
+**Web Developer / Graphic Artist** — Danalex Graphic Arts (2006–2007)
+**Web & Graphic Designer** — Web Coast Design Inc. (2005–2006)
+**High School Math Instructor** — Agoo Academy (2004–2005)
+
+---
+
+## **Education**
+
+**Bachelor of Science in Computer Engineering**
+AMA Computer University — Quezon City, Philippines
+
+---
+
+## **Certifications (Selected)**
+
+* Fundamentals of AI Engineering
+* Become an AI Engineer – Learning Path
+* Deep Learning Foundations: NLP
+* Django Essential Training
+* Docker for Developers
+* AWS Cloud Practitioner (Foundational)
+
+*(Full certification list available on LinkedIn)*
+
+---
+
+## **How to Use This Resume**
+
+* **Apply to roles titled:**
+  *AI Software Engineer, Applied AI Engineer, Senior Backend Engineer (AI), LLM Engineer*
+* Keep your **13-page resume** as a portfolio appendix
+* This version is your **ATS + human-scanner resume**
+
+---
+
+### Next steps (I highly recommend):
+
+1. I can create **3 role-specific variants**
+
+   * Startup AI Engineer
+   * Enterprise AI/Backend Engineer
+   * Freelance / Contract AI Engineer
+2. Rewrite this into a **US-style one-page executive version**
+3. Do a **salary positioning & title calibration** for remote/global roles
+
+Just tell me what you want next.
