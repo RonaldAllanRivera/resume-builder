@@ -45,7 +45,31 @@ Job Ad:
 Current Experiences (authoritative source):
 {{currentExperiencesJson}}`
 
+export const DEFAULT_AI_GENERATION_PROJECTS_REWRITE_PROMPT = `Summarize the following projects into short resume bullets tailored to the job ad.
+
+Rules:
+- Do NOT invent facts
+- Use ONLY information present in each project's title/summary/tech
+- Output 2 to 3 bullets per project (prefer 3 when possible)
+- Bullets must be concise and ATS-friendly (aim ~10-18 words each)
+- Bullets must be plain text strings (do NOT include leading "*" or "-" bullet markers)
+- Return JSON only
+
+Return JSON shape:
+{"projects":[{"id":"<projId>","bullets":["...","...","..."]}]}
+
+Job Title: {{jobTitle}}
+
+Job Ad:
+{{jdText}}
+
+Projects (authoritative source):
+{{projectsJson}}`
+
 export const DEFAULT_AI_GENERATION_RESUME_PROMPT = `Rewrite the resume into a clean, modern resume that is ATS-friendly and easy for humans to scan.
+
+Optimization goal:
+- Keep the resume as short as possible (target ~1 page). Prefer dense, high-signal content.
 
 Hard rules (must follow):
 - Output ONLY the final resume text (no explanations, no preface, no advice sections)
@@ -65,11 +89,12 @@ CRITICAL: How to use Resume Facts
 - Copy names, issuers, locations, and dates EXACTLY as shown in Resume Facts
 - Use the bullet points (indented lines) under each tagged entry as your highlights
 
-CRITICAL: Experience blocks are pre-formatted
-- The following shortcodes are already formatted from the database:
+CRITICAL: Some sections are pre-formatted
+- The following shortcodes are already formatted from the database/server:
   - {{professionalExperienceBlocks}}
   - {{professionalExperienceBlocksCustomized}}
   - {{earlierExperienceLines}}
+  - {{latestProjectsBlocks}}
 - You MUST include them EXACTLY as provided.
 - Do NOT rewrite them.
 - Do NOT re-order bullets.
@@ -104,7 +129,7 @@ Output: Return ONLY the final resume text in markdown using this EXACT layout:
 
 ## **Professional Summary**
 
-Write 3 to 5 sentences.
+Write 2 to 3 sentences (concise).
 - Must be consistent with Resume Facts.
 - Emphasize skills and experience relevant to the target role/job ad.
 - If the job targets AI/LLM/automation, highlight those skills IF present in Resume Facts.
@@ -134,12 +159,7 @@ Rules:
 
 ## **Latest Projects**
 
-Extract ONLY from Resume Facts entries that start with "- [proj:".
-Pick 3 to 6 most relevant to the Job Ad (prioritize automation, AI-assisted systems, Python tools, APIs, backend reliability).
-Format each project exactly as:
-### **{{projectTitle}} ({{techStack}})**
-
-Write 2 to 4 bullets grounded in that project's summary/tech listed in Resume Facts.
+{{latestProjectsBlocks}}
 
 ---
 
@@ -400,6 +420,11 @@ export const AIGenerationSettings: GlobalConfig = {
                 'AI-customized version of current experience blocks. Company + dates remain from the database, but the role title + highlight bullets may be rewritten to better match the job ad (still no invented facts).',
             },
             {
+              code: '{{latestProjectsBlocks}}',
+              description:
+                'Pre-formatted top 3 job-relevant projects (selected via the selection step when available). Includes title, repo/live URL, tech stack line, and bullets. Must be included verbatim.',
+            },
+            {
               code: '{{professionalExperience1Block}}',
               description:
                 'First CURRENT experience block (current=true). Use when you want explicit control over ordering/placement',
@@ -549,6 +574,36 @@ export const AIGenerationSettings: GlobalConfig = {
         },
       },
       defaultValue: DEFAULT_AI_GENERATION_EXPERIENCE_REWRITE_PROMPT,
+    },
+    {
+      name: 'projectsRewritePrompt',
+      type: 'textarea',
+      required: true,
+      admin: {
+        components: {
+          Description:
+            '@/components/FieldDescriptions/ShortcodeReferenceDescription#ShortcodeReferenceDescription',
+        },
+        custom: {
+          shortcodeTitle: 'Shortcodes (click to expand)',
+          shortcodes: [
+            {
+              code: '{{jobTitle}}',
+              description: 'From Generation → Job Ad → title',
+            },
+            {
+              code: '{{jdText}}',
+              description: 'From Generation → Job Ad → jobDescription',
+            },
+            {
+              code: '{{projectsJson}}',
+              description:
+                'JSON payload of the TOP 3 selected projects from the database (id/title/summary/tech), used as the authoritative source for bullet rewriting',
+            },
+          ],
+        },
+      },
+      defaultValue: DEFAULT_AI_GENERATION_PROJECTS_REWRITE_PROMPT,
     },
     {
       name: 'coverLetterStyle',

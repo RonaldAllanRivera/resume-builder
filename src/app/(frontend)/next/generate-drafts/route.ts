@@ -185,6 +185,7 @@ export async function POST(req: Request): Promise<Response> {
       systemPrompt?: string
       resumePrompt?: string
       experienceRewritePrompt?: string
+      projectsRewritePrompt?: string
       coverLetterStyle?: string
       coverLetterPrompt?: string
     }
@@ -604,6 +605,201 @@ export async function POST(req: Request): Promise<Response> {
 
     const selectedResumeFacts = buildSelectedFacts()
 
+    const normalizeProjectUrl = (input: string): string => {
+      const t = (input ?? '').trim()
+      if (!t) return ''
+      return t
+    }
+
+    type ProjectRewriteJson = {
+      projects?: Array<{
+        id?: string
+        bullets?: string[]
+      }>
+    }
+
+    const pickTopProjects = (): typeof projDocs => {
+      const allProjects = projDocs
+      if (!allProjects.length) return []
+
+      const selectedIds = Array.isArray(selected?.projectIds)
+        ? selected.projectIds.map((id) => String(id).trim()).filter(Boolean)
+        : []
+
+      const byId = new Map<string, (typeof allProjects)[number]>()
+      for (const p of allProjects) {
+        const id = p?.id != null ? String(p.id) : ''
+        if (id) byId.set(id, p)
+      }
+
+      const picked: Array<(typeof allProjects)[number]> = []
+      for (const id of selectedIds) {
+        const doc = byId.get(id)
+        if (doc) picked.push(doc)
+        if (picked.length >= 3) break
+      }
+
+      if (picked.length) return picked
+      return allProjects.filter(Boolean).slice(0, 3)
+    }
+
+    const topProjects = pickTopProjects()
+
+    const rewriteLatestProjects = async (): Promise<Map<string, { bullets: string[] }>> => {
+      const out = new Map<string, { bullets: string[] }>()
+      if (!topProjects.length) return out
+
+      const payloadForAI = topProjects
+        .map((p) => {
+          const id = p.id != null ? String(p.id) : ''
+          const title = (p.title ?? '').trim()
+          const summary = (p.summary ?? '').trim()
+          const tech = (Array.isArray(p.techStack) ? p.techStack : [])
+            .map((t) => (t?.name ?? '').trim())
+            .filter(Boolean)
+
+          return {
+            id,
+            title,
+            summary,
+            tech,
+          }
+        })
+        .filter((p) => p.id && (p.title || p.summary || p.tech.length))
+
+      if (!payloadForAI.length) return out
+
+      const projectsJson = JSON.stringify(payloadForAI, null, 2)
+
+      const rewritePrompt = renderTemplate(
+        aiSettings.projectsRewritePrompt ||
+          [
+            'Summarize the following projects into short resume bullets tailored to the job ad.',
+            '',
+            'Rules:',
+            '- Do NOT invent facts',
+            "- Use ONLY information present in each project's title/summary/tech",
+            '- Output 2 to 3 bullets per project (prefer 3 when possible)',
+            '- Bullets must be concise and ATS-friendly (aim ~10-18 words each)',
+            '- Bullets must be plain text strings (no leading "*" or "-" markers)',
+            '- Return JSON only',
+            '',
+            'Return JSON shape:',
+            '{"projects":[{"id":"<projId>","bullets":["...","...","..."]}]}',
+            '',
+            'Job Title: {{jobTitle}}',
+            '',
+            'Job Ad:',
+            '{{jdText}}',
+            '',
+            'Projects (authoritative source):',
+            '{{projectsJson}}',
+          ].join('\n'),
+        {
+          jobTitle: jobAd.title ?? '',
+          jdText,
+          projectsJson,
+        },
+      )
+
+      let rewritten: ProjectRewriteJson | null = null
+      try {
+        const raw = await openAIChat({
+          apiKey,
+          model,
+          temperature: 0,
+          responseFormat: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: system },
+            {
+              role: 'user',
+              content: rewritePrompt,
+            },
+          ],
+          maxTokens: 700,
+        })
+        rewritten = parseJsonFromString<ProjectRewriteJson>(raw)
+      } catch {
+        rewritten = null
+      }
+
+      const items = Array.isArray(rewritten?.projects) ? rewritten?.projects : []
+      for (const item of items) {
+        const id = (item?.id ?? '').trim()
+        if (!id) continue
+        const bullets = Array.isArray(item?.bullets)
+          ? item.bullets
+              .map((b) => String(b).trim())
+              .map((b) => b.replace(/^[-*•]+\s*/u, '').trim())
+              .filter(Boolean)
+              .slice(0, 3)
+          : []
+        if (!bullets.length) continue
+        out.set(id, { bullets })
+      }
+
+      return out
+    }
+
+    const rewrittenProjects = await rewriteLatestProjects()
+
+    const fallbackProjectBullets = (summary: string): string[] => {
+      const t = (summary ?? '').trim()
+      if (!t) return []
+      const sentences = t
+        .split(/(?<=[.!?])\s+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+      return (sentences.length ? sentences : [t]).slice(0, 3)
+    }
+
+    const formatLatestProjectBlock = (p: {
+      id?: string | number
+      title?: string
+      summary?: string
+      repoUrl?: string
+      liveUrl?: string
+      techStack?: Array<{ name?: string }>
+    }): string => {
+      const projId = p.id != null ? String(p.id) : ''
+      const override = projId ? rewrittenProjects.get(projId) : undefined
+
+      const title = (p.title ?? '').trim()
+      const url = normalizeProjectUrl(p.repoUrl ?? '') || normalizeProjectUrl(p.liveUrl ?? '')
+      const tech = (Array.isArray(p.techStack) ? p.techStack : [])
+        .map((t) => (t?.name ?? '').trim())
+        .filter(Boolean)
+      const summary = (p.summary ?? '').trim()
+
+      const aiBullets = (override?.bullets?.length ? override.bullets : [])
+        .map((b) => b.trim())
+        .filter(Boolean)
+
+      const fallbackBullets = fallbackProjectBullets(summary)
+      const bullets = [...aiBullets]
+      for (const b of fallbackBullets) {
+        if (bullets.length >= 3) break
+        if (!b.trim()) continue
+        if (bullets.some((existing) => existing.toLowerCase() === b.toLowerCase())) continue
+        bullets.push(b)
+      }
+
+      const lines: string[] = []
+      if (title) lines.push(`### **${title}**`)
+      if (url) lines.push(url)
+      if (tech.length) lines.push(tech.slice(0, 6).join(', '))
+      for (const b of bullets.slice(0, 3)) lines.push(`* ${b}`)
+
+      return lines.join('\n').trim()
+    }
+
+    const buildLatestProjectsBlocks = (): string => {
+      if (!topProjects.length) return ''
+      return topProjects.map(formatLatestProjectBlock).filter(Boolean).join('\n\n')
+    }
+
+    const latestProjectsBlocks = buildLatestProjectsBlocks()
+
     type ExperienceRewriteJson = {
       experiences?: Array<{
         id?: string
@@ -876,6 +1072,7 @@ export async function POST(req: Request): Promise<Response> {
       portfolioUrl,
       linkedinUrl,
       githubUrl,
+      latestProjectsBlocks,
       professionalExperienceBlocks,
       professionalExperience1Block,
       professionalExperience2Block,

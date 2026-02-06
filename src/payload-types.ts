@@ -2178,6 +2178,7 @@ export interface AiGenerationSetting {
   systemPrompt: string;
   resumePrompt: string;
   experienceRewritePrompt: string;
+  projectsRewritePrompt: string;
   coverLetterStyle?: string | null;
   coverLetterPrompt: string;
   updatedAt?: string | null;
@@ -2291,6 +2292,7 @@ export interface AiGenerationSettingsSelect<T extends boolean = true> {
   systemPrompt?: T;
   resumePrompt?: T;
   experienceRewritePrompt?: T;
+  projectsRewritePrompt?: T;
   coverLetterStyle?: T;
   coverLetterPrompt?: T;
   updatedAt?: T;
