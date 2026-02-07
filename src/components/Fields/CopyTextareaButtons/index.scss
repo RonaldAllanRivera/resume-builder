@@ -1,0 +1,15 @@
+.copyTextareaButtons {
+  margin: 0.5rem 0 0.75rem;
+}
+
+.copyTextareaButtons__row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.copyTextareaButtons__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}

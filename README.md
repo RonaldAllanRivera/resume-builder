@@ -127,6 +127,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - After adding or changing Payload admin components:
   - `npm run generate:importmap`
 
+- **Generations admin UX helpers**
+  - On a Generation edit page, copy buttons are available for quick exporting:
+    - `resumeDraft`: copy as plain text or markdown.
+    - `applicationLetter`: copy as plain text.
+  - Note: application letters are cleaned to avoid a leading `Header:` label when saving generated output.
+
 ## Troubleshooting
 
 - **Admin crashes on Projects create/edit**

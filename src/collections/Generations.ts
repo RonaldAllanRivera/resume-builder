@@ -50,8 +50,34 @@ export const Generations: CollectionConfig = {
       type: 'textarea',
     },
     {
+      name: 'resumeDraftCopyButtons',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/Fields/CopyTextareaButtons#CopyTextareaButtons',
+        },
+        custom: {
+          targetField: 'resumeDraft',
+          variant: 'resume',
+        },
+      },
+    },
+    {
       name: 'applicationLetter',
       type: 'textarea',
+    },
+    {
+      name: 'applicationLetterCopyButtons',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/Fields/CopyTextareaButtons#CopyTextareaButtons',
+        },
+        custom: {
+          targetField: 'applicationLetter',
+          variant: 'letter',
+        },
+      },
     },
     {
       name: 'toneNotes',

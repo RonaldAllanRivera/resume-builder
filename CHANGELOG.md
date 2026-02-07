@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added admin UI copy-to-clipboard buttons on `generations` edit view:
+  - Resume Draft: copy as plain text or markdown.
+  - Application Letter: copy as plain text.
+- Prevented “Header:” label from appearing in generated application letters (prompt tightened + server-side cleanup of leading label).
+
 ## [0.2.0] - 2026-02-06
 
 - Added admin-only “Delete versions…” menu item in the 3‑dot edit menu for all versioned collections.

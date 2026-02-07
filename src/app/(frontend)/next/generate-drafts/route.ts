@@ -1511,7 +1511,16 @@ export async function POST(req: Request): Promise<Response> {
       ? (generation.applicationLetterStyle ?? '').trim()
       : (aiSettings.coverLetterStyle ?? '').trim()
 
-    const applicationLetter = await openAIChat({
+    const cleanupApplicationLetter = (input: string): string => {
+      let out = String(input ?? '')
+
+      out = out.replace(/^\s*Header\s*:\s*(?:\r?\n)+/i, '')
+      out = out.replace(/^(?:\r?\n)+/, '')
+
+      return out.trim()
+    }
+
+    const applicationLetterRaw = await openAIChat({
       apiKey,
       model,
       temperature,
@@ -1537,6 +1546,8 @@ export async function POST(req: Request): Promise<Response> {
       ],
       maxTokens: 1400,
     })
+
+    const applicationLetter = cleanupApplicationLetter(applicationLetterRaw)
 
     await payload.update({
       collection: 'generations',

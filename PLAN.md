@@ -110,6 +110,12 @@ Status: Completed
   - Includes a CLI script for reliable seeding outside HTTP.
   - Backed by a secure `/next/seed-resume` endpoint.
 
+- **Admin UX: Generations copy buttons**
+  - Added copy-to-clipboard buttons on the Generation edit view:
+    - Resume Draft: copy as plain text or markdown.
+    - Application Letter: copy as plain text.
+  - Application letter generation is cleaned to avoid a leading `Header:` label.
+
 ## Phase 4 — Public site pages (SEO-first)
 
 - Build public routes (App Router):
@@ -230,6 +236,7 @@ Status: In progress (core generation workflow implemented; export + additional a
     - Default resume output formatting tuned for a shorter resume:
       - Uses `{{professionalExperienceBlocksCustomized}}` by default
       - Core Skills rendered as a single comma-separated line
+    - Generation edit view includes copy buttons for quick exporting (plain text / markdown)
 
 - CMS data model (suggested):
   - `resumeProfiles`

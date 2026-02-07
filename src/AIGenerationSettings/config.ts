@@ -121,11 +121,11 @@ Output: Return ONLY the final resume text in markdown using this EXACT layout:
 
 # **{{fullName}}**
 **[Generated Headline Here]**
-📍 {{address}}
-📧 {{email}} | 📞 {{phone}}
-🌐 Portfolio: https://{{portfolioUrl}}
-💼 LinkedIn: https://{{linkedinUrl}}
-💻 GitHub: https://{{githubUrl}}
+Location: {{address}}
+Email: {{email}} | Phone: {{phone}}
+Portfolio: https://{{portfolioUrl}}
+LinkedIn: https://{{linkedinUrl}}
+GitHub: https://{{githubUrl}}
 
 ---
 
@@ -143,7 +143,7 @@ Write 2 to 3 sentences (concise).
 ## **Core Skills**
 
 Output exactly ONE line in this format (no bullets, no subheadings, no extra blank lines):
-**Core Skills:** skill1, skill2, skill3, ...
+skill1, skill2, skill3, ...
 
 Rules:
 - Use ONLY tools/tech explicitly present in Resume Facts
@@ -186,7 +186,7 @@ Rules:
 export const DEFAULT_AI_GENERATION_COVER_LETTER_STYLE = ''
 
 export const DEFAULT_AI_GENERATION_COVER_LETTER_PROMPT =
-  'Write an application letter based on the resume and the job ad.\n\nRules:\n- 3 to 5 short paragraphs\n- Do not invent facts\n- Use the greeting, header, and footer EXACTLY as provided\n- Match the provided letter style and tone notes\n\nLetter style (example to mimic):\n{{coverLetterStyle}}\n\nTone notes:\n{{toneNotes}}\n\nHeader (may be empty):\n{{resolvedHeader}}\n\nGreeting:\n{{resolvedGreeting}}\n\nFooter (must include as-is):\n{{resolvedFooter}}\n\n{{companyBlock}}\n\nGenerated Resume:\n{{generatedResume}}\n\nJob Ad:\n{{jdText}}\n\nOutput: Return the full application letter text including header (if present), greeting, body, and footer.'
+  'Write an application letter based on the resume and the job ad.\n\nRules:\n- 3 to 5 short paragraphs\n- Do not invent facts\n- Use the greeting, header, and footer EXACTLY as provided (verbatim)\n- If Header is empty, OMIT it entirely\n- Do NOT output labels like "Header:", "Greeting:", or "Footer:"\n- Match the provided letter style and tone notes\n\nLetter style (example to mimic):\n{{coverLetterStyle}}\n\nTone notes:\n{{toneNotes}}\n\nHeader text (may be empty; include only if non-empty):\n{{resolvedHeader}}\n\nGreeting text:\n{{resolvedGreeting}}\n\nFooter text (must include as-is):\n{{resolvedFooter}}\n\n{{companyBlock}}\n\nGenerated Resume:\n{{generatedResume}}\n\nJob Ad:\n{{jdText}}\n\nOutput: Return the full application letter text (header if present, greeting, body, footer).'
 
 export const AIGenerationSettings: GlobalConfig = {
   slug: 'aiGenerationSettings',
