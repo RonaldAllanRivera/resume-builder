@@ -122,7 +122,7 @@ Output: Return ONLY the final resume text in markdown using this EXACT layout:
 # **{{fullName}}**
 **[Generated Headline Here]**
 Location: {{address}}
-Email: {{email}} | Phone: {{phone}}
+Email: {{email}} | Mobile: {{phone}}
 Portfolio: https://{{portfolioUrl}}
 LinkedIn: https://{{linkedinUrl}}
 GitHub: https://{{githubUrl}}
@@ -144,6 +144,8 @@ Write 2 to 3 sentences (concise).
 
 Output exactly ONE line in this format (no bullets, no subheadings, no extra blank lines):
 skill1, skill2, skill3, ...
+
+Do NOT add any prefix like "Core Skills:".
 
 Rules:
 - Use ONLY tools/tech explicitly present in Resume Facts

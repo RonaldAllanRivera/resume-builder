@@ -1623,6 +1623,30 @@ export async function POST(req: Request): Promise<Response> {
       maxTokens: 2600,
     })
 
+    const cleanupResumeDraft = (input: string): string => {
+      let out = String(input ?? '')
+
+      // Remove emoji prefixes that reduce ATS friendliness in contact block lines.
+      out = out.replace(/^\s*[📍📌]\s*/gm, '')
+      out = out.replace(/^\s*[📧]\s*/gm, '')
+      out = out.replace(/^\s*[📞]\s*/gm, '')
+      out = out.replace(/^\s*[🌐]\s*/gm, '')
+      out = out.replace(/^\s*[💼]\s*/gm, '')
+      out = out.replace(/^\s*[💻]\s*/gm, '')
+
+      // If the model outputs a duplicated "Core Skills:" prefix under the Core Skills heading, strip it.
+      // Example to fix:
+      // ## **Core Skills**\n\n**Core Skills:** Python, Django, ...
+      out = out.replace(
+        /(^\s*##\s*\*\*Core Skills\*\*\s*\r?\n\s*\r?\n)\*\*Core Skills\*\*\s*:\s*/im,
+        '$1',
+      )
+
+      return out.trim()
+    }
+
+    const resumeDraftClean = cleanupResumeDraft(resumeDraft)
+
     const companyBlock = company
       ? `Company Notes:\nName: ${company.name ?? ''}\nWebsite: ${company.website ?? ''}\nAbout: ${company.about ?? ''}\nTone Notes: ${company.toneNotes ?? ''}`
       : ''
@@ -1678,7 +1702,7 @@ export async function POST(req: Request): Promise<Response> {
       id: generation.id,
       data: {
         status: 'ready_for_review',
-        resumeDraft,
+        resumeDraft: resumeDraftClean,
         applicationLetter,
         coverLetterGreeting: resolvedGreeting,
         coverLetterHeader: resolvedHeader,
