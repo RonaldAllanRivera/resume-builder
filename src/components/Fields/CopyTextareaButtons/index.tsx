@@ -2,7 +2,7 @@
 
 import React, { useCallback, useMemo, useState } from 'react'
 
-import { Button, toast, useField } from '@payloadcms/ui'
+import { Button, toast, useDocumentInfo, useField } from '@payloadcms/ui'
 import { CopyIcon } from '@payloadcms/ui/icons/Copy'
 
 import './index.scss'
@@ -15,6 +15,44 @@ type Props = {
         variant?: 'resume' | 'letter'
       }
     }
+  }
+}
+
+const parseContentDispositionFilename = (value: string | null): string | null => {
+  if (!value) return null
+
+  // Prefer RFC 5987 filename*=UTF-8''...
+  const starMatch = value.match(/filename\*=(?:UTF-8''|utf-8''|)([^;]+)/)
+  if (starMatch?.[1]) {
+    const raw = starMatch[1].trim().replace(/^"|"$/g, '')
+    try {
+      const decoded = decodeURIComponent(raw)
+      return decoded.trim() || null
+    } catch {
+      return raw.trim() || null
+    }
+  }
+
+  const match = value.match(/filename=([^;]+)/)
+  if (!match?.[1]) return null
+
+  const filename = match[1].trim().replace(/^"|"$/g, '')
+  return filename.trim() || null
+}
+
+const downloadBlob = async (res: Response, filename: string) => {
+  const blob = await res.blob()
+  const url = window.URL.createObjectURL(blob)
+
+  try {
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+  } finally {
+    window.URL.revokeObjectURL(url)
   }
 }
 
@@ -47,10 +85,13 @@ const toPlainTextFromMarkdown = (input: string): string => {
 }
 
 export const CopyTextareaButtons: React.FC<Props> = ({ field }) => {
+  const { collectionSlug, id } = useDocumentInfo()
+
   const targetField = (field?.admin?.custom?.targetField ?? '').trim()
   const variant = field?.admin?.custom?.variant === 'letter' ? 'letter' : 'resume'
 
   const [copying, setCopying] = useState<null | 'plain' | 'markdown'>(null)
+  const [downloading, setDownloading] = useState(false)
 
   const safePath = targetField || '__copyTextareaButtons__missingTargetField'
   const { value: targetValue } = useField<string>({ path: safePath })
@@ -63,6 +104,10 @@ export const CopyTextareaButtons: React.FC<Props> = ({ field }) => {
   const hasValue = useMemo(() => {
     return Boolean(rawValue.trim())
   }, [rawValue])
+
+  const canDownloadPdf = useMemo(() => {
+    return Boolean(collectionSlug === 'generations' && id)
+  }, [collectionSlug, id])
 
   const copy = useCallback(
     async (mode: 'plain' | 'markdown') => {
@@ -86,6 +131,41 @@ export const CopyTextareaButtons: React.FC<Props> = ({ field }) => {
     [rawValue],
   )
 
+  const downloadPdf = useCallback(async () => {
+    if (!id) return
+    if (!hasValue) {
+      toast.info('Nothing to download.')
+      return
+    }
+
+    const type = variant === 'letter' ? 'letter' : 'resume'
+    setDownloading(true)
+
+    try {
+      const url = `/next/generations/${encodeURIComponent(String(id))}/pdf?type=${encodeURIComponent(type)}`
+      const res = await fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+      })
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => '')
+        throw new Error(text || `Download failed (${res.status})`)
+      }
+
+      const contentDisposition = res.headers.get('content-disposition')
+      const serverFilename = parseContentDispositionFilename(contentDisposition)
+      const fallbackFilename =
+        type === 'resume' ? `generation-${id}-resume.pdf` : `generation-${id}-letter.pdf`
+
+      await downloadBlob(res, serverFilename || fallbackFilename)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to download PDF')
+    } finally {
+      setDownloading(false)
+    }
+  }, [hasValue, id, variant])
+
   if (!targetField) return null
 
   return (
@@ -93,7 +173,7 @@ export const CopyTextareaButtons: React.FC<Props> = ({ field }) => {
       <div className="copyTextareaButtons__row">
         <Button
           className="copyTextareaButtons__button"
-          disabled={!hasValue || copying !== null}
+          disabled={!hasValue || copying !== null || downloading}
           onClick={(e) => {
             e.preventDefault()
             void copy('plain')
@@ -108,7 +188,7 @@ export const CopyTextareaButtons: React.FC<Props> = ({ field }) => {
         {variant === 'resume' && (
           <Button
             className="copyTextareaButtons__button"
-            disabled={!hasValue || copying !== null}
+            disabled={!hasValue || copying !== null || downloading}
             onClick={(e) => {
               e.preventDefault()
               void copy('markdown')
@@ -118,6 +198,26 @@ export const CopyTextareaButtons: React.FC<Props> = ({ field }) => {
             size="small"
           >
             Copy markdown <CopyIcon />
+          </Button>
+        )}
+
+        {canDownloadPdf && (
+          <Button
+            className="copyTextareaButtons__button"
+            disabled={!hasValue || copying !== null || downloading}
+            onClick={(e) => {
+              e.preventDefault()
+              void downloadPdf()
+            }}
+            type="button"
+            buttonStyle="secondary"
+            size="small"
+          >
+            {downloading
+              ? 'Downloading…'
+              : variant === 'letter'
+                ? 'Download letter PDF'
+                : 'Download resume PDF'}
           </Button>
         )}
       </div>

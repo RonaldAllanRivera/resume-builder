@@ -183,7 +183,7 @@ Rules:
 
 {{certificationBlocks}}
 
-*(Full certification list available on LinkedIn)*`
+**(Full certification list available on LinkedIn)**`
 
 export const DEFAULT_AI_GENERATION_COVER_LETTER_STYLE = ''
 

@@ -323,6 +323,7 @@ Status: In progress (core generation workflow implemented; export + additional a
       - Uses `{{professionalExperienceBlocksCustomized}}` by default
       - Core Skills rendered as a single comma-separated line
     - Generation edit view includes copy buttons for quick exporting (plain text / markdown)
+    - Generation edit view includes PDF downloads for Resume Draft + Application Letter (implemented with `pdf-lib` to avoid `pdfkit` `Helvetica.afm` runtime ENOENT)
 
 - CMS data model (suggested):
   - `resumeProfiles`

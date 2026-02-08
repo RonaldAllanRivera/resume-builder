@@ -68,6 +68,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Generates a tailored `resumeDraft` and `applicationLetter` for a Generation record.
   - Uses OpenAI + prompt templates stored in `Globals → AI Generation Settings`.
   - Enforces “database facts only” and stores metadata (`promptVersion`, `model`, `temperature`, `inputHash`).
+- `GET /next/generations/[id]/pdf?type=resume|letter`
+  - Returns a PDF download for either the resume draft or application letter for a Generation record.
+  - PDF generation is implemented with `pdf-lib` to avoid runtime font-metric file issues (`Helvetica.afm`) seen with `pdfkit` when bundled.
 - `POST /next/seed-resume`
   - Admin-only endpoint to seed resume collections from `resume.txt`.
 - `POST /next/delete-versions`
@@ -136,6 +139,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - On a Generation edit page, copy buttons are available for quick exporting:
     - `resumeDraft`: copy as plain text or markdown.
     - `applicationLetter`: copy as plain text.
+  - PDF downloads are available on the same edit view for:
+    - `resumeDraft` (download as PDF)
+    - `applicationLetter` (download as PDF)
   - Note: application letters are cleaned to avoid a leading `Header:` label when saving generated output.
   - Company field displays the associated company name (read-only, auto-synced from jobAd).
 

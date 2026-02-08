@@ -5,6 +5,8 @@
 - Added admin UI copy-to-clipboard buttons on `generations` edit view:
   - Resume Draft: copy as plain text or markdown.
   - Application Letter: copy as plain text.
+- Added PDF downloads for `generations` edit view (Resume Draft + Application Letter) via `GET /next/generations/[id]/pdf?type=resume|letter`.
+- Fixed PDF download runtime failures (`ENOENT` for `Helvetica.afm`) by switching server-side PDF generation from `pdfkit` to `pdf-lib`.
 - Prevented “Header:” label from appearing in generated application letters (prompt tightened + server-side cleanup of leading label).
 - Added `company` relationship field to `generations` (read-only) that auto-syncs from `jobAd.company`:
   - Enforced non-updatable at field level (`access.update: () => false`) and admin readOnly.

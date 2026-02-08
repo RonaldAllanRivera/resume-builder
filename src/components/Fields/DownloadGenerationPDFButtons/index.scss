@@ -1,0 +1,15 @@
+.downloadGenerationPDFButtons {
+  margin: 0.5rem 0 0.75rem;
+}
+
+.downloadGenerationPDFButtons__row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.downloadGenerationPDFButtons__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
