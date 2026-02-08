@@ -6,6 +6,11 @@
   - Resume Draft: copy as plain text or markdown.
   - Application Letter: copy as plain text.
 - Prevented “Header:” label from appearing in generated application letters (prompt tightened + server-side cleanup of leading label).
+- Added `company` relationship field to `generations` (read-only) that auto-syncs from `jobAd.company`:
+  - Enforced non-updatable at field level (`access.update: () => false`) and admin readOnly.
+  - Added `beforeChange` hook to sync company on create/update and `afterRead` hook for legacy docs.
+  - Added admin-only backfill endpoint `/next/backfill-generations-company` to populate existing records.
+  - Company now displays correctly in Generations list and edit views (same pattern as Job Ads).
 
 ## [0.2.0] - 2026-02-06
 

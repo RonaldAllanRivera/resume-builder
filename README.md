@@ -72,6 +72,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Admin-only endpoint to seed resume collections from `resume.txt`.
 - `POST /next/delete-versions`
   - Admin-only endpoint to delete stored versions for a single document.
+- `POST /next/backfill-generations-company`
+  - Admin-only endpoint to populate `generations.company` from `jobAd.company` for existing records.
+  - Supports batching, caching, and dry-run mode.
 
 ## Data model (Payload)
 
@@ -107,6 +110,8 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - `jobAds`
   - `generations`
     - Stores `resumeDraft` + `applicationLetter` and prompt metadata for a specific job ad/profile.
+    - Includes `company` relationship field (read-only) that auto-syncs from `jobAd.company`.
+    - Company field is non-updatable (`access.update: () => false`) and enforced via hooks.
   - `media` (uploads)
   - `users` (auth)
     - Minimal RBAC via a `roles` field (`admin`, `editor`).
@@ -132,6 +137,7 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - `resumeDraft`: copy as plain text or markdown.
     - `applicationLetter`: copy as plain text.
   - Note: application letters are cleaned to avoid a leading `Header:` label when saving generated output.
+  - Company field displays the associated company name (read-only, auto-synced from jobAd).
 
 ## Troubleshooting
 

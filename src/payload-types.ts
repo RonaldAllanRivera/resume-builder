@@ -992,6 +992,7 @@ export interface JobAd {
 export interface Generation {
   id: number;
   jobAd: number | JobAd;
+  company?: (number | null) | Company;
   resumeProfile: number | ResumeProfile;
   status: 'draft' | 'generating' | 'ready_for_review' | 'approved' | 'exported' | 'failed';
   resumeDraft?: string | null;
@@ -1739,6 +1740,7 @@ export interface JobAdsSelect<T extends boolean = true> {
  */
 export interface GenerationsSelect<T extends boolean = true> {
   jobAd?: T;
+  company?: T;
   resumeProfile?: T;
   status?: T;
   resumeDraft?: T;

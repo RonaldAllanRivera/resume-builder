@@ -2,6 +2,22 @@ import type { CollectionConfig } from 'payload'
 
 import { adminOrEditor } from '../access/adminOrEditor'
 
+type RelIdValue = number | string | { id?: string | number } | null | undefined
+
+const getRelIdAsNumber = (value: unknown): number | null => {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
+  if (typeof value === 'string') {
+    const t = value.trim()
+    if (!t) return null
+    const n = Number(t)
+    return Number.isFinite(n) ? n : null
+  }
+  if (value && typeof value === 'object' && 'id' in value) {
+    return getRelIdAsNumber((value as { id?: unknown }).id)
+  }
+  return null
+}
+
 export const Generations: CollectionConfig = {
   slug: 'generations',
   access: {
@@ -11,8 +27,9 @@ export const Generations: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['jobAd', 'resumeProfile', 'status', 'updatedAt'],
+    defaultColumns: ['jobAd', 'company', 'resumeProfile', 'status', 'updatedAt'],
     useAsTitle: 'jobAd',
+    listSearchableFields: ['jobAd.title'],
     components: {
       edit: {
         editMenuItems: [
@@ -28,6 +45,17 @@ export const Generations: CollectionConfig = {
       type: 'relationship',
       relationTo: 'jobAds',
       required: true,
+    },
+    {
+      name: 'company',
+      type: 'relationship',
+      relationTo: 'companies',
+      access: {
+        update: () => false,
+      },
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: 'resumeProfile',
@@ -160,5 +188,86 @@ export const Generations: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    beforeChange: [
+      async ({ data, operation, originalDoc, req }) => {
+        const incomingJobAd = (data as { jobAd?: RelIdValue } | null | undefined)?.jobAd
+        const incomingCompany = (data as { company?: unknown } | null | undefined)?.company
+        const originalJobAd = (originalDoc as { jobAd?: RelIdValue } | null | undefined)?.jobAd
+
+        const jobAdId = getRelIdAsNumber(incomingJobAd ?? originalJobAd)
+        if (!jobAdId) return data
+
+        const shouldSyncCompany =
+          operation === 'create' ||
+          typeof incomingJobAd !== 'undefined' ||
+          typeof incomingCompany !== 'undefined'
+
+        if (!shouldSyncCompany) return data
+
+        try {
+          const jobAdDoc = await req.payload.findByID({
+            collection: 'jobAds',
+            depth: 0,
+            id: jobAdId,
+            overrideAccess: false,
+            req,
+          })
+
+          const companyId =
+            getRelIdAsNumber((jobAdDoc as { company?: RelIdValue } | null | undefined)?.company) ??
+            null
+
+          return {
+            ...(data as Record<string, unknown>),
+            company: companyId,
+          }
+        } catch {
+          return data
+        }
+      },
+    ],
+    afterRead: [
+      async ({ doc, req }) => {
+        const docWithCompany = doc as { company?: RelIdValue; jobAd?: RelIdValue }
+        if (getRelIdAsNumber(docWithCompany.company)) return doc
+
+        const jobAdId = getRelIdAsNumber(docWithCompany.jobAd)
+        if (!jobAdId) return doc
+
+        type Cache = Map<number, number | null>
+        const reqWithCache = req as unknown as { __generationsJobAdCompanyIdCache?: Cache }
+        const cache =
+          reqWithCache.__generationsJobAdCompanyIdCache ??
+          (reqWithCache.__generationsJobAdCompanyIdCache = new Map<number, number | null>())
+
+        if (cache.has(jobAdId)) {
+          docWithCompany.company = cache.get(jobAdId) ?? null
+          return doc
+        }
+
+        try {
+          const jobAdDoc = await req.payload.findByID({
+            collection: 'jobAds',
+            depth: 0,
+            id: jobAdId,
+            overrideAccess: false,
+            req,
+          })
+
+          const companyId =
+            getRelIdAsNumber((jobAdDoc as { company?: RelIdValue } | null | undefined)?.company) ??
+            null
+
+          cache.set(jobAdId, companyId)
+          docWithCompany.company = companyId
+          return doc
+        } catch {
+          cache.set(jobAdId, null)
+          return doc
+        }
+      },
+    ],
+  },
   timestamps: true,
 }

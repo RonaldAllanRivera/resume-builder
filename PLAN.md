@@ -111,10 +111,17 @@ Status: Completed
   - Backed by a secure `/next/seed-resume` endpoint.
 
 - **Admin UX: Generations copy buttons**
-  - Added copy-to-clipboard buttons on the Generation edit view:
+  - Added copy-to-clipboard buttons on Generation edit view:
     - Resume Draft: copy as plain text or markdown.
     - Application Letter: copy as plain text.
   - Application letter generation is cleaned to avoid a leading `Header:` label.
+
+- **Admin UX: Generations company field**
+  - Added `company` relationship field (read-only) that auto-syncs from `jobAd.company`.
+  - Enforced non-updatable at field level (`access.update: () => false`) and admin readOnly.
+  - Added `beforeChange` hook to sync company on create/update and `afterRead` hook for legacy docs.
+  - Added admin-only backfill endpoint `/next/backfill-generations-company` to populate existing records.
+  - Company now displays correctly in Generations list and edit views (same pattern as Job Ads).
 
 ## Phase 4 — Public site pages (SEO-first)
 
@@ -268,6 +275,13 @@ Status: Planned
 - Priority: Start here next. Public site + SEO pages can be implemented later.
 
 Status: In progress (core generation workflow implemented; export + additional admin actions pending)
+
+- Admin UX: Generations company field
+  - Added `company` relationship field (read-only) that auto-syncs from `jobAd.company`.
+  - Enforced non-updatable at field level (`access.update: () => false`) and admin readOnly.
+  - Added `beforeChange` hook to sync company on create/update and `afterRead` hook for legacy docs.
+  - Added admin-only backfill endpoint `/next/backfill-generations-company` to populate existing records.
+  - Company now displays correctly in Generations list and edit views (same pattern as Job Ads).
 
 - Requirements (admin-first workflow):
   - Create and manage job ads and company info in the Payload admin.
