@@ -191,6 +191,78 @@ Status: Completed
   - Brand colors via CSS variables sourced from `siteSettings` with sensible defaults.
   - Tailwind (or similar) is fine, but keep token values centralized (CSS vars -> Tailwind config).
 
+## Phase 4B — Freelancing landing pages + pricing packages (SEO-first)
+
+Goal: Public pages optimized for inbound freelancing leads where clients can hire you for a day, a week, or a month.
+
+- Public routes (suggested):
+  - `/hire` or `/freelance`
+    - Primary landing page with packages, positioning, and contact CTA.
+  - `/pricing`
+    - Simple, scannable pricing table (Day / Week / Month) + what’s included.
+  - Optional supporting pages (later):
+    - `/services` (service menu)
+    - `/case-studies` (selected projects)
+    - `/testimonials` (if you collect them)
+
+- CMS model (best practice):
+  - Add a new Global: `freelanceSettings`
+    - `currency` (default: USD)
+    - `monthlyRate` (this is the only required input)
+    - `assumptions` (configurable but with sane defaults):
+      - `workingDaysPerMonth` (default: 20)
+      - `hoursPerDay` (default: 8)
+      - `weeksPerMonth` (default: 4)
+    - `pricingMultipliers` (configurable):
+      - `weeklyMarkupPct` (default: 15%)
+      - `dailyMarkupPct` (default: 35%)
+    - `rounding`
+      - `monthlyIncrement` (default: 100)
+      - `weeklyIncrement` (default: 50 or 100)
+      - `dailyIncrement` (default: 10)
+    - Optional copy fields for the page:
+      - `headline`, `subheadline`, `ctaLabel`, `ctaUrl`, `packageNotes`
+
+- Pricing computation (ideal + predictable):
+  - Define the monthly package as the “best value” anchor (lowest effective rate).
+  - Derive weekly and daily from the monthly anchor (higher effective rate = worse value):
+    - `weeklyBase = monthlyRate / weeksPerMonth`
+    - `dailyBase = monthlyRate / workingDaysPerMonth`
+    - `weeklyRate = roundToIncrement(weeklyBase * (1 + weeklyMarkupPct), weeklyIncrement)`
+    - `dailyRate = roundToIncrement(dailyBase * (1 + dailyMarkupPct), dailyIncrement)`
+    - `monthlyRateDisplayed = roundToIncrement(monthlyRate, monthlyIncrement)`
+  - Display “savings” as a comparison vs the higher-frequency packages:
+    - Compare `monthlyRateDisplayed` vs `weeklyRate * weeksPerMonth` and `dailyRate * workingDaysPerMonth`.
+
+- Example (to validate the model):
+  - Input `monthlyRate = $1,000`, defaults: 4 weeks, 20 days, weekly +15%, daily +35%
+  - `weeklyBase = 250` -> `weeklyRate ≈ 287.5` -> rounded to `$300`
+  - `dailyBase = 50` -> `dailyRate ≈ 67.5` -> rounded to `$70`
+  - Effective month equivalents:
+    - Weekly: `$300 * 4 = $1,200`
+    - Daily: `$70 * 20 = $1,400`
+  - This makes monthly the “best package”, daily the “worst value” (as intended).
+
+- Rounding best practice:
+  - Use a deterministic rounding helper (nearest increment) and keep increments configurable per package.
+  - Prefer larger increments for larger packages (e.g. monthly to nearest 100) to avoid odd pricing.
+
+- SEO + AI content generation (best practice, avoid spam):
+  - Keep pages grounded in the resume database:
+    - Services offered should map to real skills/experience/projects in Payload.
+    - Case studies should map to real projects.
+  - Use AI only to draft copy and structure—not to invent claims:
+    - Generate page outlines, FAQs, and meta descriptions from known facts.
+    - Require human review before publishing.
+  - Prefer “helpful content” patterns:
+    - Clear package descriptions, deliverables, boundaries, and response times.
+    - Add FAQs that address buying intent (scope, tools, timezone, handoff, NDA).
+  - Add structured data:
+    - `Person` (your profile)
+    - `Service` + `Offer` for packages (day/week/month)
+
+Status: Planned
+
 ## Phase 5 — Job Ads + AI generation workflow
 
 - Priority: Start here next. Public site + SEO pages can be implemented later.

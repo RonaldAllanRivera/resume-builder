@@ -506,8 +506,10 @@ export async function POST(req: Request): Promise<Response> {
               'Select ONLY the resume items that are most relevant to the job ad.',
               '',
               'Rules:',
+              '- Treat the Job Title as the PRIMARY signal for relevance (role + stack). The Job Ad text is secondary.',
               '- Use ONLY IDs that appear in the Resume Facts in tags like [exp:ID], [proj:ID], [cert:ID], [edu:ID]',
-              '- Select items that directly match the job ad requirements, skills, tools, and domain keywords',
+              '- Select items that directly match the job title and job ad requirements, skills, tools, and domain keywords',
+              '- Projects: return up to 3 IDs in order from MOST relevant to LEAST relevant',
               '- Certifications: pick the most job-relevant certifications (skills/tools/stack alignment)',
               '- Prefer certifications whose titles clearly match job keywords (e.g. Python/Django/DRF/REST APIs/PostgreSQL/MySQL OR PHP/Laravel/WordPress OR Node.js/React/Vue/Next.js)',
               '- If those exist, do NOT select unrelated topics (e.g. Node.js, WordPress, Vue, React) unless the job ad explicitly calls for them',
@@ -627,6 +629,94 @@ export async function POST(req: Request): Promise<Response> {
       const allProjects = projDocs
       if (!allProjects.length) return []
 
+      const tokenize = (input: string): string[] => {
+        return (input ?? '')
+          .toLowerCase()
+          .replace(/[^a-z0-9+#.\-\s]/g, ' ')
+          .split(/\s+/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+      }
+
+      const stopwords = new Set([
+        'the',
+        'and',
+        'or',
+        'to',
+        'of',
+        'in',
+        'for',
+        'with',
+        'on',
+        'at',
+        'a',
+        'an',
+        'as',
+        'by',
+        'from',
+        'is',
+        'are',
+        'this',
+        'that',
+        'you',
+        'we',
+        'our',
+        'your',
+        'developer',
+        'engineer',
+        'remote',
+        'senior',
+        'junior',
+        'mid',
+        'level',
+        'full',
+        'stack',
+      ])
+
+      const expandRoleKeywords = (tokens: Set<string>): void => {
+        const has = (t: string): boolean => tokens.has(t)
+        const addMany = (arr: string[]): void => {
+          for (const x of arr) tokens.add(x)
+        }
+
+        if (has('wordpress') || has('wp')) {
+          addMany([
+            'php',
+            'woocommerce',
+            'gutenberg',
+            'elementor',
+            'acf',
+            'plugin',
+            'plugins',
+            'theme',
+            'themes',
+          ])
+        }
+      }
+
+      const titleTokens = new Set(tokenize(jobAd.title ?? '').filter((t) => !stopwords.has(t)))
+      expandRoleKeywords(titleTokens)
+      const jdTokens = new Set(tokenize(jdText).filter((t) => !stopwords.has(t)))
+
+      const projectScore = (p: (typeof allProjects)[number]): number => {
+        const title = (p?.title ?? '').toString()
+        const summary = (p?.summary ?? '').toString()
+        const tech = (Array.isArray(p?.techStack) ? p.techStack : [])
+          .map((t) => (t?.name ?? '').toString())
+          .join(' ')
+
+        const haystack = `${title} ${summary} ${tech}`.toLowerCase()
+
+        let score = 0
+        for (const t of titleTokens) {
+          if (t && haystack.includes(t)) score += 6
+        }
+        for (const t of jdTokens) {
+          if (t && haystack.includes(t)) score += 1
+        }
+        return score
+      }
+
       const selectedIds = Array.isArray(selected?.projectIds)
         ? selected.projectIds.map((id) => String(id).trim()).filter(Boolean)
         : []
@@ -638,13 +728,47 @@ export async function POST(req: Request): Promise<Response> {
       }
 
       const picked: Array<(typeof allProjects)[number]> = []
-      for (const id of selectedIds) {
-        const doc = byId.get(id)
-        if (doc) picked.push(doc)
-        if (picked.length >= 3) break
+
+      if (selectedIds.length) {
+        const selectedDocs = selectedIds
+          .map((id) => byId.get(id))
+          .filter(Boolean)
+          .map((doc) => doc as (typeof allProjects)[number])
+
+        const selectedScored = selectedDocs
+          .map((doc) => ({ doc, score: projectScore(doc) }))
+          .sort((a, b) => {
+            const diff = b.score - a.score
+            if (diff) return diff
+            const at = (a.doc?.title ?? '').toString().toLowerCase()
+            const bt = (b.doc?.title ?? '').toString().toLowerCase()
+            return at.localeCompare(bt)
+          })
+
+        for (const item of selectedScored) {
+          if (picked.length >= 3) break
+          picked.push(item.doc)
+        }
       }
 
-      if (picked.length) return picked
+      const scoredAll = allProjects
+        .filter(Boolean)
+        .map((doc) => ({ doc, score: projectScore(doc) }))
+        .sort((a, b) => {
+          const diff = b.score - a.score
+          if (diff) return diff
+          const at = (a.doc?.title ?? '').toString().toLowerCase()
+          const bt = (b.doc?.title ?? '').toString().toLowerCase()
+          return at.localeCompare(bt)
+        })
+
+      for (const item of scoredAll) {
+        if (picked.length >= 3) break
+        if (picked.includes(item.doc)) continue
+        picked.push(item.doc)
+      }
+
+      if (picked.length) return picked.slice(0, 3)
       return allProjects.filter(Boolean).slice(0, 3)
     }
 
