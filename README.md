@@ -78,6 +78,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - `POST /next/backfill-generations-company`
   - Admin-only endpoint to populate `generations.company` from `jobAd.company` for existing records.
   - Supports batching, caching, and dry-run mode.
+- `POST /next/backfill-jobads-displaytitle`
+  - Admin-only endpoint to populate `jobAds.displayTitle` (used by relationship dropdown labels) for existing records.
+  - Useful after introducing `displayTitle`/company-first labels for Job Ads.
 
 ## Data model (Payload)
 
@@ -144,6 +147,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - `applicationLetter` (download as PDF)
   - Note: application letters are cleaned to avoid a leading `Header:` label when saving generated output.
   - Company field displays the associated company name (read-only, auto-synced from jobAd).
+  - On the Generations create view:
+    - Job Ad dropdown labels show `Company – Title`.
+    - Job Ads and Resume Profiles are sorted by most recently created.
 
 ## Troubleshooting
 

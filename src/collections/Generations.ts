@@ -45,6 +45,9 @@ export const Generations: CollectionConfig = {
       type: 'relationship',
       relationTo: 'jobAds',
       required: true,
+      admin: {
+        sortOptions: '-createdAt',
+      },
     },
     {
       name: 'company',
@@ -62,6 +65,9 @@ export const Generations: CollectionConfig = {
       type: 'relationship',
       relationTo: 'resumeProfiles',
       required: true,
+      admin: {
+        sortOptions: '-createdAt',
+      },
     },
     {
       name: 'status',

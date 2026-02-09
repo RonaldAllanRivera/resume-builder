@@ -324,6 +324,10 @@ Status: In progress (core generation workflow implemented; export + additional a
       - Core Skills rendered as a single comma-separated line
     - Generation edit view includes copy buttons for quick exporting (plain text / markdown)
     - Generation edit view includes PDF downloads for Resume Draft + Application Letter (implemented with `pdf-lib` to avoid `pdfkit` `Helvetica.afm` runtime ENOENT)
+    - Generations create view dropdown improvements:
+      - Job Ad relationship labels show `Company – Title` (via `jobAds.displayTitle`).
+      - Job Ads and Resume Profiles are sorted by most recently created.
+      - Admin-only backfill endpoint available to populate legacy `jobAds.displayTitle`: `POST /next/backfill-jobads-displaytitle`.
 
 - CMS data model (suggested):
   - `resumeProfiles`

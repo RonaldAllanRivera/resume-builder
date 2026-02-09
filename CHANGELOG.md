@@ -13,6 +13,10 @@
   - Added `beforeChange` hook to sync company on create/update and `afterRead` hook for legacy docs.
   - Added admin-only backfill endpoint `/next/backfill-generations-company` to populate existing records.
   - Company now displays correctly in Generations list and edit views (same pattern as Job Ads).
+- Improved Generations create view relationship dropdown UX:
+  - Job Ad labels show `Company – Title` (via `jobAds.displayTitle`).
+  - Job Ads and Resume Profiles are sorted by most recently created.
+  - Added admin-only backfill endpoint `/next/backfill-jobads-displaytitle` to populate legacy `jobAds.displayTitle`.
 
 ## [0.2.0] - 2026-02-06
 

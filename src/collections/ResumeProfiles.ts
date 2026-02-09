@@ -14,6 +14,7 @@ export const ResumeProfiles: CollectionConfig = {
     defaultColumns: ['name', 'updatedAt'],
     useAsTitle: 'name',
   },
+  defaultSort: '-createdAt',
   fields: [
     {
       name: 'name',

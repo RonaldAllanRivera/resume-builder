@@ -976,6 +976,7 @@ export interface Company {
 export interface JobAd {
   id: number;
   title: string;
+  displayTitle?: string | null;
   company?: (number | null) | Company;
   jobUrl?: string | null;
   location?: string | null;
@@ -1725,6 +1726,7 @@ export interface CompaniesSelect<T extends boolean = true> {
  */
 export interface JobAdsSelect<T extends boolean = true> {
   title?: T;
+  displayTitle?: T;
   company?: T;
   jobUrl?: T;
   location?: T;
