@@ -117,6 +117,29 @@ const toPlainTextFromMarkdownInline = (input: string): string => {
   return out.trim()
 }
 
+const toPlainTextFromMarkdownInlinePreserveBreaks = (input: string): string => {
+  let out = String(input ?? '')
+
+  // marked uses <br> when hard breaks are enabled/encountered.
+  out = out.replace(/<br\s*\/?\s*>/gi, '\n')
+
+  out = out.replace(/`([^`]+)`/g, '$1')
+  out = out.replace(/\*\*(.*?)\*\*/g, '$1')
+  out = out.replace(/__(.*?)__/g, '$1')
+  out = out.replace(/\*(.*?)\*/g, '$1')
+  out = out.replace(/_(.*?)_/g, '$1')
+
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 ($2)')
+
+  // Normalize spaces without destroying intentional newlines.
+  out = out
+    .split('\n')
+    .map((l) => l.replace(/[ \t]+/g, ' ').trimEnd())
+    .join('\n')
+
+  return out.trim()
+}
+
 type PdfState = {
   pdf: PDFDocument
   page: import('pdf-lib').PDFPage
@@ -128,18 +151,18 @@ type PdfState = {
 
 const LETTER_WIDTH = 612
 const LETTER_HEIGHT = 792
-const MARGIN = 54
+const MARGIN = 72
 
 const newPage = (state: PdfState): void => {
   state.page = state.pdf.addPage([LETTER_WIDTH, LETTER_HEIGHT])
   state.y = LETTER_HEIGHT - MARGIN
 }
 
-const wrapText = (
+const wrapLine = (
   text: string,
   opts: { font: import('pdf-lib').PDFFont; size: number; maxWidth: number },
 ): string[] => {
-  const cleaned = text.replace(/\s+/g, ' ').trim()
+  const cleaned = text.replace(/[ \t]+/g, ' ').trim()
   if (!cleaned) return []
 
   const words = cleaned.split(' ')
@@ -162,6 +185,30 @@ const wrapText = (
   return lines
 }
 
+const wrapTextPreserveNewlines = (
+  text: string,
+  opts: { font: import('pdf-lib').PDFFont; size: number; maxWidth: number },
+): string[] => {
+  const raw = String(text ?? '')
+  const rawLines = raw.split('\n')
+
+  const out: string[] = []
+  for (let i = 0; i < rawLines.length; i++) {
+    const l = rawLines[i] ?? ''
+    const wrapped = wrapLine(l, opts)
+    if (wrapped.length === 0) {
+      out.push('')
+    } else {
+      out.push(...wrapped)
+    }
+  }
+
+  // Trim leading/trailing blank lines but preserve internal blank lines.
+  while (out.length && out[0] === '') out.shift()
+  while (out.length && out[out.length - 1] === '') out.pop()
+  return out
+}
+
 const ensureRoom = (state: PdfState, minHeight: number): void => {
   if (state.y - minHeight < MARGIN) {
     newPage(state)
@@ -177,6 +224,12 @@ const drawLines = (
   const maxWidth = LETTER_WIDTH - MARGIN - x
 
   for (const line of lines) {
+    if (!line) {
+      ensureRoom(state, opts.lineHeight)
+      state.y -= opts.lineHeight
+      continue
+    }
+
     ensureRoom(state, opts.lineHeight)
     state.page.drawText(line, {
       x,
@@ -196,9 +249,63 @@ const drawParagraph = (
   opts: { font: import('pdf-lib').PDFFont; size: number },
 ) => {
   const maxWidth = LETTER_WIDTH - MARGIN * 2
-  const lines = wrapText(text, { font: opts.font, size: opts.size, maxWidth })
+  const lines = wrapTextPreserveNewlines(text, { font: opts.font, size: opts.size, maxWidth })
   drawLines(state, lines, { font: opts.font, size: opts.size, lineHeight: opts.size + 4 })
   state.y -= 6
+}
+
+const drawBulletItem = (state: PdfState, text: string): void => {
+  const font = state.fontRegular
+  const size = 11
+  const lineHeight = 15
+  const bulletX = MARGIN + 12
+  const textX = MARGIN + 24
+  const maxWidth = LETTER_WIDTH - MARGIN - textX
+
+  const lines = wrapTextPreserveNewlines(text, { font, size, maxWidth })
+  if (lines.length === 0) return
+
+  // First visual line gets the bullet.
+  ensureRoom(state, lineHeight)
+  state.page.drawText('•', {
+    x: bulletX,
+    y: state.y - size,
+    font,
+    size,
+    color: rgb(0.07, 0.07, 0.07),
+  })
+
+  const first = lines[0] ?? ''
+  if (first) {
+    state.page.drawText(first, {
+      x: textX,
+      y: state.y - size,
+      font,
+      size,
+      color: rgb(0.07, 0.07, 0.07),
+      maxWidth,
+    })
+  }
+  state.y -= lineHeight
+
+  for (const line of lines.slice(1)) {
+    if (!line) {
+      ensureRoom(state, lineHeight)
+      state.y -= lineHeight
+      continue
+    }
+
+    ensureRoom(state, lineHeight)
+    state.page.drawText(line, {
+      x: textX,
+      y: state.y - size,
+      font,
+      size,
+      color: rgb(0.07, 0.07, 0.07),
+      maxWidth,
+    })
+    state.y -= lineHeight
+  }
 }
 
 const drawHr = (state: PdfState): void => {
@@ -232,7 +339,7 @@ const renderResumeMarkdownToPdf = (state: PdfState, markdown: string): void => {
 
       const size = depth === 1 ? 18 : depth === 2 ? 14 : 12
       const lineHeight = size + (depth === 1 ? 8 : 6)
-      const lines = wrapText(text, {
+      const lines = wrapTextPreserveNewlines(text, {
         font: state.fontBold,
         size,
         maxWidth: LETTER_WIDTH - MARGIN * 2,
@@ -243,7 +350,7 @@ const renderResumeMarkdownToPdf = (state: PdfState, markdown: string): void => {
     }
 
     if (type === 'paragraph') {
-      const cleaned = toPlainTextFromMarkdownInline(String(token.text ?? ''))
+      const cleaned = toPlainTextFromMarkdownInlinePreserveBreaks(String(token.text ?? ''))
       if (cleaned) drawParagraph(state, cleaned, { font: state.fontRegular, size: 11 })
       continue
     }
@@ -254,21 +361,10 @@ const renderResumeMarkdownToPdf = (state: PdfState, markdown: string): void => {
         : []
 
       for (const item of items) {
-        const itemText = toPlainTextFromMarkdownInline(String(item.text ?? ''))
+        const itemText = toPlainTextFromMarkdownInlinePreserveBreaks(String(item.text ?? ''))
         if (!itemText) continue
 
-        const bulletText = `• ${itemText}`
-        const lines = wrapText(bulletText, {
-          font: state.fontRegular,
-          size: 11,
-          maxWidth: LETTER_WIDTH - MARGIN * 2 - 12,
-        })
-        drawLines(state, lines, {
-          font: state.fontRegular,
-          size: 11,
-          lineHeight: 15,
-          indent: 12,
-        })
+        drawBulletItem(state, itemText)
       }
 
       state.y -= 6
@@ -276,7 +372,7 @@ const renderResumeMarkdownToPdf = (state: PdfState, markdown: string): void => {
     }
 
     if (type === 'blockquote') {
-      const quoteText = toPlainTextFromMarkdownInline(String(token.text ?? ''))
+      const quoteText = toPlainTextFromMarkdownInlinePreserveBreaks(String(token.text ?? ''))
       if (quoteText) {
         drawParagraph(state, quoteText, { font: state.fontRegular, size: 11 })
       }
@@ -291,7 +387,7 @@ const renderResumeMarkdownToPdf = (state: PdfState, markdown: string): void => {
         const maxWidth = LETTER_WIDTH - MARGIN * 2
         const lines = codeText
           .split('\n')
-          .flatMap((l) => wrapText(l, { font: state.fontMono, size: 9, maxWidth }))
+          .flatMap((l) => wrapLine(l, { font: state.fontMono, size: 9, maxWidth }))
         drawLines(state, lines, { font: state.fontMono, size: 9, lineHeight: 12 })
         state.y -= 6
       }
@@ -300,7 +396,7 @@ const renderResumeMarkdownToPdf = (state: PdfState, markdown: string): void => {
 
     const rawText = (token as unknown as { raw?: string; text?: string })?.text
     if (rawText) {
-      const cleaned = toPlainTextFromMarkdownInline(String(rawText))
+      const cleaned = toPlainTextFromMarkdownInlinePreserveBreaks(String(rawText))
       if (cleaned) drawParagraph(state, cleaned, { font: state.fontRegular, size: 11 })
     }
   }
@@ -312,11 +408,27 @@ const renderLetterToPdf = (state: PdfState, text: string): void => {
     .trim()
   if (!out) return
 
-  const paragraphs = out.split(/\n{2,}/g)
-  for (const p of paragraphs) {
-    const cleaned = p.replace(/\n+/g, ' ').trim()
-    if (!cleaned) continue
-    drawParagraph(state, cleaned, { font: state.fontRegular, size: 11 })
+  // Preserve explicit line breaks (important for greetings and signature blocks).
+  const lines = out.split('\n')
+  let blankRun = 0
+
+  for (const line of lines) {
+    const trimmed = line.replace(/[ \t]+/g, ' ').trimEnd()
+    if (!trimmed.trim()) {
+      blankRun++
+      ensureRoom(state, blankRun === 1 ? 10 : 6)
+      state.y -= blankRun === 1 ? 10 : 6
+      continue
+    }
+
+    blankRun = 0
+    const maxWidth = LETTER_WIDTH - MARGIN * 2
+    const wrapped = wrapTextPreserveNewlines(trimmed, {
+      font: state.fontRegular,
+      size: 11,
+      maxWidth,
+    })
+    drawLines(state, wrapped, { font: state.fontRegular, size: 11, lineHeight: 15 })
   }
 }
 
