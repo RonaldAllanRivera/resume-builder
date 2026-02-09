@@ -158,6 +158,46 @@ const newPage = (state: PdfState): void => {
   state.y = LETTER_HEIGHT - MARGIN
 }
 
+const splitLongToken = (args: {
+  token: string
+  font: import('pdf-lib').PDFFont
+  size: number
+  maxWidth: number
+}): string[] => {
+  const token = String(args.token ?? '')
+  if (!token) return []
+
+  const out: string[] = []
+  let remaining = token
+
+  while (remaining) {
+    // Find the largest prefix that fits.
+    let lo = 1
+    let hi = remaining.length
+    let best = 1
+
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2)
+      const part = remaining.slice(0, mid)
+      const w = args.font.widthOfTextAtSize(part, args.size)
+      if (w <= args.maxWidth) {
+        best = mid
+        lo = mid + 1
+      } else {
+        hi = mid - 1
+      }
+    }
+
+    // Safety: always make progress.
+    if (best <= 0) best = 1
+
+    out.push(remaining.slice(0, best))
+    remaining = remaining.slice(best)
+  }
+
+  return out
+}
+
 const wrapLine = (
   text: string,
   opts: { font: import('pdf-lib').PDFFont; size: number; maxWidth: number },
@@ -178,6 +218,26 @@ const wrapLine = (
     }
 
     if (current) lines.push(current)
+
+    // If a single token is too wide (e.g. a long URL), split it.
+    const wordWidth = opts.font.widthOfTextAtSize(word, opts.size)
+    if (wordWidth > opts.maxWidth) {
+      const parts = splitLongToken({
+        token: word,
+        font: opts.font,
+        size: opts.size,
+        maxWidth: opts.maxWidth,
+      })
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i] ?? ''
+        if (part) lines.push(part)
+      }
+
+      current = ''
+      continue
+    }
+
     current = word
   }
 
