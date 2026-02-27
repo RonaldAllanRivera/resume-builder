@@ -1,33 +1,64 @@
-version: '3'
+version: '3.8'
 
 services:
-  payload:
+  app:
     image: node:22-alpine
+    container_name: resume-builder-app
     ports:
       - '3000:3000'
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "npm ci && npm run dev"
+      # Mount source code for hot reload
+      - .:/app
+      # Use named volume for node_modules to avoid platform conflicts
+      - node_modules:/app/node_modules
+      # Cache pnpm store for faster rebuilds
+      - pnpm-store:/root/.local/share/pnpm/store
+    working_dir: /app
+    command: sh -c "corepack enable pnpm && pnpm install --frozen-lockfile && pnpm dev"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     env_file:
       - .env
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   postgres:
     image: postgres:16-alpine
+    container_name: resume-builder-db
     ports:
       - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: payload
+      POSTGRES_INITDB_ARGS: "-E UTF8"
     volumes:
-      - data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     logging:
-      driver: none
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
-  data:
+  postgres_data:
+    name: resume-builder-postgres-data
   node_modules:
+    name: resume-builder-node-modules
+  pnpm-store:
+    name: resume-builder-pnpm-store

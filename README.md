@@ -124,19 +124,51 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - Editors can manage resume/portfolio content.
     - Only admins can manage users/roles.
 
-## Developer workflow
+## Quick start (Docker) — Fast Testing
 
-- Install deps: `npm ci`
-- Run dev: `npm run dev`
+The easiest way to run and test the entire stack:
+
+```bash
+# Start all services (app + PostgreSQL)
+docker compose up
+
+# Or start in background and follow logs
+docker compose up -d && docker compose logs -f app
+```
+
+The app will be available at `http://localhost:3000` once you see "Ready in XXXXms" in the logs.
+
+**First time setup:**
+1. `docker compose up` (wait for "Ready" message)
+2. Visit `http://localhost:3000/admin`
+3. Create your first admin user
+4. Optionally seed resume data via the admin UI
+
+**Common commands:**
+```bash
+docker compose up              # Start (see logs)
+docker compose up -d           # Start in background
+docker compose logs -f app     # Follow app logs (see hot reload)
+docker compose down            # Stop services
+docker compose restart app     # Restart after config changes
+docker compose exec app sh     # Open shell in container
+```
+
+See `DOCKER.md` for more details.
+
+## Developer workflow (local, without Docker)
+
+- Install deps: `pnpm install`
+- Run dev: `pnpm dev`
 - Seed resume data:
-  - CLI: `npm run seed:resume`
+  - CLI: `pnpm run seed:resume`
   - Admin UI: open `/admin` and click “Seed resume data” (admin-only)
 - After schema changes:
-  - `npm run generate:types`
+  - `pnpm run generate:types`
   - `npx tsc --noEmit`
 
 - After adding or changing Payload admin components:
-  - `npm run generate:importmap`
+  - `pnpm run generate:importmap`
 
 - **Generations admin UX helpers**
   - On a Generation edit page, copy buttons are available for quick exporting:

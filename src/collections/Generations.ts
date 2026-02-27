@@ -34,6 +34,7 @@ export const Generations: CollectionConfig = {
       edit: {
         editMenuItems: [
           '@/components/GenerateDraftsMenuItem#GenerateDraftsMenuItem',
+          '@/components/ExportToGoogleDocsMenuItem#ExportToGoogleDocsMenuItem',
           '@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem',
         ],
       },

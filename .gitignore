@@ -12,6 +12,13 @@ public/media/
 public/robots.txt
 public/sitemap*.xml
 
+# pnpm
+.pnpm-store/
+.pnpm-debug.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
 
 # Playwright
 node_modules/
