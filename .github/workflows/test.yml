@@ -90,6 +90,13 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Run database migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
+          PAYLOAD_SECRET: test-secret-key
+          NODE_ENV: test
+        run: pnpm payload migrate
+
       - name: Build application
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
