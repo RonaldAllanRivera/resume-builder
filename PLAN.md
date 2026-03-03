@@ -586,6 +586,15 @@ Status: Later
 - Connect Neon:
   - confirm SSL requirement and connection pooling strategy
 
+- **Database seeding:**
+  - **Best practice: Seed locally or via CI/CD before deployment**
+  - Vercel serverless functions have timeout limits (10s Hobby, 60s Pro, 900s Enterprise)
+  - Recommended approaches:
+    - Seed locally with production DATABASE_URL before deploying
+    - Use GitHub Actions to seed on deployment
+    - Use admin API endpoint (`/api/seed-resume`) for one-time seeding on Pro/Enterprise plans
+  - See `SEEDING.md` for complete guide
+
 - Verify:
   - Payload migrations run correctly
   - Vercel Blob upload works

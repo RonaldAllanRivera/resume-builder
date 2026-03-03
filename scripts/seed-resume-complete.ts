@@ -1,6 +1,5 @@
 import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
-
 import { seedResumeComplete } from '../src/endpoints/seed-resume-complete'
 
 const run = async (): Promise<void> => {

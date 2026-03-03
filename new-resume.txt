@@ -1,161 +1,698 @@
-Great decision. I’ll give you a **clean, modern, AI-focused resume rewrite** that is **market-ready** and positions you correctly as a **senior, applied AI engineer**, not a junior career switcher.
+**Ronald Allan Rivera**  
+I’m a full-stack Web Developer with 20+ years of experience delivering production-ready solutions across eCommerce, SaaS, AI, and marketing technology. I specialize in **Python automation**, backend systems with **Laravel/PHP** and **Python/Django**, scalable **WordPress plugin development**, and modern frontends with **React, Vue, Next.js,** and **Inertia**. My recent work includes building **Python desktop applications** for data automation, developing **Laravel 12 \+ Filament apps** with advanced admin dashboards, lead capture and user management, pixel tracking, cloaking middleware, deployment pipelines, and reporting, and creating custom **WordPress plugins** for search, eCommerce, and content management. I focus on performance, security, SEO, and maintainability, ensuring every project is scalable, optimized, and future-proof.
 
-Below is a **2-page equivalent resume** (you can paste this directly into Word / Google Docs / PDF).
-I rewrote, trimmed, and repositioned your experience based on what hiring managers actually scan.
+| Contact Info  |
+| :---- |
 
----
+Portfolio: [https://allanwebdesign.com](https://allanwebdesign.com)   
+Email: [jaeron.rivera@gmail.com](mailto:jaeron.rivera@gmail.com)   
+LinkedIn: [https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63/](https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63/)  
+Github: [https://github.com/RonaldAllanRivera/](https://github.com/RonaldAllanRivera/)    
+Mobile: \+63-927-023-8592  
+Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 
-# **Ronald Allan Rivera**
+| Latest Experience |
+| :---- |
 
-**AI Software Engineer / Full-Stack Engineer (LLMs, Automation, Backend Systems)**
+**Web Developer**  
+**Company Name:** LogicMedia BV  
+**Description:** An online marketing agency.  
+**Date Joined:** June 2015 \- Present
 
-📍 La Union, Philippines
-📧 [jaeron.rivera@gmail.com](mailto:jaeron.rivera@gmail.com) | 📞 +63-927-023-8592
-🌐 Portfolio: [https://allanwebdesign.com](https://allanwebdesign.com)
-💼 LinkedIn: [https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63](https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63)
-💻 GitHub: [https://github.com/RonaldAllanRivera](https://github.com/RonaldAllanRivera)
+* Partner directly with the CEO to lead **end-to-end web development** initiatives, delivering high-performance marketing and interstitial websites that drive engagement and conversions.  
+* **Develop full-stack tools and applications** using **Python, Django, React.js, and Next.js**, streamlining internal workflows and improving operational efficiency.  
+* Spearhead **domain, hosting, and CDN configurations** (Cloudflare), optimizing site performance, security, and uptime.  
+* Write **high-impact marketing content** for landing pages and promotional websites, leveraging **AI-powered prompt engineering** for maximum conversion.  
+* Produce **training documentation, video tutorials, and marketing content**, including **YouTube video editing and uploads**, supporting cross-department needs.  
+* Act as a **multi-functional resource**—from developer to virtual assistant—helping the company achieve cost and time savings by consolidating multiple roles into one.
 
----
+**Senior Web Programmer and Web Designer**  
+**Company Name:** PulseIQ.com  
+**Description:** A smart energy management solution for multifamily buildings.  
+**Date Joined:** July 2007 \- Present
 
-## **Professional Summary**
+* Lead the **design and development of all partner websites**, building custom **WordPress and Elementor-based solutions** tailored for high-impact marketing campaigns.  
+* **Develop custom WordPress plugins** and implement fully responsive themes from scratch, converting Photoshop designs into pixel-perfect front-end templates.  
+* Create **visual branding materials**, including logos, images, and videos, using Adobe Photoshop and Premiere Pro.  
+* Utilize **AI content generation tools (ChatGPT, Gemini)** to create SEO-friendly web copy, significantly reducing content production time while maintaining quality.  
+* Build **automation pipelines** using **Zapier and Make.com**, integrating Google Sheets, OpenAI, and WordPress, reducing manual tasks and improving productivity by up to **80%.**  
+* Execute **SEO strategies** with **Google Tag Manager**, ensuring optimal search visibility and tracking.  
+* Act as a **trainer and content creator** for online tutorials, educating partner teams on CMS and digital marketing processes.  
+* Design **Python-based data extraction and automation tools** (Playwright, Selenium, Tkinter), enabling efficient collection of large datasets for marketing analytics.
 
-AI-focused Software Engineer with **20+ years of production experience** building scalable web platforms, backend systems, and AI-powered tools. Specialized in **LLM integration, AI automation, Python and Django systems, Laravel backends, and full-stack application delivery**. Proven ability to ship real-world AI solutions—covering prompt pipelines, OCR, agents, automation, and deployment—while maintaining reliability, performance, and cost awareness. Strong background in SaaS, marketing platforms, data automation, and developer tooling.
+| Past Experience |
+| :---- |
 
----
+**Web Designer**  
+**Company Name:** SiteBuilder123.com  
+**Description:** A small, experienced team specializing in website development and marketing.  
+**Date Joined:** February 2015 \- December 2015
 
-## **Core Skills**
+* Built WordPress websites tailored to client requirements, focusing on modern, responsive design.  
+* Designed marketing materials like tarpaulins, brochures, and streamers, helping clients effectively communicate their brand messages.
 
-**AI & Automation**
+**Lead Banner Designer \- Contractual**  
+**Company Name:** Bowzed.com  
+**Description:** Helps companies of all sizes acquire customers affordably and efficiently.  
+**Date Joined:** March 2015 \- May 2015
 
-* LLM integration (OpenAI-compatible APIs)
-* Prompt engineering & agent workflows
-* OCR (easyocr), AI-assisted decision pipelines
-* AI feature fallback, retries, and reliability handling
-* AI-powered content, analytics, and automation tools
+* Designed and coded marketing banners using HTML, CSS, and JavaScript, ensuring responsive and engaging designs.
 
-**Backend & Full-Stack**
+**Freelance Graphic Designer**  
+**Company Name:** Thunderbird Resort La Union Philippines  
+**Description:** A Mediterranean-inspired luxury resort in the northern Philippines.  
+**Date Joined:** May 2007 \- November 2008
 
-* Python, Django, Flask (automation & APIs)
-* PHP, Laravel (service architecture, queues, jobs)
-* REST APIs, authentication, background processing
-* React, Vue, Next.js, Inertia
-* WordPress (custom plugins, Gutenberg, Elementor)
+* Created graphic designs for promotional materials such as tarpaulins, brochures, and magazines, aligning visuals with the resort’s premium branding.
 
-**DevOps & Data**
+**Web Developer and Graphic Artist**  
+**Company Name:** Danalex Graphic Arts and Call Center, Baguio City, Philippines  
+**Description:** A Graphic Arts, Web Design, and Software Development Company originally based in Honolulu, Hawaii, and Las Vegas.  
+**Date Joined:** April 2006 \- July 2007
 
-* Docker, CI/CD fundamentals
-* Cloudflare, CDN, security hardening
-* AWS fundamentals (EC2, CloudFormation concepts)
-* MySQL, SQLite, MongoDB
-* Selenium, Playwright, headless automation
+* Developed websites using PHP, MySQL, XHTML, and CSS, ensuring functionality and adherence to client requirements.  
+* Designed and converted website mockups from Photoshop into working front-end interfaces.
 
----
+**Web/Graphic Designer and Customer Representative**  
+**Company Name:** Web Coast Design Inc., Baguio City, Philippines  
+**Description:** A website design and development company serving clients across the United States.  
+**Date Joined:** March 2005 \- April 2006
 
-## **Professional Experience**
+* Collaborated with clients to design and develop custom websites that aligned with their business goals.  
+* Worked closely with senior designers to learn and apply advanced web and graphic design techniques.
 
-### **Senior AI Software Engineer / Full-Stack Engineer**
+**High School Math Instructor**  
+**Company Name:** Agoo Academy  
+**Description:** A school in La Union, Philippines.  
+**Date Joined:** June 2004 \- March 2005
 
-**LogicMedia BV** — Online Marketing Agency
-*June 2015 – Present*
+* Taught mathematics subjects, including Geometry, Algebra, Statistics, and Trigonometry, to high school students.  
+* Served as a general section adviser and part-time computer instructor, teaching basic IT skills.
 
-* Lead end-to-end development of **AI-enhanced marketing platforms and internal tools**, partnering directly with the CEO.
-* Built full-stack systems using **Python, Django, React, and Next.js** to automate workflows and improve operational efficiency.
-* Designed **LLM-powered content pipelines** for landing pages and campaigns, optimizing prompt strategies for conversion and consistency.
-* Developed backend services with job queues, background workers, and API integrations for automation and reporting.
-* Managed hosting, domains, and **Cloudflare security/CDN**, improving performance and uptime across multiple properties.
-* Produced technical documentation and internal training materials for non-technical teams.
+**Final Weigher**  
+**Company Name:** Union Leaf Tobacco Corporation  
+**Description:** A tobacco company based in the Philippines.  
+**Date Joined:** March 2003 \- June 2004
 
----
+* Ensured all packed tobacco met exact weight requirements before transferring to the warehouse.  
+* Provided technical support to production clerks, resolving computer-related issues to maintain operational efficiency.
 
-### **Senior Web Programmer / Automation Engineer**
+| Education |
+| :---- |
 
-**PulseIQ.com** — Energy Management & SaaS Platform
-*July 2007 – Present*
+**Bachelor of Science in Computer Engineering**     
+**AMA Computer University \- Quezon City, Philippines**         
+May 2000 \- May 2004
 
-* Led development of **custom WordPress solutions and plugins** supporting SaaS marketing and partner platforms.
-* Built **Python automation and data extraction tools** (Selenium, Playwright, Tkinter) to collect and process large datasets.
-* Integrated AI tools (ChatGPT, Gemini) to generate **SEO-optimized content**, reducing production time by up to 80%.
-* Designed automation pipelines using **Make.com and Zapier**, connecting WordPress, Google Sheets, and AI services.
-* Implemented analytics, SEO tracking, and performance optimization across high-traffic properties.
+| Personal Particulars  |
+| :---- |
 
----
+Date of Birth: 11 Apr 1982       
+Gender: Male    
+Marital Status: Married  
+Nationality: Filipino    
+Permanent Residence: Philippines
 
-## **Selected AI & Engineering Projects**
+| Latest Projects  |
+| :---- |
 
-### **AI-Powered Real-Time Interview Assistant (Python)**
+**FULL STACK DEVELOPMENT**
 
-* Built a local-first desktop application (PySide6) for **real-time audio transcription** and AI answer suggestions.
-* Integrated persistent transcript storage, persona-based responses, and OpenAI-compatible APIs.
-* Focused on latency, reliability, transparency, and fallback handling in live environments.
+**Meet Lessons**  
+*Full Stack Django \+ Python Developer*  
+[https://github.com/RonaldAllanRivera/auto-respond/](https://github.com/RonaldAllanRivera/auto-respond/)  
+Built a production-style SaaS platform combining a Python OCR desktop client and Django backend for AI-assisted Q\&A from screenshots. Implemented secure multi-tenant architecture, token-based device pairing, Stripe subscriptions with webhook validation, REST APIs, and real-time AI streaming via SSE. Dockerized for production deployment.
 
-### **Forex Signals Platform (Laravel 12)**
+**Forex Signals Platform (D1/W1/MN1)**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/forex](https://github.com/RonaldAllanRivera/forex)  
+Developed a Laravel 12 trading analysis platform with automated candlestick syncing, AI-generated trade signals, TradingView chart rendering, scheduler-driven jobs, admin trade workflows, and daily email reports. Containerized with Docker for production readiness.
 
-* Developed a **production-grade AI-assisted trading analysis system** with secure auth, background jobs, and scheduled data ingestion.
-* Generated AI-supported BUY/SELL/WAIT signals with persisted reasoning and historical snapshots.
-* Dockerized for consistent local and production deployment.
+**AWS E-commerce Microservices**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/aws\_ecommerce](https://github.com/RonaldAllanRivera/aws_ecommerce)  
+Architected a microservices-based e-commerce system using three Laravel services and a Vue 3 SPA frontend. Implemented asynchronous messaging, Docker containers, and AWS CloudFormation deployment on EC2.
 
-### **Profile Picture Generator (Python)**
+**Modular Frontend with Advanced Marketing & Lead Gen Tools**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/traderai.live](https://github.com/RonaldAllanRivera/traderai.live)  
+Engineered a modular Laravel platform with multi-template switching, advanced lead generation pipelines, CAPTCHA validation, rate limiting, rule-based cloaking middleware, dynamic pixel injection, and enterprise-grade security controls.
 
-* Desktop and CLI tool generating professional headshots using **Replicate (PhotoMaker, InstantID)**.
-* Implemented API fallback strategies and identity control handling without custom model training.
+**Multi-Source Marketing Data Dashboard (CSV/JSON)**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/report-system-laravel](https://github.com/RonaldAllanRivera/report-system-laravel)  
+Built a performance marketing reporting system that normalizes CSV and JSON exports from multiple platforms into structured dashboards with strict campaign matching and spreadsheet-ready outputs.
 
-### **Book Reader & AI Quiz Assistant (Python)**
+**Cars Images API**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/cars-images-api](https://github.com/RonaldAllanRivera/cars-images-api)  
+Developed a Laravel and Filament system integrating with Wikimedia Commons to fetch, validate, and manage high-resolution car images with scalable admin tools and optimized data workflows.
 
-* Automated browser-based reading workflows with Selenium and OCR.
-* Used transcribed text as context for AI-driven quiz answer generation with structured configuration and logging.
+**Book Reader**  
+*Full Stack AI Systems Developer*  
+[https://github.com/RonaldAllanRivera/book-reader](https://github.com/RonaldAllanRivera/book-reader)  
+Created a Python automation system using Selenium, OCR, and LLM integration to extract text from browser-based reading platforms and generate AI-assisted quiz answers with structured configuration and logging.
 
-### **AI Content SaaS (Django)**
+**Figma to Elementor Clone**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/elementor-clone](https://github.com/RonaldAllanRivera/elementor-clone)  
+Built a Laravel platform that converts Figma designs into clean HTML previews and Elementor-compatible JSON exports for WordPress import, with authenticated project management and Docker deployment.
 
-* Built a SaaS platform with **OpenAI integration and Stripe billing** for content generation (blogs, FAQs, ads).
-* Designed for scalability, security, and multi-tenant usage.
+**WORDPRESS DEVELOPMENT**
 
----
+**Featured Resource Block**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/featured-resource-block](https://github.com/RonaldAllanRivera/featured-resource-block)  
+Developed a production-ready WordPress plugin featuring a custom post type, Elementor widget, scheduled JSON syncing, caching, and hardened security with strict sanitization and capability checks.
 
-## **Earlier Experience**
+**IRANK Calc & Cards**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/irank-calc-cards](https://github.com/RonaldAllanRivera/irank-calc-cards)  
+Engineered high-performance Gutenberg blocks including a real-time calculator and swipeable product cards using server-rendered architecture and lightweight vanilla JavaScript.
 
-**Web Developer / Graphic Artist** — Danalex Graphic Arts (2006–2007)
-**Web & Graphic Designer** — Web Coast Design Inc. (2005–2006)
-**High School Math Instructor** — Agoo Academy (2004–2005)
+**Used Cars Search**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/used-cars-search](https://github.com/RonaldAllanRivera/used-cars-search)  
+Built a scalable search and comparison plugin with autosuggest, AI-generated SEO metadata, REST endpoints, optimized asset loading, and performance-focused architecture.
 
----
+**Popular AI Software Search**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/software-search](https://github.com/RonaldAllanRivera/software-search)  
+Created a modern AJAX-powered search plugin using vanilla JavaScript and Fetch API with autosuggest, filtering, and admin management tools.
 
-## **Education**
+**Ozeum Museum**  
+*Custom WordPress Theme Developer*  
+[https://artworkwebsite.com/](https://artworkwebsite.com/)  
+Built a professional custom WordPress theme for museums and cultural institutions using modern best practices. Implemented a custom Exhibitions post type, responsive mobile-first layouts, GSAP-powered animations, one-click demo import, and a custom admin tools panel. Delivered strong performance optimization (cache busting, conditional loading, no jQuery), SEO enhancements with Yoast integration and auto-populated metadata, and accessibility best practices aligned with WCAG principles.
 
-**Bachelor of Science in Computer Engineering**
-AMA Computer University — Quezon City, Philippines
+**GaitBeacon.com**  
+*WordPress and Elementor Developer*  
+Custom WordPress and WooCommerce site built with Elementor, optimized checkout flow, SEO configuration, performance tuning, and security hardening.
 
----
+**EverythingUsedCars.com**  
+*WordPress and Elementor Developer*  
+Developed a responsive WordPress site with advanced search filters, SEO optimization, caching setup, and scalable architecture.
 
-## **Certifications (Selected)**
+**PopularAISoftware.com**  
+*WordPress and Elementor Developer*  
+Built an AI tools directory integrating OpenAI, automation workflows, and WordPress customization for a dynamic user experience.
 
-* Fundamentals of AI Engineering
-* Become an AI Engineer – Learning Path
-* Deep Learning Foundations: NLP
-* Django Essential Training
-* Docker for Developers
-* AWS Cloud Practitioner (Foundational)
+**78Dragons.com**  
+*WordPress and Elementor Developer*  
+Developed a WooCommerce eCommerce platform with structured product management and optimized purchasing flow.
 
-*(Full certification list available on LinkedIn)*
+**SmarterSafetySystems.com**  
+*WordPress and Elementor Developer*  
+Built a WordPress site for an IoT safety solutions provider with structured content and scalable architecture.
 
----
+**LumbardConsulting.com**  
+*WordPress and Elementor Developer*  
+Created a professional WordPress site for a leadership consulting firm with optimized UX and structured service pages.
 
-## **How to Use This Resume**
+**24Aries.com**  
+*WordPress Developer*  
+Developed a WordPress website showcasing advanced technology products with responsive layout and structured presentation.
 
-* **Apply to roles titled:**
-  *AI Software Engineer, Applied AI Engineer, Senior Backend Engineer (AI), LLM Engineer*
-* Keep your **13-page resume** as a portfolio appendix
-* This version is your **ATS + human-scanner resume**
+**PulseIQ.com**  
+*WordPress and Elementor Developer*  
+Built a WordPress site for energy benchmarking and management solutions with SEO configuration and performance optimization.
 
----
+**AUTOMATION & SOFTWARE ENGINEERING**
 
-### Next steps (I highly recommend):
+**Cloudflare Multiple Domain Delete (GUI)**  
+*Full Stack Python Developer*  
+[https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete](https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete)  
+Built a Tkinter-based desktop tool for safely bulk deleting Cloudflare domains with progress tracking and structured logging.
 
-1. I can create **3 role-specific variants**
+**HTTrack-like Clone**  
+*Full Stack Python Developer*  
+[https://github.com/RonaldAllanRivera/httrack-clone](https://github.com/RonaldAllanRivera/httrack-clone)  
+Developed a desktop application that mirrors web pages into clean offline folders with asset rewriting, structured output, and preview capabilities.
 
-   * Startup AI Engineer
-   * Enterprise AI/Backend Engineer
-   * Freelance / Contract AI Engineer
-2. Rewrite this into a **US-style one-page executive version**
-3. Do a **salary positioning & title calibration** for remote/global roles
+**Interactive Map Scraper**  
+*Software Developer*  
+[https://github.com/RonaldAllanRivera/mapscraper](https://github.com/RonaldAllanRivera/mapscraper)  
+Created a Python GUI tool to extract structured data from Mapbox-based interactive maps.
 
-Just tell me what you want next.
+**CSV Scraper GUI**  
+*Software Developer*  
+[https://github.com/RonaldAllanRivera/csv\_scraper\_gui](https://github.com/RonaldAllanRivera/csv_scraper_gui)  
+Built a Selenium-based desktop scraper designed for heavily protected websites using realistic browser automation techniques.
+
+**GRAPHIC DESIGN**
+
+[https://www.flickr.com/photos/ronald-allan-rivera/](https://www.flickr.com/photos/ronald-allan-rivera/)  
+Collection of branding, layout, and digital design projects demonstrating visual communication and creative direction.
+
+| Latest Skills with Certifications |
+| :---- |
+
+**Learning Nuxt.js**  
+Issued: September 13, 2025  
+Time: 1h 32m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/dc65cf43b5e68ff03ee981b13ed48131c8178184bde15143fcbfcb35d409f906](https://www.linkedin.com/learning/certificates/dc65cf43b5e68ff03ee981b13ed48131c8178184bde15143fcbfcb35d409f906) 
+
+**Vue.js 3 Essential Training**  
+Issued: September 11, 2025  
+Time: 5h 8m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/5aeb562393f6c13ca193e4d212d66b6c0fe0b68b15fa0c3507e72c743313e86e](https://www.linkedin.com/learning/certificates/5aeb562393f6c13ca193e4d212d66b6c0fe0b68b15fa0c3507e72c743313e86e) 
+
+**Building Modern Projects with React**  
+Provider: LinkedIn.com  
+Issued: August 27, 2025  
+Time: 3h 50m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/33d7b534ce141004f955319fedc3d5ec508815079f2acfaada174e26720746ce](https://www.linkedin.com/learning/certificates/33d7b534ce141004f955319fedc3d5ec508815079f2acfaada174e26720746ce) 
+
+**Building a Website with Laravel, React.js, and Inertia**  
+Provider: LinkedIn.com  
+Issued: August 14, 2025  
+Time: 1h 16m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/b01a53cc90b8135336242263048fafd652382098f874598b1e0de2ffbfc00a76](https://www.linkedin.com/learning/certificates/b01a53cc90b8135336242263048fafd652382098f874598b1e0de2ffbfc00a76) 
+
+**Custom WordPress Plugins: Design, Develop, and Distribute**  
+Provider: LinkedIn.com  
+Issued: August 7, 2025  
+Time: 1h 13m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/f5fe062fe2ae57d3cd98db101d2f19e23eb0a17f3e32d35ad6535518d2e189cd](https://www.linkedin.com/learning/certificates/f5fe062fe2ae57d3cd98db101d2f19e23eb0a17f3e32d35ad6535518d2e189cd)
+
+**HTMX Essential Training**  
+Provider: LinkedIn.com  
+Issued: August 4, 2025  
+Time: 1h 24m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/c7de5adcb5d2827eb37d72599c4f6cb43956bfbd9d2de3bc8026589d005b2604](https://www.linkedin.com/learning/certificates/c7de5adcb5d2827eb37d72599c4f6cb43956bfbd9d2de3bc8026589d005b2604) 
+
+**GitHub Actions for CI/CD**  
+Provider: LinkedIn.com  
+Issued: July 30, 2025  
+Time: 2h 2m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/45c1cc155f56f1c100e0356aa95ff620d4cfdbc857b684f2c2db1144daa824a7](https://www.linkedin.com/learning/certificates/45c1cc155f56f1c100e0356aa95ff620d4cfdbc857b684f2c2db1144daa824a7) 
+
+**Fundamentals of AI Engineering: Principles and Practical Applications**  
+Provider: LinkedIn.com  
+Issued: July 24, 2025  
+Time: 4h 3m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/b924f96937612ae3b362e862fb27380503b4057a8f6969e33722f3dd0e813db6](https://www.linkedin.com/learning/certificates/b924f96937612ae3b362e862fb27380503b4057a8f6969e33722f3dd0e813db6) 
+
+**Model Context Protocol (MCP): Hands-On with Agentic AI**  
+Provider: LinkedIn.com  
+Issued: July 21, 2025  
+Time: 55m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/ecc4f8cdb8d8a0af3e3587f8bfe940c97c73a50deca72279304188e028f9005e](https://www.linkedin.com/learning/certificates/ecc4f8cdb8d8a0af3e3587f8bfe940c97c73a50deca72279304188e028f9005e) 
+
+**Learning Kubernetes**  
+Provider: LinkedIn.com  
+Issued: July 20, 2025  
+Time: 1h 28m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/9e9010446496f38f2a05668e156edea5e8afc63654e40379b8d9566408c45043](https://www.linkedin.com/learning/certificates/9e9010446496f38f2a05668e156edea5e8afc63654e40379b8d9566408c45043) 
+
+**AWS Certified Cloud Practitioner (CLF-C02) Cert Prep: 1 Cloud Concepts**  
+Provider: LinkedIn.com  
+Issued: July 20, 2025  
+Time: 55m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/f8516ab967efb579f4ba5205e1dcdfec26c1eeb1d2fe836e7522b506f57a92d9](https://www.linkedin.com/learning/certificates/f8516ab967efb579f4ba5205e1dcdfec26c1eeb1d2fe836e7522b506f57a92d9) 
+
+**DevOps Foundations: Continuous Delivery/Continuous Integration**  
+Provider: LinkedIn.com  
+Issued: July 16, 2025  
+Time: 1h 54m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/4dfe834dafd9f6a12b67c02440515023811b89f597864e33e62d6f78ef9b05f6](https://www.linkedin.com/learning/certificates/4dfe834dafd9f6a12b67c02440515023811b89f597864e33e62d6f78ef9b05f6) 
+
+**AWS API Gateway with HTTP, Lambda, DynamoDB, and iOS**  
+Provider: LinkedIn.com  
+Issued: July 11, 2025  
+Time: 2h 1m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/e70d37f0cafe8215b0a603f724df137427dfe024b46236a51e596655b8dfda47](https://www.linkedin.com/learning/certificates/e70d37f0cafe8215b0a603f724df137427dfe024b46236a51e596655b8dfda47) 
+
+**MongoDB Essential Training**  
+Provider: LinkedIn.com  
+Issued: July 8, 2025  
+Time: 3h 49m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/05067d9ffbe1acc92103ebb46d7a2940efd531ae6d3b5e559ce8aa724da2a2e6](https://www.linkedin.com/learning/certificates/05067d9ffbe1acc92103ebb46d7a2940efd531ae6d3b5e559ce8aa724da2a2e6)
+
+**Express Essentials: Build Powerful Web Apps with Node.js**  
+Provider: LinkedIn.com  
+Issued: June 27, 2025  
+Time: 1h 59m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/b1758b031c4ab641b173d96d7d4536251e815713c93535796e08950b6538ee69](https://www.linkedin.com/learning/certificates/b1758b031c4ab641b173d96d7d4536251e815713c93535796e08950b6538ee69) 
+
+**TypeScript Essential Training**  
+Provider: LinkedIn.com  
+Issued: June 25, 2025  
+Time: 2h 18m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/ae62321a86cb8a391af54aa71def55ca67390407ed91e08c06924a2c79bebc78](https://www.linkedin.com/learning/certificates/ae62321a86cb8a391af54aa71def55ca67390407ed91e08c06924a2c79bebc78) 
+
+**Next.js: Creating and Hosting a Full-Stack Site**  
+Provider: LinkedIn.com  
+Issued: June 21, 2025  
+Time: 3h 54m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/a86740c29838ab340fae7f881a666d88bf99ca598c36bcce671d4ca247d5ea81](https://www.linkedin.com/learning/certificates/a86740c29838ab340fae7f881a666d88bf99ca598c36bcce671d4ca247d5ea81) 
+
+**AWS Essential Training for Developers**  
+Provider: LinkedIn.com  
+Issued: June 6, 2025  
+Time: 4h 8m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/21a88cee8041f1495a604a171df1283a7f6ffc7a3443a22f5047c57f61fd6ac1](https://www.linkedin.com/learning/certificates/21a88cee8041f1495a604a171df1283a7f6ffc7a3443a22f5047c57f61fd6ac1) 
+
+**Vibe Coding Fundamentals: Tools and Best Practices**  
+Provider: LinkedIn.com  
+Issued: June 5, 2025  
+Time: 37m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/a9342688d934995e9c94a3b50ebc4e9f17aba8c8112495cb2d23ea881ba76122](https://www.linkedin.com/learning/certificates/a9342688d934995e9c94a3b50ebc4e9f17aba8c8112495cb2d23ea881ba76122) 
+
+**Tailwind CSS 4 Essential Training**  
+Provider: LinkedIn.com  
+Issued: June 2, 2025  
+Time: 3h 2m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/111a5b9612a3e040339084651ebbf02811648b132ff0451952202e6545295ca0](https://www.linkedin.com/learning/certificates/111a5b9612a3e040339084651ebbf02811648b132ff0451952202e6545295ca0) 
+
+**Docker for Developers**  
+Provider: LinkedIn.com  
+Issued: May 30, 2025  
+Time: 1h 15m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/37d41dd7fed5ab1665d2b9441537ecc448996fe5b34fb53c2a5491654068edcb](https://www.linkedin.com/learning/certificates/37d41dd7fed5ab1665d2b9441537ecc448996fe5b34fb53c2a5491654068edcb) 
+
+**Software Architecture Foundations**  
+Provider: LinkedIn.com  
+Issued: May 26, 2025  
+Time: 1h 36m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/19766d900f59c253530bf7b16568826b9538711edd0684214d0bf0ab99f87dd8](https://www.linkedin.com/learning/certificates/19766d900f59c253530bf7b16568826b9538711edd0684214d0bf0ab99f87dd8) 
+
+**Securing Software as a Service (SaaS)**  
+Provider: LinkedIn.com  
+Issued: May 25, 2025  
+Time: 54m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/5c34cfc123c6e93e529492dfd890e2e04ed4042edf9cf4c548954dac95855bfc](https://www.linkedin.com/learning/certificates/5c34cfc123c6e93e529492dfd890e2e04ed4042edf9cf4c548954dac95855bfc) 
+
+**Django Essential Training**  
+Provider: LinkedIn.com  
+Issued: May 23, 2025  
+Time: 2h 39m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/af807f85a18de4d27c1e4e9df3c47b064689149f11df7e2c8975a7eb5998f96a](https://www.linkedin.com/learning/certificates/af807f85a18de4d27c1e4e9df3c47b064689149f11df7e2c8975a7eb5998f96a) 
+
+**Figma Essential Training**  
+Provider: LinkedIn.com  
+Issued: May 15, 2025  
+Time: 1h 37m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/15e5309e9120aab099bd164f5a2f1f8e290866f74755535da1dc6487e19810d4](https://www.linkedin.com/learning/certificates/15e5309e9120aab099bd164f5a2f1f8e290866f74755535da1dc6487e19810d4) 
+
+**WordPress Essential Training**  
+Provider: LinkedIn.com  
+Issued: May 14, 2025  
+Time: 2h 4m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/8887227bf6002282146185cad81ee8e1da875895293da1822b5ac1f8669597cf](https://www.linkedin.com/learning/certificates/8887227bf6002282146185cad81ee8e1da875895293da1822b5ac1f8669597cf) 
+
+**Building Angular and Django Apps**  
+Provider: LinkedIn.com  
+Issued: May 10, 2025  
+Time: 1h 46m  
+Certification URL: [https://www.linkedin.com/learning/certificates/161d0c6326d33016eca724de3899156fe1e22964a825f84ff6ffd94d2c857a7e](https://www.linkedin.com/learning/certificates/161d0c6326d33016eca724de3899156fe1e22964a825f84ff6ffd94d2c857a7e) 
+
+**Building React and Django Apps**  
+Provider: LinkedIn.com  
+Issued: May 8, 2025  
+Time: 56m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/281091f4ba76c7ce27429f5187229bec80a4b58e2d14001814334fd7f6f87cc0](https://www.linkedin.com/learning/certificates/281091f4ba76c7ce27429f5187229bec80a4b58e2d14001814334fd7f6f87cc0) 
+
+**Advanced Python: Practical Database Examples**  
+Provider: LinkedIn.com  
+Issued: May 7, 2025  
+Time: 1h 48m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/c444a48013cdb95fa9c3416f1c21aa9777a5472e2620f0a0b47a662429a37afe](https://www.linkedin.com/learning/certificates/c444a48013cdb95fa9c3416f1c21aa9777a5472e2620f0a0b47a662429a37afe) 
+
+**Advanced Python: Working with Databases**  
+Provider: LinkedIn.com  
+Issued: May 4, 2025  
+Time: 2h 6m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/38bc91603bce3d69fc80a77415e1ea2e65870bd43364dcb64090708530d79b43](https://www.linkedin.com/learning/certificates/38bc91603bce3d69fc80a77415e1ea2e65870bd43364dcb64090708530d79b43)
+
+**Python Hands-On Practice Learning Path**  
+Provider: LinkedIn.com  
+Issued: April 29, 2025  
+Time: 15h 46m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/7eee12decca890f1993a6cc111c0b6a92d38d970629e240a0a0e35740cdff3df](https://www.linkedin.com/learning/certificates/7eee12decca890f1993a6cc111c0b6a92d38d970629e240a0a0e35740cdff3df)  
+
+**Introduction to Video Editing**  
+Provider: LinkedIn.com  
+Issued: March 28, 2025  
+Time: 2h 53m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/9bb8157b817c27c832ad0d7d645ec3b6759afa19b8aa6b428cd5a70b1ce5c344](https://www.linkedin.com/learning/certificates/9bb8157b817c27c832ad0d7d645ec3b6759afa19b8aa6b428cd5a70b1ce5c344) 
+
+**Video Editing Fundamentals**  
+Provider: LinkedIn.com  
+Issued: March 23, 2025  
+Time: 37m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/f355db89fb691abc0138293d43b50fb689c14775fbff8e0dfaa542e91dc28c8a](https://www.linkedin.com/learning/certificates/f355db89fb691abc0138293d43b50fb689c14775fbff8e0dfaa542e91dc28c8a) 
+
+**AI and Generative AI for Video Content Creation**  
+Provider: LinkedIn.com  
+Issued: March 22, 2025  
+Time: 1h 33m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/238455ae1d22c558a63a8391a7f77702158c1c00ad4544167a88540d45ccac3a](https://www.linkedin.com/learning/certificates/238455ae1d22c558a63a8391a7f77702158c1c00ad4544167a88540d45ccac3a) 
+
+**Leveraging AI in Adobe Premiere Pro**  
+Provider: LinkedIn.com  
+Issued: March 21, 2025  
+Time: 1h 20m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/61bc6ccdf7a9524aeac01763f920ce2f04d51325fd32625bf87d94fa3428365f](https://www.linkedin.com/learning/certificates/61bc6ccdf7a9524aeac01763f920ce2f04d51325fd32625bf87d94fa3428365f) 
+
+**Premiere Pro 2025 Essential Training**  
+Provider: LinkedIn.com  
+Issued: March 14, 2025  
+Time: 5h 53m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/5e38de98dd380e18463af59262e59c08ae876b9a22d426e7da0b9b57f4919fc2](https://www.linkedin.com/learning/certificates/5e38de98dd380e18463af59262e59c08ae876b9a22d426e7da0b9b57f4919fc2)  
+
+**Become an AI Engineer Learning Path**  
+Provider: LinkedIn.com  
+Issued: March 12, 2025  
+Time: 13h  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/4268173311ad8a9beade4470e5f3deb30aa070323210fda19a37805c4a43c54d](https://www.linkedin.com/learning/certificates/4268173311ad8a9beade4470e5f3deb30aa070323210fda19a37805c4a43c54d) 
+
+**Deep Learning Foundations: Natural Language Processing with TensorFlow**  
+Provider: LinkedIn.com  
+Issued: March 10, 2025  
+Time: 1h 47m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/28580b41cff6f96e90dc5aba8174f54ed3a9f6dcccf5db71b9bac4347df66d72](https://www.linkedin.com/learning/certificates/28580b41cff6f96e90dc5aba8174f54ed3a9f6dcccf5db71b9bac4347df66d72) 
+
+**Fundamentals to Become a Machine Learning Engineer Learning Path**  
+Provider: LinkedIn.com  
+Issued: February 27, 2025  
+Time: 10h  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/6f14c524435962cc935f269cc048c73afdc84b05238a7616884ba9c86f01eb1c](https://www.linkedin.com/learning/certificates/6f14c524435962cc935f269cc048c73afdc84b05238a7616884ba9c86f01eb1c) 
+
+**Explore React.js Development Learning Path**  
+Provider: LinkedIn.com  
+Issued: February 11, 2025  
+Time: 19h  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/c3e08e5bfbfa580df0208ec900acfdb6594ea4f00efe23d0162213b461332c66?trk=share\_certificate](https://www.linkedin.com/learning/certificates/c3e08e5bfbfa580df0208ec900acfdb6594ea4f00efe23d0162213b461332c66?trk=share_certificate) 
+
+**React.js: Building an Interface**  
+Provider: LinkedIn.com  
+Issued: January 4, 2025  
+Time: 1h 40m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/2c3409c0ce3da8e46590b436f490ee70b7a0f4ea17fa19741886f0a2d0375ddd?trk=share\_certificate](https://www.linkedin.com/learning/certificates/2c3409c0ce3da8e46590b436f490ee70b7a0f4ea17fa19741886f0a2d0375ddd?trk=share_certificate) 
+
+**Practical GitHub Code Search**  
+Provider: LinkedIn.com  
+Issued: January 1, 2025  
+Time: 40m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/559dc4348e18461307db7d714b9bdbd856cc47c2ae25d5864e79979d23783a06?trk=share\_certificate](https://www.linkedin.com/learning/certificates/559dc4348e18461307db7d714b9bdbd856cc47c2ae25d5864e79979d23783a06?trk=share_certificate)
+
+**Practical GitHub Copilot**  
+Provider: LinkedIn.com  
+Issued: December 30, 2024  
+Time: 1h  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/c7bf4d6b59f23ca0741527c6241e83b1e64de1c9820ba20000bc0bffc1a7373c](https://www.linkedin.com/learning/certificates/c7bf4d6b59f23ca0741527c6241e83b1e64de1c9820ba20000bc0bffc1a7373c)
+
+**Practical GitHub Project Management and Collaboration**  
+Provider: LinkedIn.com  
+Issued: December 29, 2024  
+Time: 1h 18m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/353a09617244451b65cbf40aa1e8ff6b81d645cdd156bfb319e2be3b3bcece8f](https://www.linkedin.com/learning/certificates/353a09617244451b65cbf40aa1e8ff6b81d645cdd156bfb319e2be3b3bcece8f)
+
+**Practical GitHub Actions**  
+Provider: LinkedIn.com  
+Issued: December 29, 2024  
+Time: 1h 19m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/e40208dfb0d72497af6803f2162dc0a9db0ae89866a4b42ad18a7664d21dba83](https://www.linkedin.com/learning/certificates/e40208dfb0d72497af6803f2162dc0a9db0ae89866a4b42ad18a7664d21dba83) 
+
+**Building PHP Applications with Generative AI**  
+Provider: LinkedIn.com  
+Issued: December 28, 2024  
+Time: 1h 23m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/0b2ee6d4dbc24eae8a69c3227cceddaa2b4a59303e4e9ae2732e4c834c78ada7](https://www.linkedin.com/learning/certificates/0b2ee6d4dbc24eae8a69c3227cceddaa2b4a59303e4e9ae2732e4c834c78ada7) 
+
+**Git Essential Training**  
+Provider: LinkedIn.com  
+Issued: December 28, 2024  
+Time: 1h 23m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/1e890028719654b52cc922ca5b4464005a4ce2db8d3be0f3561ba01a0fde04b5?trk=share\_certificate](https://www.linkedin.com/learning/certificates/1e890028719654b52cc922ca5b4464005a4ce2db8d3be0f3561ba01a0fde04b5?trk=share_certificate) 
+
+**Node.js: Testing and Code Quality**  
+Provider: LinkedIn.com  
+Issued: December 25, 2024  
+Time: 4h 21m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/ed0dd5a3a4d81b09e6387e4f321e7d9602ad55868a59edd50c362cdd8589cbde?trk=share\_certificate](https://www.linkedin.com/learning/certificates/ed0dd5a3a4d81b09e6387e4f321e7d9602ad55868a59edd50c362cdd8589cbde?trk=share_certificate) 
+
+**Learning npm: A Package Manager**  
+Provider: LinkedIn.com  
+Issued: December 20, 2024  
+Time: 55m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/32db740d99020a763effb933faa2c8bb4d35b96f8fc9fde3284a91596e506b76?trk=share\_certificate](https://www.linkedin.com/learning/certificates/32db740d99020a763effb933faa2c8bb4d35b96f8fc9fde3284a91596e506b76?trk=share_certificate)
+
+**Node.js Essential Training**  
+Provider: LinkedIn.com  
+Issued: December 19, 2024  
+Time: 1h 19m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/0c86dd65b36e45e63017947a29f1d3c187a7411779ec1fe5c3c815852422a2dc?trk=share\_certificate](https://www.linkedin.com/learning/certificates/0c86dd65b36e45e63017947a29f1d3c187a7411779ec1fe5c3c815852422a2dc?trk=share_certificate) 
+
+**WordPress: Custom Post Types and Taxonomies**  
+Provider: LinkedIn.com  
+Issued: December 18, 2024  
+Time: 2h 9m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/2f6601a67d2327b1fc3e3ea54c81dc29299cdc54b447327db40a70caac345d70?trk=share\_certificate](https://www.linkedin.com/learning/certificates/2f6601a67d2327b1fc3e3ea54c81dc29299cdc54b447327db40a70caac345d70?trk=share_certificate) 
+
+**Agile Foundations**  
+Provider: LinkedIn.com  
+Issued: December 15, 2024  
+Time: 1h 35m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/c5189bc0ba85a7e6016059ad1f93e1683f304106df08fa7b006bf1b1647b5f04](https://www.linkedin.com/learning/certificates/c5189bc0ba85a7e6016059ad1f93e1683f304106df08fa7b006bf1b1647b5f04) 
+
+**Laravel: Building a CRM with Filament for Laravel**  
+Provider: LinkedIn.com  
+Issued: December 14, 2024  
+Time: 2h 51m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/1f3d00496216aa4d7d8b3c64c5e75cf387ac213564c66114fafd5ae59a661f76](https://www.linkedin.com/learning/certificates/1f3d00496216aa4d7d8b3c64c5e75cf387ac213564c66114fafd5ae59a661f76) 
+
+**Livewire Essential Training**  
+Provider: LinkedIn.com  
+Issued: December 11, 2024  
+Time: 52m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/2f70f1c665385a9b981264318c8bf3f5ef2a26cc562932cb052bc1d64aa9c85d](https://www.linkedin.com/learning/certificates/2f70f1c665385a9b981264318c8bf3f5ef2a26cc562932cb052bc1d64aa9c85d) 
+
+**WordPress: Internationalization**  
+Provider: LinkedIn.com  
+Issued: December 10, 2024  
+Time: 1h 22m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/c4f2b4f22693e61f9388f4a4873f42eb13f325d37ee6cdff6e7c19fdd88905b9](https://www.linkedin.com/learning/certificates/c4f2b4f22693e61f9388f4a4873f42eb13f325d37ee6cdff6e7c19fdd88905b9) 
+
+**WordPress: Building a Secure Site**  
+Provider: LinkedIn.com  
+Issued: December 9, 2024  
+Time: 51m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/81f10cb5e17866fd99d6f2c15f2c7e7838520e89bff044a6b85ec99cc7ee5e70](https://www.linkedin.com/learning/certificates/81f10cb5e17866fd99d6f2c15f2c7e7838520e89bff044a6b85ec99cc7ee5e70) 
+
+**React Essential Training**  
+Provider: LinkedIn.com  
+Issued: December 8, 2024  
+Time: 1h 45m
+
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/e89adcf61aef250dc56a97161dd4b05c2038edced33ea10493b0b816a8b6958c?trk=share\_certificate](https://www.linkedin.com/learning/certificates/e89adcf61aef250dc56a97161dd4b05c2038edced33ea10493b0b816a8b6958c?trk=share_certificate) 
+
+**Building GraphQL Applications in Laravel**  
+Provider: LinkedIn.com  
+Issued: December 5, 2024  
+Time: 44m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/82c64cb0e42918b944984e9daa13be9f88325cdc47535549d5d8840986343fdd?trk=share\_certificate](https://www.linkedin.com/learning/certificates/82c64cb0e42918b944984e9daa13be9f88325cdc47535549d5d8840986343fdd?trk=share_certificate) 
+
+**Building RESTful APIs in Laravel**  
+Provider: LinkedIn.com  
+Issued: December 4, 2024  
+Time: 1h 17m  
+Certification URL:  
+[https://www.linkedin.com/learning/certificates/5e6d5ce87925d79cb32aae390f17d62e04850bc609e62be99d04885da01e25f9?trk=share\_certificate](https://www.linkedin.com/learning/certificates/5e6d5ce87925d79cb32aae390f17d62e04850bc609e62be99d04885da01e25f9?trk=share_certificate)  
+
+**Advanced Laravel**  
+Provider: LinkedIn.com  
+Issued: December 2, 2024  
+Time: 3h 14m  
+Certification URL:   
+[https://www.linkedin.com/learning/certificates/b70e683da49224fac61c5dd4e9c5f442a3b9519a66223f8927958e42c12eef9e?trk=share\_certificate](https://www.linkedin.com/learning/certificates/b70e683da49224fac61c5dd4e9c5f442a3b9519a66223f8927958e42c12eef9e?trk=share_certificate) 
+
+**Laravel Essential Training**  
+Provider: LinkedIn.com  
+Issued: November 20, 2024  
+Time: 3h 14m  
+Certification URL:   
+[https://www.linkedin.com/learning/certificates/a62afe7be32b1289dcf55271659faa0b1538345ab4a60ca27b31afd070f72653?trk=share\_certificate](https://www.linkedin.com/learning/certificates/a62afe7be32b1289dcf55271659faa0b1538345ab4a60ca27b31afd070f72653?trk=share_certificate) 
+
+**Using Python for Automation**  
+Provider: LinkedIn.com  
+Issued: November 20, 2024  
+Time: 1h 15m  
+Certification URL: [https://www.linkedin.com/learning/certificates/56db14e533a3fdcc56dc872cc6501e193d4827f4bfa399a3b55cb71d5fb5d563?trk=share\_certificate](https://www.linkedin.com/learning/certificates/56db14e533a3fdcc56dc872cc6501e193d4827f4bfa399a3b55cb71d5fb5d563?trk=share_certificate) 
+
+**Level Up: Python**  
+Provider: LinkedIn.com  
+Issued: November 19, 2024  
+Time: 57m  
+Certification URL:   
+[https://www.linkedin.com/learning/certificates/f10790e4b3c999dbb050501bdfb94bf9737bf3c5bba553a2a30cfe6b167159d1?trk=share\_certificate](https://www.linkedin.com/learning/certificates/f10790e4b3c999dbb050501bdfb94bf9737bf3c5bba553a2a30cfe6b167159d1?trk=share_certificate) 
+
+**Python Essential Training**  
+Provider: LinkedIn.com  
+Issued: November 17, 2024  
+Time: 4h 22m  
+Certification URL: [https://www.linkedin.com/learning/certificates/71ec9ce81c088ab9086beb5510dee27de4eee37e15a4ca1cda0cc4642b0d5633?trk=share\_certificate](https://www.linkedin.com/learning/certificates/71ec9ce81c088ab9086beb5510dee27de4eee37e15a4ca1cda0cc4642b0d5633?trk=share_certificate) 
+
+**Django Essential Training**  
+Provider: LinkedIn.com  
+Issued: November 19, 2024  
+Time: 2h 6m  
+Certification URL: [https://www.linkedin.com/learning/certificates/914245da3488fe74cc988207eeedb297e566cd0d8727618a3e5083e905ac4fa4?trk=share\_certificate](https://www.linkedin.com/learning/certificates/914245da3488fe74cc988207eeedb297e566cd0d8727618a3e5083e905ac4fa4?trk=share_certificate)  

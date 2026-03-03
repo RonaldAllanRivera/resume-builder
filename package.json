@@ -10,6 +10,8 @@
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "seed:resume": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-resume.ts",
+    "seed:complete": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-resume-complete.ts",
+    "reset:database": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/reset-database.ts",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "ii": "cross-env NODE_OPTIONS=--no-deprecation pnpm --ignore-workspace install",

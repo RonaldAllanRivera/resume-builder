@@ -160,15 +160,35 @@ See `DOCKER.md` for more details.
 
 - Install deps: `pnpm install`
 - Run dev: `pnpm dev`
-- Seed resume data:
-  - CLI: `pnpm run seed:resume`
-  - Admin UI: open `/admin` and click “Seed resume data” (admin-only)
 - After schema changes:
   - `pnpm run generate:types`
   - `npx tsc --noEmit`
-
 - After adding or changing Payload admin components:
   - `pnpm run generate:importmap`
+
+### Seeding Resume Data
+
+Populate your database with resume content (experiences, projects, education, certifications):
+
+**Using Docker:**
+```bash
+docker compose exec app pnpm run seed:resume
+```
+
+**Using local dev (without Docker):**
+```bash
+pnpm run seed:resume
+```
+
+**What gets seeded:**
+- 9 Work Experiences (LogicMedia BV, PulseIQ, etc.)
+- 15 Projects (Meet Lessons, Forex Platform, WordPress plugins, etc.)
+- 1 Education (Saint Louis University - BS Computer Science)
+- 6 Certifications (LinkedIn Learning courses)
+
+All records are created with `published` status and are immediately visible in the admin panel.
+
+**Note:** Running the seed multiple times will create duplicate records. If you need to re-seed, delete existing records first via the admin panel or reset the database.
 
 - **Generations admin UX helpers**
   - On a Generation edit page, copy buttons are available for quick exporting:

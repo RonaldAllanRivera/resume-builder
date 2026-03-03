@@ -17,7 +17,7 @@ Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 **Web Developer**  
 **Company Name:** LogicMedia BV  
 **Description:** An online marketing agency.  
-**Date Joined:** June 2015 – Present
+**Date Joined:** June 2015 \- Present
 
 * Partner directly with the CEO to lead **end-to-end web development** initiatives, delivering high-performance marketing and interstitial websites that drive engagement and conversions.  
 * **Develop full-stack tools and applications** using **Python, Django, React.js, and Next.js**, streamlining internal workflows and improving operational efficiency.  
@@ -29,7 +29,7 @@ Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 **Senior Web Programmer and Web Designer**  
 **Company Name:** PulseIQ.com  
 **Description:** A smart energy management solution for multifamily buildings.  
-**Date Joined:** July 2007 – Present
+**Date Joined:** July 2007 \- Present
 
 * Lead the **design and development of all partner websites**, building custom **WordPress and Elementor-based solutions** tailored for high-impact marketing campaigns.  
 * **Develop custom WordPress plugins** and implement fully responsive themes from scratch, converting Photoshop designs into pixel-perfect front-end templates.  
@@ -46,29 +46,29 @@ Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 **Web Designer**  
 **Company Name:** SiteBuilder123.com  
 **Description:** A small, experienced team specializing in website development and marketing.  
-**Date Joined:** February 2015 – December 2015
+**Date Joined:** February 2015 \- December 2015
 
 * Built WordPress websites tailored to client requirements, focusing on modern, responsive design.  
 * Designed marketing materials like tarpaulins, brochures, and streamers, helping clients effectively communicate their brand messages.
 
-**Lead Banner Designer – Contractual**  
+**Lead Banner Designer \- Contractual**  
 **Company Name:** Bowzed.com  
 **Description:** Helps companies of all sizes acquire customers affordably and efficiently.  
-**Date Joined:** March 2015 – May 2015
+**Date Joined:** March 2015 \- May 2015
 
 * Designed and coded marketing banners using HTML, CSS, and JavaScript, ensuring responsive and engaging designs.
 
 **Freelance Graphic Designer**  
 **Company Name:** Thunderbird Resort La Union Philippines  
 **Description:** A Mediterranean-inspired luxury resort in the northern Philippines.  
-**Date Joined:** May 2007 – November 2008
+**Date Joined:** May 2007 \- November 2008
 
 * Created graphic designs for promotional materials such as tarpaulins, brochures, and magazines, aligning visuals with the resort’s premium branding.
 
 **Web Developer and Graphic Artist**  
 **Company Name:** Danalex Graphic Arts and Call Center, Baguio City, Philippines  
 **Description:** A Graphic Arts, Web Design, and Software Development Company originally based in Honolulu, Hawaii, and Las Vegas.  
-**Date Joined:** April 2006 – July 2007
+**Date Joined:** April 2006 \- July 2007
 
 * Developed websites using PHP, MySQL, XHTML, and CSS, ensuring functionality and adherence to client requirements.  
 * Designed and converted website mockups from Photoshop into working front-end interfaces.
@@ -76,7 +76,7 @@ Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 **Web/Graphic Designer and Customer Representative**  
 **Company Name:** Web Coast Design Inc., Baguio City, Philippines  
 **Description:** A website design and development company serving clients across the United States.  
-**Date Joined:** March 2005 – April 2006
+**Date Joined:** March 2005 \- April 2006
 
 * Collaborated with clients to design and develop custom websites that aligned with their business goals.  
 * Worked closely with senior designers to learn and apply advanced web and graphic design techniques.
@@ -84,7 +84,7 @@ Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 **High School Math Instructor**  
 **Company Name:** Agoo Academy  
 **Description:** A school in La Union, Philippines.  
-**Date Joined:** June 2004 – March 2005
+**Date Joined:** June 2004 \- March 2005
 
 * Taught mathematics subjects, including Geometry, Algebra, Statistics, and Trigonometry, to high school students.  
 * Served as a general section adviser and part-time computer instructor, teaching basic IT skills.
@@ -92,7 +92,7 @@ Address:   Sector 5, Sta. Monica, Agoo, La Union 2504 Philippines
 **Final Weigher**  
 **Company Name:** Union Leaf Tobacco Corporation  
 **Description:** A tobacco company based in the Philippines.  
-**Date Joined:** March 2003 – June 2004
+**Date Joined:** March 2003 \- June 2004
 
 * Ensured all packed tobacco met exact weight requirements before transferring to the warehouse.  
 * Provided technical support to production clerks, resolving computer-related issues to maintain operational efficiency.
@@ -116,89 +116,133 @@ Permanent Residence: Philippines
 | Latest Projects  |
 | :---- |
 
-**Forex Signals Platform (D1/W1/MN1) \- Full-Stack Laravel Developer**  
-[https://github.com/RonaldAllanRivera/forex](https://github.com/RonaldAllanRivera/forex)   
-Built a production-minded Laravel 12 application for higher-timeframe Forex analysis, featuring secure session-based auth, resilient market data ingestion, background job orchestration, and a clean JSON API. The system syncs daily, weekly, and monthly candlestick data with idempotent upserts, renders MT4-style charts using TradingView Lightweight Charts, and generates AI-assisted BUY/SELL/WAIT signals with persisted reasoning and trade snapshots. Delivered scheduler-first automation, admin-only trade review workflows, daily email digests, and testable service boundaries, all containerized with Docker for reliable local and production deployment.
+**FULL STACK DEVELOPMENT**
 
-**Figma to Elementor Clone \- Full-Stack Laravel Developer**  
-[https://github.com/RonaldAllanRivera/elementor-clone](https://github.com/RonaldAllanRivera/elementor-clone)   
-Built a production-ready Laravel system that converts Figma Frame designs into clean HTML previews and Elementor-compatible JSON for WordPress import. The platform includes authenticated project and design management, normalized layout JSON storage, server-side HTML rendering, and multi-format Elementor export (classic, simplified, and container-based). Dockerized with Laravel Sail, fully tested, and designed as the backend foundation for future Figma and WordPress plugin integrations.
+**Meet Lessons**  
+*Full Stack Django \+ Python Developer*  
+[https://github.com/RonaldAllanRivera/auto-respond/](https://github.com/RonaldAllanRivera/auto-respond/)  
+Built a production-style SaaS platform combining a Python OCR desktop client and Django backend for AI-assisted Q\&A from screenshots. Implemented secure multi-tenant architecture, token-based device pairing, Stripe subscriptions with webhook validation, REST APIs, and real-time AI streaming via SSE. Dockerized for production deployment.
 
-**AWS E-commerce Microservices \- Full-Stack Laravel Developer**  
-[https://github.com/RonaldAllanRivera/aws\_ecommerce](https://github.com/RonaldAllanRivera/aws_ecommerce)   
-A production-style, cloud-ready e-commerce platform featuring microservice architecture, SPA frontend, asynchronous messaging, and infrastructure-as-code deployment. The system is built from three Laravel 12 microservices (Catalog, Checkout, Email) and a Vue 3 SPA frontend, all containerized with Docker and designed to run on a single AWS EC2 instance with infrastructure managed via AWS CloudFormation.
+**Forex Signals Platform (D1/W1/MN1)**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/forex](https://github.com/RonaldAllanRivera/forex)  
+Developed a Laravel 12 trading analysis platform with automated candlestick syncing, AI-generated trade signals, TradingView chart rendering, scheduler-driven jobs, admin trade workflows, and daily email reports. Containerized with Docker for production readiness.
 
-**Book Reader \- Full-Stack AI Systems Developer**  
-[https://github.com/RonaldAllanRivera/book-reader](https://github.com/RonaldAllanRivera/book-reader)   
-Designed and implemented a production‑style Python system that automates a browser‑based reading and quiz platform: Selenium for navigation, Tkinter GUI for orchestration, and OCR (optical character recognition via easyocr) for local screenshot transcription. Integrated an OpenAI‑compatible LLM via REST to propose quiz answers using the transcribed book text as context, with clear logging and layered configuration (dotenv \+ YAML \+ dataclasses).
+**AWS E-commerce Microservices**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/aws\_ecommerce](https://github.com/RonaldAllanRivera/aws_ecommerce)  
+Architected a microservices-based e-commerce system using three Laravel services and a Vue 3 SPA frontend. Implemented asynchronous messaging, Docker containers, and AWS CloudFormation deployment on EC2.
 
-**Cars Images API \- Full-Stack Laravel Developer**  
-[https://github.com/RonaldAllanRivera/cars-images-api](https://github.com/RonaldAllanRivera/cars-images-api)   
-Built a Laravel 12 \+ Filament 4 system that integrates with Wikimedia Commons to fetch, filter, and cache high-resolution car images across multi-year ranges. Engineered a clean service-layer architecture with intelligent query reuse, dynamic make-model syncing, and lightweight result validation to drop non-car images. Delivered a fast, scalable admin experience with sortable 100-row tables, future-ready queue jobs, and efficient storage of search histories and metadata.
+**Modular Frontend with Advanced Marketing & Lead Gen Tools**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/traderai.live](https://github.com/RonaldAllanRivera/traderai.live)  
+Engineered a modular Laravel platform with multi-template switching, advanced lead generation pipelines, CAPTCHA validation, rate limiting, rule-based cloaking middleware, dynamic pixel injection, and enterprise-grade security controls.
 
-**Featured Resource Block \- WordPress Plugin Developer**  
-[https://github.com/RonaldAllanRivera/featured-resource-block](https://github.com/RonaldAllanRivera/featured-resource-block)   
-A standalone, production-ready WordPress plugin that introduces a Resources custom post type and a flexible Elementor “Featured Resource Block” widget, backed by a scheduled JSON sync pipeline with caching and robust failure handling. Built around a lean FRB\_Plugin orchestrator, cron-powered sync service, and transient-based caching, it delivers clean, accessible markup, minimal front-end footprint, and hardened security with strict sanitization, escaping, and capability checks.
+**Multi-Source Marketing Data Dashboard (CSV/JSON)**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/report-system-laravel](https://github.com/RonaldAllanRivera/report-system-laravel)  
+Built a performance marketing reporting system that normalizes CSV and JSON exports from multiple platforms into structured dashboards with strict campaign matching and spreadsheet-ready outputs.
 
-**IRANK Calc & Cards \- Full-Stack PHP Developer**  
-[https://github.com/RonaldAllanRivera/irank-calc-cards](https://github.com/RonaldAllanRivera/irank-calc-cards)   
-Engineered a high-performance WordPress plugin with two dynamic Gutenberg blocks: a Weight Loss Calculator with real-time lead capture and Swipeable Product Cards built on pure CSS scroll-snap. Delivered fully server-rendered blocks enhanced by lean vanilla JS, eliminating all external dependencies. Implemented advanced editor customization, responsive design, and AJAX-based lead storage. Optimized for zero bloat, instant load times, and seamless scalability \- demonstrating strong technical precision and UX-focused development.
+**Cars Images API**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/cars-images-api](https://github.com/RonaldAllanRivera/cars-images-api)  
+Developed a Laravel and Filament system integrating with Wikimedia Commons to fetch, validate, and manage high-resolution car images with scalable admin tools and optimized data workflows.
 
-**Modular Frontend with Advanced Marketing & Lead Gen Tools \- Full-Stack Laravel Developer**  
-[https://github.com/RonaldAllanRivera/traderai.live](https://github.com/RonaldAllanRivera/traderai.live)   
-Engineered a production-ready Laravel 12 system with a modular, multi-template frontend switchable via Filament 4 admin (A/B testing, rebranding without redeploy). Built advanced lead-gen pipelines with dual AJAX forms (global phone validation, Cloudflare Turnstile CAPTCHA, rate limiting), CSV export optimized for large datasets, and geo-targeted dialing logic. Delivered enterprise-grade marketing tools including a rule-based Cloaker middleware (IP/country/UA/referrer/param) with counters and an admin tester, plus a dynamic Pixel Manager to inject third-party tracking (GA, Meta) directly from the panel. Secured with CSP, bot protection, and granular rate limits. Shipped with full CRUD, seeders/factories, deployment playbooks, and operational docs for scalable, repeatable releases.
+**Book Reader**  
+*Full Stack AI Systems Developer*  
+[https://github.com/RonaldAllanRivera/book-reader](https://github.com/RonaldAllanRivera/book-reader)  
+Created a Python automation system using Selenium, OCR, and LLM integration to extract text from browser-based reading platforms and generate AI-assisted quiz answers with structured configuration and logging.
 
-**Cloudflare Multiple Domain Delete (GUI) – Full-Stack Python Developer**  
-[https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete](https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete)   
-A small Python app with a Tkinter UI that lets you bulk delete Cloudflare domains ("zones") safely, with progress feedback and logs. This tool helps you remove multiple domains from your Cloudflare account in a controlled way. You can paste up to 10 domains at a time, press DELETE, and watch a progress bar and log update as each zone is removed.
+**Figma to Elementor Clone**  
+*Full Stack Laravel Developer*  
+[https://github.com/RonaldAllanRivera/elementor-clone](https://github.com/RonaldAllanRivera/elementor-clone)  
+Built a Laravel platform that converts Figma designs into clean HTML previews and Elementor-compatible JSON exports for WordPress import, with authenticated project management and Docker deployment.
 
-**HTTrack-like Clone – Full-Stack Python Developer**  
-[https://github.com/RonaldAllanRivera/httrack-clone](https://github.com/RonaldAllanRivera/httrack-clone)   
-Developed a Tkinter desktop tool to mirror single web pages into clean, portable folders with rewritten local paths and automatic PHP content generation. Implemented robust asset resolution and CSS rewriting for url() and @import references, preview mode for quick sanity checks, and error aggregation with one-click copy. Delivered progress-tracked UI with cancel support, SSL toggle, and PyInstaller builds for Windows, producing fully localized HTML (index.html, local-index.html, content.php) with structured asset folders for offline use.
+**WORDPRESS DEVELOPMENT**
 
-**Used Cars Search \- WordPress Plugin Developer**  
-[https://github.com/RonaldAllanRivera/used-cars-search](https://github.com/RonaldAllanRivera/used-cars-search)   
-Developed a production-ready search and comparison WordPress plugin for large used-car inventories. Delivered instant autosuggest, sortable grid/list views, responsive 4-car comparison, and rich vehicle profiles (year, make, model, trim, price, mileage, engine, transmission). Integrated OpenAI for AI-powered generation of titles, descriptions, and SEO metadata in both single-post and bulk modes. Built conflict-safe SEO output, custom REST endpoints for integration, and an optimized, scalable architecture with selective asset loading and admin tools for data management.
+**Featured Resource Block**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/featured-resource-block](https://github.com/RonaldAllanRivera/featured-resource-block)  
+Developed a production-ready WordPress plugin featuring a custom post type, Elementor widget, scheduled JSON syncing, caching, and hardened security with strict sanitization and capability checks.
 
-**Multi-Source Marketing Data Dashboard (CSV/JSON) \- Full-Stack Laravel Developer**  
-[https://github.com/RonaldAllanRivera/report-system-laravel](https://github.com/RonaldAllanRivera/report-system-laravel)   
-Built a performance marketing reporting Laravel app that ingests CSV/JSON exports (no API keys), normalizes Rumble, Google, and Binom datasets, and delivers fast, spreadsheet-ready dashboards. Features include robust parsing, strict one-to-one campaign matching, collapsible grouped views, dark mode, and one-click copy to Google Sheets/Excel with preserved formulas. Designed for high data accuracy, scalability, and an automation roadmap with Gmail, Google Ads, Rumble, and Binom API integrations.
+**IRANK Calc & Cards**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/irank-calc-cards](https://github.com/RonaldAllanRivera/irank-calc-cards)  
+Engineered high-performance Gutenberg blocks including a real-time calculator and swipeable product cards using server-rendered architecture and lightweight vanilla JavaScript.
 
-**EverythingUsedCars.com – Full-Stack Web Developer**  
-Designed and developed a responsive, SEO-friendly website for Everything Used Cars using WordPress and Elementor. Implemented a clean, intuitive layout with optimized navigation for browsing used-car listings. Integrated custom search filters, mobile-optimized design, and performance enhancements for fast page loads. Configured SEO metadata, caching, and security settings to ensure high visibility and reliability. Delivered a scalable, easily maintainable site that supports future growth and content expansion.
+**Used Cars Search**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/used-cars-search](https://github.com/RonaldAllanRivera/used-cars-search)  
+Built a scalable search and comparison plugin with autosuggest, AI-generated SEO metadata, REST endpoints, optimized asset loading, and performance-focused architecture.
 
-**Popular AI Software Search \- WordPress Plugin Developer**  
-[https://github.com/RonaldAllanRivera/software-search](https://github.com/RonaldAllanRivera/software-search)   
-A modern, AJAX-powered WordPress plugin for advanced post searching. Built for scale, with fast keyword autosuggest, category filtering, sortable results, and robust admin controls. No jQuery, no frameworks—just Vanilla JavaScript (ES6+) and the Fetch API for maximum speed and compatibility.
+**Popular AI Software Search**  
+*WordPress Plugin Developer*  
+[https://github.com/RonaldAllanRivera/software-search](https://github.com/RonaldAllanRivera/software-search)  
+Created a modern AJAX-powered search plugin using vanilla JavaScript and Fetch API with autosuggest, filtering, and admin management tools.
 
-**Interactive Map Scraper (GUI Tool for Mapbox Popups) – Software Developer**  
-[https://github.com/RonaldAllanRivera/mapscraper](https://github.com/RonaldAllanRivera/mapscraper)   
-A Python GUI tool that automatically scrapes popup data from Mapbox-based web maps. This tool is useful for extracting structured or full-text building or location data from dynamic map popups.
+**Ozeum Museum**  
+*Custom WordPress Theme Developer*  
+[https://artworkwebsite.com/](https://artworkwebsite.com/)  
+Built a professional custom WordPress theme for museums and cultural institutions using modern best practices. Implemented a custom Exhibitions post type, responsive mobile-first layouts, GSAP-powered animations, one-click demo import, and a custom admin tools panel. Delivered strong performance optimization (cache busting, conditional loading, no jQuery), SEO enhancements with Yoast integration and auto-populated metadata, and accessibility best practices aligned with WCAG principles.
 
-**CSV Scraper GUI – Software Developer**  
-[https://github.com/RonaldAllanRivera/csv\_scraper\_gui](https://github.com/RonaldAllanRivera/csv_scraper_gui)   
-A professional Python desktop scraper app built with Selenium, Tkinter, and ChromeDriver, designed to handle websites with heavy protection (e.g., Cloudflare) using real human-like browser automation and behavior simulation.
+**GaitBeacon.com**  
+*WordPress and Elementor Developer*  
+Custom WordPress and WooCommerce site built with Elementor, optimized checkout flow, SEO configuration, performance tuning, and security hardening.
 
-**PopularAISoftware.com – Full-Stack Web Developer**  
-Developed a dynamic AI tools directory utilizing OpenAI, Python, JavaScript, Make.com, and WordPress. Integrated automation workflows and custom features for seamless user experience.
+**EverythingUsedCars.com**  
+*WordPress and Elementor Developer*  
+Developed a responsive WordPress site with advanced search filters, SEO optimization, caching setup, and scalable architecture.
 
-**78Dragons.com – Full-Stack Web Developer**  
-Built a WordPress and WooCommerce-based eCommerce platform for a US-based tech company specializing in innovative solutions bridging technology and real-world applications.
+**PopularAISoftware.com**  
+*WordPress and Elementor Developer*  
+Built an AI tools directory integrating OpenAI, automation workflows, and WordPress customization for a dynamic user experience.
 
-**SmarterSafetySystems.com – Full-Stack Web Developer**  
-Designed and developed a WordPress site for a company focused on providing IoT device solutions to enhance safety in correctional facilities, addressing issues like fentanyl overdoses.
+**78Dragons.com**  
+*WordPress and Elementor Developer*  
+Developed a WooCommerce eCommerce platform with structured product management and optimized purchasing flow.
 
-**LumbardConsulting.com – Full-Stack Web Developer**  
-Created a professional WordPress site for a consulting firm dedicated to empowering leadership in not-for-profit organizations, offering services like board governance training and financial assessments.
+**SmarterSafetySystems.com**  
+*WordPress and Elementor Developer*  
+Built a WordPress site for an IoT safety solutions provider with structured content and scalable architecture.
 
-**24Aries.com – Full-Stack Web Developer**  
-Developed a WordPress site showcasing advanced technology products, including smart insoles, mesh technology, perimeter surveillance radar, and digital twin solutions.
+**LumbardConsulting.com**  
+*WordPress and Elementor Developer*  
+Created a professional WordPress site for a leadership consulting firm with optimized UX and structured service pages.
 
-**PulseIQ.com – Full-Stack Web Developer**  
-Developed a WordPress site for a company offering energy benchmarking, ASHRAE energy audits, energy management software solutions, and smart mesh network thermostats to enhance property efficiency.
+**24Aries.com**  
+*WordPress Developer*  
+Developed a WordPress website showcasing advanced technology products with responsive layout and structured presentation.
 
-**Graphic Design Projects:**  
-[https://www.flickr.com/photos/ronald-allan-rivera/](https://www.flickr.com/photos/ronald-allan-rivera/) 
+**PulseIQ.com**  
+*WordPress and Elementor Developer*  
+Built a WordPress site for energy benchmarking and management solutions with SEO configuration and performance optimization.
+
+**AUTOMATION & SOFTWARE ENGINEERING**
+
+**Cloudflare Multiple Domain Delete (GUI)**  
+*Full Stack Python Developer*  
+[https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete](https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete)  
+Built a Tkinter-based desktop tool for safely bulk deleting Cloudflare domains with progress tracking and structured logging.
+
+**HTTrack-like Clone**  
+*Full Stack Python Developer*  
+[https://github.com/RonaldAllanRivera/httrack-clone](https://github.com/RonaldAllanRivera/httrack-clone)  
+Developed a desktop application that mirrors web pages into clean offline folders with asset rewriting, structured output, and preview capabilities.
+
+**Interactive Map Scraper**  
+*Software Developer*  
+[https://github.com/RonaldAllanRivera/mapscraper](https://github.com/RonaldAllanRivera/mapscraper)  
+Created a Python GUI tool to extract structured data from Mapbox-based interactive maps.
+
+**CSV Scraper GUI**  
+*Software Developer*  
+[https://github.com/RonaldAllanRivera/csv\_scraper\_gui](https://github.com/RonaldAllanRivera/csv_scraper_gui)  
+Built a Selenium-based desktop scraper designed for heavily protected websites using realistic browser automation techniques.
+
+**GRAPHIC DESIGN**
+
+[https://www.flickr.com/photos/ronald-allan-rivera/](https://www.flickr.com/photos/ronald-allan-rivera/)  
+Collection of branding, layout, and digital design projects demonstrating visual communication and creative direction.
 
 | Latest Skills with Certifications |
 | :---- |
