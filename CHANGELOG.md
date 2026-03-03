@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.4.0] - 2026-03-03
+
+### Google Docs Export with OAuth2
+- **Fixed Service Account Quota Issue**: Replaced service account with OAuth2 user authentication
+- **Local Docker Support**: Google Docs export now works in local Docker without domain-wide delegation
+- **Automatic Authorization**: Export button auto-redirects to Google OAuth2 if not authenticated
+- **OAuth2 Implementation**:
+  - `src/utilities/google-oauth.ts` - Token management and authentication utilities
+  - API endpoints: `/api/google/authorize`, `/api/google/callback`, `/api/google/status`, `/api/google/logout`
+  - Frontend integration with auto-redirect and toast notifications
+  - Token storage in `.google-token.json` with automatic refresh
+- **Security**: Proper token handling, no sensitive data in code, `.google-token.json` in `.gitignore`
+- **Documentation**: Complete setup guide in `docs/GOOGLE_OAUTH_SETUP.md`
+
+### CI/CD Database Fix
+- **Database Schema Initialization**: Created `scripts/init-db.ts` to initialize Payload schema
+- **GitHub Actions**: Replaced `pnpm payload migrate` with `pnpm run init:db` before build
+- **Fixed**: "relation 'users' does not exist" error in CI test suite
+
+### Documentation Restructure
+- **docs/ folder**: Moved all documentation files to `/docs/` folder
+- **Root files**: Only `README.md`, `PLAN.md`, `CHANGELOG.md` remain in root
+- **Updated links**: All documentation references now point to `/docs/` folder
+
 ## [0.3.0] - 2026-03-03
 
 ### Testing Infrastructure

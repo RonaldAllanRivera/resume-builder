@@ -30,3 +30,6 @@ node_modules/
 
 # Python
 Build a resume AI assistant with OpenAI, Gemini, & Pydantic.ipynb
+
+# Google OAuth2 tokens
+.google-token.json

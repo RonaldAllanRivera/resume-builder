@@ -3,6 +3,7 @@ import config from '@payload-config'
 import { headers } from 'next/headers'
 
 import { createGoogleDoc } from '../../../../utilities/google-docs'
+import { isAuthenticated, getAuthUrl } from '../../../../utilities/google-oauth'
 
 type UserWithRoles = {
   roles?: unknown
@@ -29,10 +30,21 @@ export async function POST(req: Request): Promise<Response> {
     return Response.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  // Validate env vars early
-  if (!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64) {
-    return Response.json({ error: 'Missing GOOGLE_SERVICE_ACCOUNT_JSON_BASE64.' }, { status: 500 })
+  // Check if user is authenticated with Google OAuth2
+  if (!isAuthenticated()) {
+    const authUrl = getAuthUrl()
+    return Response.json(
+      {
+        error: 'Not authenticated with Google',
+        message: 'Please authorize the application to access Google Drive',
+        authorizationUrl: authUrl,
+        requiresAuth: true,
+      },
+      { status: 401 },
+    )
   }
+
+  // Validate env vars early
   if (!process.env.GOOGLE_DRIVE_FOLDER_ID) {
     return Response.json({ error: 'Missing GOOGLE_DRIVE_FOLDER_ID.' }, { status: 500 })
   }
@@ -79,10 +91,7 @@ export async function POST(req: Request): Promise<Response> {
     const applicationLetter = (generation.applicationLetter ?? '').trim()
 
     if (!resumeDraft && !applicationLetter) {
-      return Response.json(
-        { error: 'Nothing to export. Generate drafts first.' },
-        { status: 400 },
-      )
+      return Response.json({ error: 'Nothing to export. Generate drafts first.' }, { status: 400 })
     }
 
     // Build doc titles: "{Company} - {Role} - Resume" / "Cover Letter"
@@ -143,9 +152,7 @@ export async function POST(req: Request): Promise<Response> {
 
     return Response.json({
       message: 'Exported to Google Docs.',
-      resume: resumeDocUrl
-        ? { documentId: resumeDocId, documentUrl: resumeDocUrl }
-        : null,
+      resume: resumeDocUrl ? { documentId: resumeDocId, documentUrl: resumeDocUrl } : null,
       coverLetter: coverLetterDocUrl
         ? { documentId: coverLetterDocId, documentUrl: coverLetterDocUrl }
         : null,
@@ -153,9 +160,7 @@ export async function POST(req: Request): Promise<Response> {
   } catch (e) {
     console.error('[export-to-google-docs] Error:', e)
     const message =
-      process.env.NODE_ENV !== 'production' && e instanceof Error
-        ? e.message
-        : 'Export failed.'
+      process.env.NODE_ENV !== 'production' && e instanceof Error ? e.message : 'Export failed.'
     return Response.json({ error: message }, { status: 500 })
   }
 }

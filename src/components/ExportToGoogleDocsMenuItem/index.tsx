@@ -48,9 +48,18 @@ export const ExportToGoogleDocsMenuItem: React.FC = () => {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(
-          (data as { error?: string })?.error || `Export failed (${res.status})`,
-        )
+
+        // Check if OAuth2 authorization is required
+        if ((data as { requiresAuth?: boolean })?.requiresAuth) {
+          const authUrl = (data as { authorizationUrl?: string })?.authorizationUrl
+          if (authUrl) {
+            toast.info('Redirecting to Google authorization...')
+            window.location.href = authUrl
+            return
+          }
+        }
+
+        throw new Error((data as { error?: string })?.error || `Export failed (${res.status})`)
       }
 
       const data = (await res.json()) as {
@@ -94,8 +103,8 @@ export const ExportToGoogleDocsMenuItem: React.FC = () => {
       <ConfirmationModal
         body={
           <div>
-            This will create separate Google Docs for the Resume and Cover Letter in the
-            shared Drive folder. Existing export URLs will be overwritten.
+            This will create separate Google Docs for the Resume and Cover Letter in the shared
+            Drive folder. Existing export URLs will be overwritten.
           </div>
         }
         confirmingLabel={isLoading ? 'Exporting…' : 'Exporting'}

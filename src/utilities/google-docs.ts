@@ -1,40 +1,18 @@
 import { google, type docs_v1 } from 'googleapis'
-
-type ServiceAccountCredentials = {
-  client_email: string
-  private_key: string
-  [key: string]: unknown
-}
+import { getAuthenticatedClient, isAuthenticated } from './google-oauth'
 
 /**
- * Parse the base64-encoded service account JSON from env.
+ * Get an authenticated Google Auth client using OAuth2 user credentials.
+ * This uses the user's Google account and Drive quota.
+ * Works in local Docker without domain-wide delegation.
  */
-const getCredentials = (): ServiceAccountCredentials => {
-  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64
-  if (!raw) {
-    throw new Error('Missing GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 env var.')
+const getAuthClient = async () => {
+  if (!isAuthenticated()) {
+    throw new Error(
+      'User not authenticated with Google. Please visit /api/google/authorize to grant access.',
+    )
   }
-  try {
-    const decoded = Buffer.from(raw, 'base64').toString('utf-8')
-    return JSON.parse(decoded) as ServiceAccountCredentials
-  } catch {
-    throw new Error('Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON_BASE64.')
-  }
-}
-
-/**
- * Get an authenticated Google Auth client scoped to Drive + Docs.
- */
-const getAuthClient = () => {
-  const credentials = getCredentials()
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: [
-      'https://www.googleapis.com/auth/drive', // Full drive access (needed for shared folders)
-      'https://www.googleapis.com/auth/documents',
-    ],
-  })
-  return auth
+  return await getAuthenticatedClient()
 }
 
 /**
@@ -283,23 +261,21 @@ export const createGoogleDoc = async (
     throw new Error('Missing GOOGLE_DRIVE_FOLDER_ID env var.')
   }
 
-  const auth = getAuthClient()
+  const auth = await getAuthClient()
   const docs = google.docs({ version: 'v1', auth })
   const drive = google.drive({ version: 'v3', auth })
 
   const safeTitle = sanitizeDocTitle(title)
 
-  // Strategy: Create a blank document, then use Docs API to add content
-  // We create it directly in the target folder so it inherits folder ownership
-  // This avoids service account quota issues
-
+  // Create document in the target folder
+  // With OAuth2, the file is automatically owned by the authenticated user
   const createRes = await drive.files.create({
     requestBody: {
       name: safeTitle,
       mimeType: 'application/vnd.google-apps.document',
       parents: [folderId],
     },
-    fields: 'id,webViewLink,owners',
+    fields: 'id,webViewLink',
     supportsAllDrives: true,
   })
 
@@ -308,56 +284,7 @@ export const createGoogleDoc = async (
     throw new Error('Drive API did not return a document id.')
   }
 
-  // Check if file was created successfully
-  // If the service account owns it, we need to transfer ownership
-  const isServiceAccountOwned = createRes.data.owners?.some((owner) =>
-    owner.emailAddress?.includes('gserviceaccount.com'),
-  )
-
-  if (isServiceAccountOwned) {
-    // Get folder owner for ownership transfer
-    const folderInfo = await drive.files.get({
-      fileId: folderId,
-      fields: 'owners',
-      supportsAllDrives: true,
-    })
-
-    const folderOwnerEmail = folderInfo.data.owners?.[0]?.emailAddress
-    if (!folderOwnerEmail) {
-      // Clean up and fail
-      try {
-        await drive.files.delete({ fileId: documentId, supportsAllDrives: true })
-      } catch {
-        // Ignore
-      }
-      throw new Error('Could not determine folder owner for ownership transfer')
-    }
-
-    // Transfer ownership
-    try {
-      await drive.permissions.create({
-        fileId: documentId,
-        requestBody: {
-          type: 'user',
-          role: 'owner',
-          emailAddress: folderOwnerEmail,
-        },
-        transferOwnership: true,
-        supportsAllDrives: true,
-        sendNotificationEmail: false,
-      })
-    } catch (error) {
-      // Clean up and fail
-      try {
-        await drive.files.delete({ fileId: documentId, supportsAllDrives: true })
-      } catch {
-        // Ignore
-      }
-      throw new Error(`Failed to transfer ownership: ${error}`)
-    }
-  }
-
-  // 3. Insert formatted content
+  // Insert formatted content
   if (markdownContent.trim()) {
     const { requests, bulletRequests } = buildFormattedDocRequests(markdownContent)
 

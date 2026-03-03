@@ -14,7 +14,7 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
 - **Testing infrastructure complete** (Vitest + Playwright + GitHub Actions CI/CD)
 - **Database management UI** implemented (admin dashboard with reset/seed buttons)
 - **Complete seed script** with 101 resume items (Site Settings + Resume Profile + 9 Experiences + 25 Projects + 1 Education + 65 Certifications)
-- **Google Docs export** working with ownership transfer to avoid quota issues
+- **Google Docs export** working with OAuth2 authentication (uses personal Drive quota)
 
 ## Phase 0 — Decisions + prerequisites
 
@@ -31,12 +31,12 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - OpenAI API key
   - **Google Docs API** (requires Google Cloud project + credentials)
 
-- **Google Docs export (default)**
-  - **Service account** (best for “personal internal tool”, easiest server-to-server)
-    - You’ll share a Google Drive folder with the service-account email.
-    - All CMS users export into the same shared folder (simplest v1).
-    - Status: Completed (Drive folder shared + env vars populated)
-  - Future upgrade option: **OAuth (3-legged)** if you want exports to go to each user’s own Drive.
+- **Google Docs export**
+  - **OAuth2 authentication** (uses personal Google Drive quota, works in local Docker)
+    - User-based authentication with automatic redirect from export button
+    - Files created in user's Drive folder with proper ownership
+    - Status: Completed (OAuth2 flow implemented, auto-authorization working)
+  - Alternative: **Service account** (requires domain-wide delegation for production)
 
 ## Phase 1 — Repo scaffold (local dev + Docker)
 
@@ -564,22 +564,7 @@ Status: In progress (core generation workflow implemented; export + additional a
 
 Status: Later
 
-## Phase 6 — Google Docs export
-
-- Implement “Export to Google Docs” on an `aiGeneration`:
-  - Create a Google Doc with:
-    - Title pattern: `{Company} - {Role} - Resume` / `Cover Letter`
-    - Insert generated content with headings and formatting
-  - Store `googleDocId` and `googleDocUrl` in Payload
-
-- Credential approach (v1):
-  - Service account: share a folder; docs created there.
-- Future upgrade option:
-  - OAuth: docs created under the exporting user’s Drive.
-
-Status: Later
-
-## Phase 7 — Deployment on Vercel
+## Phase 6 — Deployment on Vercel
 
 - Configure:
   - Build command
@@ -604,7 +589,7 @@ Status: Later
   - Vercel Blob upload works
   - Public site caches/ISR behave correctly
 
-## Phase 8 — Hardening + operational best practices
+## Phase 7 — Hardening + operational best practices
 
 - Security:
   - CSRF/session settings (Payload)
@@ -618,7 +603,7 @@ Status: Later
   - `publishedAt` fields
   - preview mode for editors
 
-## Phase 9 — Testing Infrastructure + Database Management
+## Phase 8 — Testing Infrastructure + Database Management
 
 Status: **Completed** (2026-03-03)
 
@@ -657,6 +642,54 @@ Status: **Completed** (2026-03-03)
   - Integrated via `beforeDashboard` component
 - **API Endpoints**:
   - `POST /api/database/reset` - Admin-only, clears Resume Profile + all collections
+  - `POST /api/database/seed` - Admin-only, seeds complete resume data
+
+## Phase 9 — Google Docs Export with OAuth2
+
+Status: **Completed** (2026-03-03)
+
+### Problem Solved
+- **Service Account Quota Issue**: Service accounts have 0 storage quota, causing "Drive storage quota exceeded" errors
+- **Local Docker Limitation**: Service account approach doesn't work in local Docker without domain-wide delegation
+- **CI/CD Database Issue**: Missing database schema initialization causing "relation 'users' does not exist" errors
+
+### OAuth2 Implementation
+- **Authentication Flow**:
+  - User-based OAuth2 authentication (same as Laravel system)
+  - Uses personal Google Drive quota instead of service account
+  - Automatic redirect from export button to authorization
+  - Token storage in `.google-token.json` with auto-refresh
+- **API Endpoints**:
+  - `GET /api/google/authorize` - Redirect to Google consent screen
+  - `GET /api/google/callback` - Handle OAuth response
+  - `GET /api/google/status` - Check authentication status
+  - `POST /api/google/logout` - Clear stored tokens
+- **Frontend Integration**:
+  - Auto-redirect when not authenticated
+  - Seamless user experience with toast notifications
+  - Files created directly in user's Drive folder
+
+### Technical Details
+- **OAuth2 Scopes**: `drive.file`, `documents` (minimal permissions)
+- **Token Management**: Local file storage with automatic refresh
+- **Error Handling**: Graceful fallbacks and clear user messages
+- **Security**: `.google-token.json` in `.gitignore`, no sensitive data in code
+
+### CI/CD Fix
+- **Database Initialization**: Created `scripts/init-db.ts` to initialize Payload schema
+- **GitHub Actions**: Replaced `pnpm payload migrate` with `pnpm run init:db`
+- **Environment Variables**: Proper test database configuration
+
+### Documentation
+- **Setup Guide**: `docs/GOOGLE_OAUTH_SETUP.md` with complete instructions
+- **API Reference**: All endpoints documented with examples
+- **Troubleshooting**: Common issues and solutions
+- **Security Notes**: Best practices for OAuth2 implementation
+
+### Files Created/Modified
+- **New Files**: `src/utilities/google-oauth.ts`, OAuth2 API routes, `scripts/init-db.ts`
+- **Modified**: `src/utilities/google-docs.ts` (OAuth2 integration), export route, frontend component
+- **Documentation**: Complete OAuth2 setup guide and API reference
   - `POST /api/database/seed` - Admin-only, seeds complete resume data
 - **Complete Seed Script** (`src/endpoints/seed-resume-complete.ts`):
   - Site Settings global (with social links)

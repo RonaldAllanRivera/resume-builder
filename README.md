@@ -19,12 +19,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Testing Infrastructure**: Vitest (integration) + Playwright (E2E) + GitHub Actions CI/CD
 - **Database Management UI**: Admin dashboard with reset/seed buttons (101 resume items)
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
+- **Google Docs Export**: OAuth2 authentication with personal Drive quota (works in local Docker)
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content
 - Minimal RBAC (`admin`, `editor`) for the CMS
 - Private-by-default personal fields with explicit publish toggles
-- Google Docs export with automatic ownership transfer
 
 ## Tech stack
 
@@ -42,8 +42,10 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 
 ## 📚 Documentation
 
-- **[QUICKSTART.md](QUICKSTART.md)** - Daily development workflow with simple commands
-- **[TESTING.md](TESTING.md)** - Complete testing guide (Vitest + Playwright + CI/CD)
+- **[docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md)** - Google OAuth2 setup guide for Google Docs export
+- **[docs/TESTING.md](docs/TESTING.md)** - Complete testing guide (Vitest + Playwright + CI/CD)
+- **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - Daily development workflow with simple commands
+- **[docs/SECURITY.md](docs/SECURITY.md)** - Security best practices and guidelines
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and recent changes
 - **[PLAN.md](PLAN.md)** - Project roadmap and architecture decisions
 
