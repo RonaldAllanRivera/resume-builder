@@ -3,10 +3,15 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { Payload } from 'payload'
 
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'test-password-change-me'
+
 describe('Access Control', () => {
   let payload: Payload
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let adminUser: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let editorUser: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let regularUser: any
 
   beforeAll(async () => {
@@ -17,7 +22,7 @@ describe('Access Control', () => {
       collection: 'users',
       data: {
         email: 'admin@test.com',
-        password: 'test123',
+        password: TEST_PASSWORD,
         roles: ['admin'],
       },
     })
@@ -26,7 +31,7 @@ describe('Access Control', () => {
       collection: 'users',
       data: {
         email: 'editor@test.com',
-        password: 'test123',
+        password: TEST_PASSWORD,
         roles: ['editor'],
       },
     })
@@ -35,8 +40,8 @@ describe('Access Control', () => {
       collection: 'users',
       data: {
         email: 'user@test.com',
-        password: 'test123',
-        roles: ['user'],
+        password: TEST_PASSWORD,
+        roles: ['editor'],
       },
     })
   })

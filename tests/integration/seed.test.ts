@@ -63,9 +63,9 @@ describe('Seed Resume Complete', () => {
     })
 
     expect(projects.docs).toHaveLength(25)
-    
+
     // Check featured projects
-    const featured = projects.docs.filter(p => p.featured)
+    const featured = projects.docs.filter((p) => p.featured)
     expect(featured.length).toBeGreaterThan(0)
   })
 
@@ -109,6 +109,8 @@ describe('Seed Resume Complete', () => {
     const project = projects.docs[0]
     expect(project.techStack).toBeDefined()
     expect(Array.isArray(project.techStack)).toBe(true)
-    expect(project.techStack.length).toBeGreaterThan(0)
+    if (project.techStack) {
+      expect(project.techStack.length).toBeGreaterThan(0)
+    }
   })
 })

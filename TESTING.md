@@ -223,6 +223,23 @@ test.describe('My Feature', () => {
 4. **Fast Tests** - Keep tests fast and focused
 5. **No Flakiness** - Use proper waits, avoid timeouts
 6. **Test What Matters** - Focus on critical user flows
+7. **Security** - Never hardcode passwords in tests (use environment variables)
+
+## Security: Test Credentials
+
+**Never hardcode passwords in test files!** GitGuardian will flag them as security issues.
+
+✅ **Correct:**
+```typescript
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'fallback'
+```
+
+❌ **Wrong:**
+```typescript
+password: 'test123' // GitGuardian alert!
+```
+
+See [SECURITY.md](SECURITY.md) for complete security guidelines.
 
 ## Troubleshooting
 
