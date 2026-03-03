@@ -13,7 +13,7 @@ async function initDatabase() {
   try {
     const payload = await getPayload({ config })
     console.log(
-      `✓ Database schema initialized successfully (${payload.collections.length} collections)`,
+      `✓ Database schema initialized successfully (${Object.keys(payload.collections).length} collections)`,
     )
     process.exit(0)
   } catch (error) {

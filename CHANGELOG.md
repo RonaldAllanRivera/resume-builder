@@ -24,6 +24,11 @@
 - **Root files**: Only `README.md`, `PLAN.md`, `CHANGELOG.md` remain in root
 - **Updated links**: All documentation references now point to `/docs/` folder
 
+### Test Suite Fixes
+- **TypeScript Error**: Fixed `payload.collections.length` error in `scripts/init-db.ts`
+- **Missing Dependency**: Added `tsx` as dev dependency for CI/CD script execution
+- **CI/CD Environment**: Proper environment variable handling for database initialization
+
 ## [0.3.0] - 2026-03-03
 
 ### Testing Infrastructure
