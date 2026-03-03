@@ -49,13 +49,24 @@ async function seedE2E() {
       },
     })
 
-    // Resume Profile
+    // Resume Profile (global)
     await payload.updateGlobal({
       slug: 'resumeProfile',
       data: {
         fullName: 'Test User',
         headline: 'Test Developer',
         summary: 'Test summary for E2E tests',
+      },
+    })
+
+    // Create Resume Profile (collection record for generations)
+    console.log('Creating resume profile...')
+    await payload.create({
+      collection: 'resumeProfiles',
+      data: {
+        name: 'Test Resume Profile',
+        resumeText: 'Test resume profile for E2E tests',
+        notes: 'Created for E2E testing',
       },
     })
 
@@ -107,6 +118,7 @@ async function seedE2E() {
 
     console.log('✓ Database seeded successfully for E2E tests')
     console.log(`  - 1 admin user`)
+    console.log(`  - 1 resume profile`)
     console.log(`  - 2 projects`)
     console.log(`  - 1 company`)
     console.log(`  - 1 job ad`)
