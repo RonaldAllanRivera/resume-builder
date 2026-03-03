@@ -59,7 +59,57 @@ async function seedE2E() {
       },
     })
 
+    // Create test projects
+    console.log('Creating test projects...')
+    await payload.create({
+      collection: 'projects',
+      data: {
+        title: 'Test Project 1',
+        slug: 'test-project-1',
+        summary: 'Test project summary',
+        featured: true,
+        _status: 'published',
+      },
+    })
+
+    await payload.create({
+      collection: 'projects',
+      data: {
+        title: 'Test Project 2',
+        slug: 'test-project-2',
+        summary: 'Another test project',
+        featured: false,
+        _status: 'published',
+      },
+    })
+
+    // Create test company
+    console.log('Creating test company...')
+    const company = await payload.create({
+      collection: 'companies',
+      data: {
+        name: 'Test Company',
+        website: 'https://test-company.com',
+      },
+    })
+
+    // Create test job ad
+    console.log('Creating test job ad...')
+    await payload.create({
+      collection: 'jobAds',
+      data: {
+        title: 'Test Job Position',
+        company: company.id,
+        jobDescription: 'Test job description for E2E tests',
+        status: 'new',
+      },
+    })
+
     console.log('✓ Database seeded successfully for E2E tests')
+    console.log(`  - 1 admin user`)
+    console.log(`  - 2 projects`)
+    console.log(`  - 1 company`)
+    console.log(`  - 1 job ad`)
     process.exit(0)
   } catch (error) {
     console.error('✗ Failed to seed database:', error)
