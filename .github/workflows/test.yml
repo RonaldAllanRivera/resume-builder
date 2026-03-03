@@ -111,6 +111,15 @@ jobs:
           GOOGLE_DRIVE_FOLDER_ID: ""
         run: pnpm run build
 
+      - name: Seed test database
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
+          PAYLOAD_SECRET: test-secret-key
+          NODE_ENV: test
+          NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+          OPENAI_API_KEY: sk-test-mock-key
+        run: pnpm run seed:e2e
+
       - name: Run E2E tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test

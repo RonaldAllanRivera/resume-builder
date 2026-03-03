@@ -29,6 +29,7 @@
 - **Missing Dependency**: Added `tsx` as dev dependency for CI/CD script execution
 - **Lockfile Sync**: Updated `pnpm-lock.yaml` to match `package.json`
 - **E2E Server**: Configured Playwright to start production server in CI
+- **E2E Seed Script**: Created `scripts/seed-e2e.ts` to seed test user and minimal data
 - **Environment Variables**: Added all required env vars for build and E2E tests
 
 ## [0.3.0] - 2026-03-03
