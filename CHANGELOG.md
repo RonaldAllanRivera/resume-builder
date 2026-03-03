@@ -31,6 +31,13 @@
 - **E2E Server**: Configured Playwright to start production server in CI
 - **E2E Seed Script**: Created `scripts/seed-e2e.ts` to seed test user and minimal data
 - **Environment Variables**: Added all required env vars for build and E2E tests
+- **PostgreSQL Healthcheck**: Fixed `pg_isready` to use `-U postgres` flag in GitHub Actions
+
+### Documentation Updates
+- **Docker-First Workflow**: Updated README.md to emphasize Docker as primary development method
+- **Simplified Setup**: Docker Compose handles all dependencies (no local Node/pnpm needed)
+- **CI/CD Unchanged**: GitHub Actions continues to use native pnpm for speed
+- **Makefile**: Existing Makefile provides convenient Docker commands
 
 ## [0.3.0] - 2026-03-03
 

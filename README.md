@@ -11,15 +11,17 @@ This project is a practical, production-style implementation of a content-driven
 - Minimal role-based access control for multi-user editing
 - **Comprehensive test suite** with Vitest + Playwright + GitHub Actions CI/CD
 - **One-click database management** via admin dashboard
+- **Docker-first development** for consistent environments
 
 It is based on the Payload Website Template (Payload + Next.js in a single app) and has been extended with a resume/portfolio data model.
 
 ## Key features
 
+- **Docker-First Development**: Consistent environment, zero local setup
 - **Testing Infrastructure**: Vitest (integration) + Playwright (E2E) + GitHub Actions CI/CD
 - **Database Management UI**: Admin dashboard with reset/seed buttons (101 resume items)
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
-- **Google Docs Export**: OAuth2 authentication with personal Drive quota (works in local Docker)
+- **Google Docs Export**: OAuth2 authentication with personal Drive quota
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content
@@ -31,11 +33,13 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - Next.js (App Router)
 - Payload CMS
 - TypeScript
-- PostgreSQL (local via Docker; production via managed Postgres)
+- PostgreSQL (Docker for local; managed Postgres for production)
+- Docker + Docker Compose
 
 ## Architecture
 
 - Single repo and single deployment target
+- Docker Compose for local development (app + PostgreSQL)
 - Next.js serves:
   - Public site
   - Payload Admin (`/admin`) and API routes
@@ -49,43 +53,57 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and recent changes
 - **[PLAN.md](PLAN.md)** - Project roadmap and architecture decisions
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Docker)
 
-### Option 1: Using Make (Recommended)
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- Git
+
+### First Time Setup
 
 ```bash
-# See all available commands
-make help
+# 1. Clone the repository
+git clone <your-repo-url>
+cd resume-builder
 
-# Start development
-make dev
+# 2. Copy environment variables
+cp .env.example .env
 
-# Run tests
-make test
+# 3. Start all services (app + PostgreSQL)
+docker compose up
 
-# Seed database
-make seed
+# Wait for "Ready in XXXXms" message
 ```
 
-### Option 2: Using Docker Compose
+**That's it!** Your app is now running at:
+- **Admin Panel**: http://localhost:3000/admin
+- **Frontend**: http://localhost:3000
+
+### Initial Configuration
+
+1. Visit http://localhost:3000/admin
+2. Create your first admin user
+3. Use the **Database Management** panel on the dashboard to seed resume data (101 items)
+
+### Daily Development
 
 ```bash
-# Start all services (app + PostgreSQL)
+# Start services (see logs)
+docker compose up
+
+# Start in background
 docker compose up -d
 
 # View logs
 docker compose logs -f app
 
-# Seed database
-docker compose exec app pnpm run seed:resume
+# Stop services
+docker compose down
+
+# Restart after config changes
+docker compose restart app
 ```
-
-### First Time Setup
-
-1. Start services: `make dev` or `docker compose up -d`
-2. Visit http://localhost:3000/admin
-3. Create your first admin user
-4. Use the **Database Management** panel on the dashboard to seed resume data
 
 ## 🧪 Testing
 
@@ -117,7 +135,7 @@ See [TESTING.md](TESTING.md) for complete testing documentation.
 
 ## 🗄️ Database Management
 
-### Admin Dashboard (Easiest)
+### Admin Dashboard (Recommended)
 
 1. Login to http://localhost:3000/admin
 2. Go to **Dashboard**
@@ -126,18 +144,18 @@ See [TESTING.md](TESTING.md) for complete testing documentation.
    - **Reset Database** - Clear all resume data
    - **Seed Database** - Populate with resume data
 
-### Command Line
+### Command Line (Alternative)
 
 ```bash
 # Seed database
-make seed
-# or
 docker compose exec app pnpm run seed:resume
 
 # Reset database
-make reset
-# or
 docker compose exec app pnpm run reset:database
+
+# Reset everything (including Docker volumes)
+docker compose down -v
+docker compose up
 ```
 
 ### What Gets Seeded
@@ -232,71 +250,36 @@ docker compose exec app pnpm run reset:database
     - Editors can manage resume/portfolio content.
     - Only admins can manage users/roles.
 
-## Quick start (Docker) — Fast Testing
+## 🔧 Advanced Usage
 
-The easiest way to run and test the entire stack:
+### Docker Shell Access
 
 ```bash
-# Start all services (app + PostgreSQL)
-docker compose up
+# Open shell in container
+docker compose exec app sh
 
-# Or start in background and follow logs
-docker compose up -d && docker compose logs -f app
+# Run commands inside container
+docker compose exec app pnpm run generate:types
+docker compose exec app pnpm run generate:importmap
 ```
 
-The app will be available at `http://localhost:3000` once you see "Ready in XXXXms" in the logs.
+### After Schema Changes
 
-**First time setup:**
-1. `docker compose up` (wait for "Ready" message)
-2. Visit `http://localhost:3000/admin`
-3. Create your first admin user
-4. Optionally seed resume data via the admin UI
-
-**Common commands:**
 ```bash
-docker compose up              # Start (see logs)
-docker compose up -d           # Start in background
-docker compose logs -f app     # Follow app logs (see hot reload)
-docker compose down            # Stop services
-docker compose restart app     # Restart after config changes
-docker compose exec app sh     # Open shell in container
+# Generate TypeScript types
+docker compose exec app pnpm run generate:types
+
+# Type check
+docker compose exec app npx tsc --noEmit
 ```
 
-See `DOCKER.md` for more details.
+### After Changing Admin Components
 
-## Developer workflow (local, without Docker)
-
-- Install deps: `pnpm install`
-- Run dev: `pnpm dev`
-- After schema changes:
-  - `pnpm run generate:types`
-  - `npx tsc --noEmit`
-- After adding or changing Payload admin components:
-  - `pnpm run generate:importmap`
-
-### Seeding Resume Data
-
-Populate your database with resume content (experiences, projects, education, certifications):
-
-**Using Docker:**
 ```bash
-docker compose exec app pnpm run seed:resume
+# Regenerate import map
+docker compose exec app pnpm run generate:importmap
+docker compose restart app
 ```
-
-**Using local dev (without Docker):**
-```bash
-pnpm run seed:resume
-```
-
-**What gets seeded:**
-- 9 Work Experiences (LogicMedia BV, PulseIQ, etc.)
-- 15 Projects (Meet Lessons, Forex Platform, WordPress plugins, etc.)
-- 1 Education (Saint Louis University - BS Computer Science)
-- 6 Certifications (LinkedIn Learning courses)
-
-All records are created with `published` status and are immediately visible in the admin panel.
-
-**Note:** Running the seed multiple times will create duplicate records. If you need to re-seed, delete existing records first via the admin panel or reset the database.
 
 - **Generations admin UX helpers**
   - On a Generation edit page, copy buttons are available for quick exporting:
@@ -314,7 +297,7 @@ All records are created with `published` status and are immediately visible in t
 ## Troubleshooting
 
 - **Admin crashes on Projects create/edit**
-  - If you see `useServerFunctions must be used within a ServerFunctionsProvider`, ensure the `projects` collection is using the plain `slug` text field (not the experimental slug UI field) and restart `npm run dev`.
+  - If you see `useServerFunctions must be used within a ServerFunctionsProvider`, ensure the `projects` collection is using the plain `slug` text field (not the experimental slug UI field) and restart: `docker compose restart app`
 
 - **Delete versions menu item**
   - An admin-only “Delete versions…” action appears in the 3‑dot edit menu on versioned collections.
@@ -322,60 +305,30 @@ All records are created with `published` status and are immediately visible in t
   - If you don’t see it, ensure you’re logged in as an admin and the document has versions.
 
 - **Full database reset (hard reset)**
-  - Stop and remove the Docker volume, then start Postgres again:
+  - Stop and remove all Docker volumes:
     ```bash
     docker compose down -v
-    docker compose up -d postgres
-    ```
-  - Re-seed demo data (optional):
-    ```bash
-    curl -X POST http://localhost:3000/next/seed -H "Content-Type: application/json"
+    docker compose up
     ```
   - Use this when you want a completely clean database or after schema changes that require a fresh start.
 
-## Quick start (this repo)
+## 🌍 Environment Variables
 
-### Prerequisites
+Create a `.env` file from the example:
+```bash
+cp .env.example .env
+```
 
-- Node.js (see `package.json` engines)
-- Docker Desktop (for local PostgreSQL)
+Required for full functionality:
+- `DATABASE_URL` - PostgreSQL connection (auto-configured in Docker)
+- `PAYLOAD_SECRET` - Random secret key
+- `OPENAI_API_KEY` - For AI resume generation
+- `GOOGLE_CLIENT_ID` - For Google Docs export
+- `GOOGLE_CLIENT_SECRET` - For Google Docs export
+- `GOOGLE_REDIRECT_URI` - OAuth callback URL
+- `GOOGLE_DRIVE_FOLDER_ID` - Target folder for exports
 
-### Local development
-
-1. Start PostgreSQL:
-
-   ```bash
-   docker compose up -d postgres
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm ci
-   ```
-
-3. Run the app:
-
-   ```bash
-   npm run dev
-   ```
-
-4. Open:
-
-   - `http://localhost:3000` (frontend)
-   - `http://localhost:3000/admin` (Payload admin)
-
-### Environment variables
-
-- Local development uses `.env` (gitignored) and `.env.example` as a template.
-- For Vercel deployments, set secrets in Vercel Project Environment Variables.
-
-Required integrations (later phases):
-
-- `BLOB_READ_WRITE_TOKEN` (Vercel Blob)
-- `OPENAI_API_KEY`
-- `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64`
-- `GOOGLE_DRIVE_FOLDER_ID`
+See [docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md) for Google OAuth setup.
 
 ### Migrating local Docker data to online PostgreSQL
 
