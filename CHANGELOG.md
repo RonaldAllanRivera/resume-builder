@@ -27,7 +27,9 @@
 ### Test Suite Fixes
 - **TypeScript Error**: Fixed `payload.collections.length` error in `scripts/init-db.ts`
 - **Missing Dependency**: Added `tsx` as dev dependency for CI/CD script execution
-- **CI/CD Environment**: Proper environment variable handling for database initialization
+- **Lockfile Sync**: Updated `pnpm-lock.yaml` to match `package.json`
+- **E2E Server**: Configured Playwright to start production server in CI
+- **Environment Variables**: Added all required env vars for build and E2E tests
 
 ## [0.3.0] - 2026-03-03
 
