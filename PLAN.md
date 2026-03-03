@@ -15,6 +15,8 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
 - **Database management UI** implemented (admin dashboard with reset/seed buttons)
 - **Complete seed script** with 101 resume items (Site Settings + Resume Profile + 9 Experiences + 25 Projects + 1 Education + 65 Certifications)
 - **Google Docs export** working with OAuth2 authentication (uses personal Drive quota)
+- **AI generation workflow** complete with job ads, companies, and tailored resume/cover letter generation
+- **Environment variables** properly configured for OAuth2 and all services
 
 ## Phase 0 — Decisions + prerequisites
 
@@ -69,11 +71,13 @@ Status: Completed
   - `NEXT_PUBLIC_SERVER_URL`
   - `BLOB_READ_WRITE_TOKEN` (Vercel Blob)
   - `OPENAI_API_KEY`
-  - Google Docs credentials (service account default):
-    - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64`
+  - Google Docs credentials (OAuth2):
+    - `GOOGLE_CLIENT_ID`
+    - `GOOGLE_CLIENT_SECRET`
+    - `GOOGLE_REDIRECT_URI`
     - `GOOGLE_DRIVE_FOLDER_ID`
 
-Status: In progress
+Status: Completed
 
 ## Phase 3 — Payload data model (resume + portfolio)
 
@@ -445,7 +449,7 @@ Status: Planned
 
 - Priority: Start here next. Public site + SEO pages can be implemented later.
 
-Status: In progress (core generation workflow implemented; export + additional admin actions pending)
+Status: Completed
 
 - Admin UX: Generations company field
   - Added `company` relationship field (read-only) that auto-syncs from `jobAd.company`.
@@ -690,22 +694,6 @@ Status: **Completed** (2026-03-03)
 - **New Files**: `src/utilities/google-oauth.ts`, OAuth2 API routes, `scripts/init-db.ts`
 - **Modified**: `src/utilities/google-docs.ts` (OAuth2 integration), export route, frontend component
 - **Documentation**: Complete OAuth2 setup guide and API reference
-  - `POST /api/database/seed` - Admin-only, seeds complete resume data
-- **Complete Seed Script** (`src/endpoints/seed-resume-complete.ts`):
-  - Site Settings global (with social links)
-  - Resume Profile global
-  - 9 Experiences
-  - 25 Projects (full-stack, WordPress, automation)
-  - 1 Education
-  - 65 Certifications
-  - Total: 101 resume items
-
-### Google Docs Export Fixes
-- Fixed "Drive storage quota exceeded" error
-- Updated Google Auth scopes to full `drive` access
-- Added `supportsAllDrives: true` for shared folder support
-- Implemented automatic ownership transfer from service account to folder owner
-- Files now use folder owner's quota instead of service account's
 
 ### Best Practices Implemented
 - **3-layer testing safety net**:
