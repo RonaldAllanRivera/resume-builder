@@ -289,21 +289,33 @@ export const createGoogleDoc = async (
 
   const safeTitle = sanitizeDocTitle(title)
 
-  // 1. Create document using Docs API (doesn't immediately consume quota)
-  const createDocRes = await docs.documents.create({
+  // Strategy: Create a blank document, then use Docs API to add content
+  // We create it directly in the target folder so it inherits folder ownership
+  // This avoids service account quota issues
+
+  const createRes = await drive.files.create({
     requestBody: {
-      title: safeTitle,
+      name: safeTitle,
+      mimeType: 'application/vnd.google-apps.document',
+      parents: [folderId],
     },
+    fields: 'id,webViewLink,owners',
+    supportsAllDrives: true,
   })
 
-  const documentId = createDocRes.data.documentId
+  const documentId = createRes.data.id
   if (!documentId) {
-    throw new Error('Docs API did not return a document id.')
+    throw new Error('Drive API did not return a document id.')
   }
 
-  // 2. Move to folder and transfer ownership BEFORE adding content
-  try {
-    // Get folder owner
+  // Check if file was created successfully
+  // If the service account owns it, we need to transfer ownership
+  const isServiceAccountOwned = createRes.data.owners?.some((owner) =>
+    owner.emailAddress?.includes('gserviceaccount.com'),
+  )
+
+  if (isServiceAccountOwned) {
+    // Get folder owner for ownership transfer
     const folderInfo = await drive.files.get({
       fileId: folderId,
       fields: 'owners',
@@ -312,36 +324,37 @@ export const createGoogleDoc = async (
 
     const folderOwnerEmail = folderInfo.data.owners?.[0]?.emailAddress
     if (!folderOwnerEmail) {
-      throw new Error('Could not determine folder owner')
+      // Clean up and fail
+      try {
+        await drive.files.delete({ fileId: documentId, supportsAllDrives: true })
+      } catch {
+        // Ignore
+      }
+      throw new Error('Could not determine folder owner for ownership transfer')
     }
 
-    // Move to target folder
-    await drive.files.update({
-      fileId: documentId,
-      addParents: folderId,
-      fields: 'id,parents',
-      supportsAllDrives: true,
-    })
-
-    // Transfer ownership immediately (before adding content)
-    await drive.permissions.create({
-      fileId: documentId,
-      requestBody: {
-        type: 'user',
-        role: 'owner',
-        emailAddress: folderOwnerEmail,
-      },
-      transferOwnership: true,
-      supportsAllDrives: true,
-    })
-  } catch (error) {
-    // If transfer fails, delete the doc to avoid quota issues
+    // Transfer ownership
     try {
-      await drive.files.delete({ fileId: documentId, supportsAllDrives: true })
-    } catch {
-      // Ignore deletion errors
+      await drive.permissions.create({
+        fileId: documentId,
+        requestBody: {
+          type: 'user',
+          role: 'owner',
+          emailAddress: folderOwnerEmail,
+        },
+        transferOwnership: true,
+        supportsAllDrives: true,
+        sendNotificationEmail: false,
+      })
+    } catch (error) {
+      // Clean up and fail
+      try {
+        await drive.files.delete({ fileId: documentId, supportsAllDrives: true })
+      } catch {
+        // Ignore
+      }
+      throw new Error(`Failed to transfer ownership: ${error}`)
     }
-    throw new Error(`Failed to transfer ownership: ${error}`)
   }
 
   // 3. Insert formatted content
