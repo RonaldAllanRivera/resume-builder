@@ -30,7 +30,7 @@ const getAuthClient = () => {
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: [
-      'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/drive', // Full drive access (needed for shared folders)
       'https://www.googleapis.com/auth/documents',
     ],
   })
@@ -292,18 +292,51 @@ export const createGoogleDoc = async (
   // 1. Create an empty Google Doc directly in the shared folder via Drive API.
   //    This ensures the file is owned by the folder owner (your account),
   //    avoiding the service account's storage quota.
+  //
+  //    IMPORTANT: Use supportsAllDrives=true to work with shared drives/folders
   const createRes = await drive.files.create({
     requestBody: {
       name: safeTitle,
       mimeType: 'application/vnd.google-apps.document',
       parents: [folderId],
     },
-    fields: 'id',
+    fields: 'id,webViewLink',
+    supportsAllDrives: true,
   })
 
   const documentId = createRes.data.id
   if (!documentId) {
     throw new Error('Drive API did not return a file id.')
+  }
+
+  // 2. Transfer ownership to avoid service account quota
+  //    Get the folder to find its owner, then transfer the file
+  try {
+    const folderInfo = await drive.files.get({
+      fileId: folderId,
+      fields: 'owners',
+      supportsAllDrives: true,
+    })
+
+    const folderOwnerEmail = folderInfo.data.owners?.[0]?.emailAddress
+
+    if (folderOwnerEmail) {
+      // Create a permission to transfer ownership
+      await drive.permissions.create({
+        fileId: documentId,
+        requestBody: {
+          type: 'user',
+          role: 'owner',
+          emailAddress: folderOwnerEmail,
+        },
+        transferOwnership: true,
+        supportsAllDrives: true,
+      })
+    }
+  } catch (error) {
+    // If ownership transfer fails, log but continue
+    // The file will still be created, just using service account quota
+    console.warn('Could not transfer file ownership:', error)
   }
 
   // 3. Insert formatted content

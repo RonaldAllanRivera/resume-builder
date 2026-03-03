@@ -153,8 +153,8 @@ const DatabaseManager: React.FC = () => {
             certifications
           </li>
           <li>
-            Seed: Populates database with your complete resume data (Resume Profile + all
-            collections)
+            Seed: Populates database with your complete resume data (Site Settings + Resume Profile
+            + all collections)
           </li>
           <li>Reset & Seed: One-click to clear and repopulate everything</li>
         </ul>

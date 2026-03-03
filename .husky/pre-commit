@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint and type check before commit
+echo "🔍 Running pre-commit checks..."
+
+# Lint
+pnpm run lint || {
+  echo "❌ Lint failed. Please fix errors before committing."
+  exit 1
+}
+
+# Type check
+pnpm exec tsc --noEmit || {
+  echo "❌ Type check failed. Please fix errors before committing."
+  exit 1
+}
+
+echo "✅ Pre-commit checks passed!"

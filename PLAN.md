@@ -11,6 +11,10 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
   - `http://localhost:3000/admin` (Payload admin)
 - Resume/portfolio CMS data model implemented (collections + globals + minimal RBAC)
 - Projects admin create/edit working (uses a plain `slug` text field with automatic generation from `title`)
+- **Testing infrastructure complete** (Vitest + Playwright + GitHub Actions CI/CD)
+- **Database management UI** implemented (admin dashboard with reset/seed buttons)
+- **Complete seed script** with 101 resume items (Site Settings + Resume Profile + 9 Experiences + 25 Projects + 1 Education + 65 Certifications)
+- **Google Docs export** working with ownership transfer to avoid quota issues
 
 ## Phase 0 — Decisions + prerequisites
 
@@ -613,3 +617,68 @@ Status: Later
 - Content workflows:
   - `publishedAt` fields
   - preview mode for editors
+
+## Phase 9 — Testing Infrastructure + Database Management
+
+Status: **Completed** (2026-03-03)
+
+### Testing Infrastructure
+- **Test Suite**:
+  - Vitest for integration tests (seed functions, access control, API endpoints)
+  - Playwright for E2E tests (admin login, database manager UI, navigation)
+  - 28 total tests across 5 test files
+- **Test Database**:
+  - Isolated PostgreSQL instance on port 5433
+  - Separate `.env.test` configuration
+  - Docker Compose test configuration
+- **CI/CD**:
+  - GitHub Actions workflow (`.github/workflows/test.yml`)
+  - Runs on every push/PR to `main` and `develop`
+  - 4 jobs: Integration Tests, E2E Tests, Lint, Type Check
+  - Automatic Playwright report uploads
+- **Developer Tools**:
+  - `Makefile` with simple commands (`make test`, `make dev`, `make seed`)
+  - Git hooks (pre-commit: lint + type check, pre-push: optional full tests)
+  - `TESTING.md` - Complete testing guide
+  - `QUICKSTART.md` - Daily workflow documentation
+- **npm Scripts**:
+  - `test` - Run all tests
+  - `test:int` - Integration tests only
+  - `test:e2e` - E2E tests only
+  - `test:watch` - Watch mode for development
+  - `test:db:up` / `test:db:down` - Manage test database
+
+### Database Management UI
+- **Admin Dashboard Component** (`src/components/DatabaseManager.tsx`):
+  - One-click "Reset & Seed Database" button
+  - Individual "Reset Database" and "Seed Database" buttons
+  - Confirmation dialogs for destructive actions
+  - Real-time feedback with success/error messages
+  - Integrated via `beforeDashboard` component
+- **API Endpoints**:
+  - `POST /api/database/reset` - Admin-only, clears Resume Profile + all collections
+  - `POST /api/database/seed` - Admin-only, seeds complete resume data
+- **Complete Seed Script** (`src/endpoints/seed-resume-complete.ts`):
+  - Site Settings global (with social links)
+  - Resume Profile global
+  - 9 Experiences
+  - 25 Projects (full-stack, WordPress, automation)
+  - 1 Education
+  - 65 Certifications
+  - Total: 101 resume items
+
+### Google Docs Export Fixes
+- Fixed "Drive storage quota exceeded" error
+- Updated Google Auth scopes to full `drive` access
+- Added `supportsAllDrives: true` for shared folder support
+- Implemented automatic ownership transfer from service account to folder owner
+- Files now use folder owner's quota instead of service account's
+
+### Best Practices Implemented
+- **3-layer testing safety net**:
+  1. Local testing with simple `make test` command
+  2. Git hooks for automatic pre-commit checks
+  3. GitHub Actions CI/CD for every push/PR
+- **Isolated test environment** to avoid affecting development data
+- **Comprehensive documentation** for testing workflows
+- **Developer-friendly commands** via Makefile for easy adoption

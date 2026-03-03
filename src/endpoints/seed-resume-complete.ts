@@ -15,6 +15,37 @@ export const seedResumeComplete = async ({
 }): Promise<void> => {
   payload.logger.info('Starting complete resume seed...')
 
+  // Seed Site Settings Global
+  payload.logger.info('Seeding site settings global...')
+  await payload.updateGlobal({
+    slug: 'siteSettings',
+    data: {
+      siteName: 'Ronald Allan Rivera - Resume Builder',
+      defaultMetaTitle: 'Ronald Allan Rivera | Full-Stack Web Developer',
+      defaultMetaDescription:
+        'Full-stack Web Developer with 20+ years of experience in Python, Laravel, WordPress, React, Vue, Next.js. Specializing in eCommerce, SaaS, AI, and marketing technology.',
+      socialLinks: [
+        {
+          label: 'Portfolio',
+          url: 'https://allanwebdesign.com',
+        },
+        {
+          label: 'Email',
+          url: 'mailto:jaeron.rivera@gmail.com',
+        },
+        {
+          label: 'LinkedIn',
+          url: 'https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63/',
+        },
+        {
+          label: 'GitHub',
+          url: 'https://github.com/RonaldAllanRivera/',
+        },
+      ],
+    },
+    req,
+  })
+
   // Seed Resume Profile Global
   payload.logger.info('Seeding resume profile global...')
   await payload.updateGlobal({
@@ -1239,6 +1270,6 @@ export const seedResumeComplete = async ({
   }
 
   payload.logger.info(
-    `Resume seed completed! Seeded: Resume Profile (1), Experiences (${experiences.length}), Education (${educations.length}), Projects (${projects.length}), Certifications (${certifications.length})`,
+    `Resume seed completed! Seeded: Site Settings (1), Resume Profile (1), Experiences (${experiences.length}), Education (${educations.length}), Projects (${projects.length}), Certifications (${certifications.length})`,
   )
 }

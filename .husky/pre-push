@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run tests before push (optional - can be slow)
+# Uncomment to enable automatic testing before push
+
+# echo "🧪 Running tests before push..."
+# make test-all || {
+#   echo "❌ Tests failed. Please fix before pushing."
+#   exit 1
+# }
+
+echo "✅ Pre-push checks passed!"

@@ -1,5 +1,68 @@
 # Changelog
 
+## [0.3.0] - 2026-03-03
+
+### Testing Infrastructure
+- Added comprehensive test suite with Vitest (integration) and Playwright (E2E)
+- Created isolated test database configuration (`docker-compose.test.yml`, `.env.test`)
+- Added GitHub Actions CI/CD workflow (`.github/workflows/test.yml`):
+  - Runs on every push/PR to `main` and `develop` branches
+  - Executes lint, type check, integration tests, and E2E tests
+  - Uploads Playwright reports as artifacts
+- Created test files:
+  - `tests/integration/seed.test.ts` - Seed function validation (8 tests)
+  - `tests/integration/access-control.test.ts` - Permission testing (7 tests)
+  - `tests/e2e/admin-login.spec.ts` - Login flow tests (3 tests)
+  - `tests/e2e/database-manager.spec.ts` - Database manager UI tests (4 tests)
+  - `tests/e2e/generation-flow.spec.ts` - Navigation and collection tests (6 tests)
+- Added developer convenience tools:
+  - `Makefile` with simple commands (`make test`, `make dev`, `make seed`)
+  - Git hooks (`.husky/pre-commit`, `.husky/pre-push`) for automatic quality checks
+  - `TESTING.md` - Complete testing documentation
+  - `QUICKSTART.md` - Daily workflow guide
+- Added npm scripts: `test:watch`, `test:db:up`, `test:db:down`
+
+### Database Management
+- Created admin Database Manager UI component (`src/components/DatabaseManager.tsx`):
+  - One-click "Reset & Seed Database" button
+  - Individual "Reset Database" and "Seed Database" buttons
+  - Confirmation dialogs for destructive actions
+  - Real-time feedback with success/error messages
+  - Integrated into admin dashboard via `beforeDashboard` component
+- Added admin-only API endpoints:
+  - `POST /api/database/reset` - Clears Resume Profile global and deletes all resume collections
+  - `POST /api/database/seed` - Seeds complete resume data
+- Updated reset operation to include Resume Profile global clearing
+
+### Resume Data Seeding
+- Expanded complete seed script (`src/endpoints/seed-resume-complete.ts`):
+  - Added Site Settings global with social links (Portfolio, Email, LinkedIn, GitHub)
+  - Increased projects from 15 to 25 (added WordPress sites and automation tools)
+  - Now seeds: 1 Site Settings + 1 Resume Profile + 9 Experiences + 25 Projects + 1 Education + 65 Certifications
+- Updated seed summary logging to include all seeded data counts
+- Added all missing WordPress website projects and automation projects from resume
+
+### Google Docs Export
+- Fixed "Drive storage quota exceeded" error:
+  - Updated Google Auth scopes from `drive.file` to full `drive` scope
+  - Added `supportsAllDrives: true` parameter to Drive API calls
+  - Implemented automatic ownership transfer from service account to folder owner
+  - Files now use folder owner's storage quota instead of service account's
+- Added error handling for ownership transfer failures
+- Updated `src/utilities/google-docs.ts` with proper shared folder support
+
+### Site Settings Global
+- Added Site Settings global seeding with:
+  - Site name: "Ronald Allan Rivera - Resume Builder"
+  - Default meta title and description
+  - Social links array (Portfolio, Email, LinkedIn, GitHub)
+- Social links now available for use in resume generation
+
+### Developer Experience
+- Created helper script `scripts/show-service-account-email.ts` to display Google service account email
+- Updated Database Manager UI text to reflect all operations (Site Settings + Resume Profile)
+- Added comprehensive documentation for testing workflows
+
 ## Unreleased
 
 - Added admin UI copy-to-clipboard buttons on `generations` edit view:

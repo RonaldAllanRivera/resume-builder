@@ -9,17 +9,22 @@ This project is a practical, production-style implementation of a content-driven
 - Resume + portfolio content managed in a CMS
 - Public site rendered with SEO-friendly patterns
 - Minimal role-based access control for multi-user editing
+- **Comprehensive test suite** with Vitest + Playwright + GitHub Actions CI/CD
+- **One-click database management** via admin dashboard
 
 It is based on the Payload Website Template (Payload + Next.js in a single app) and has been extended with a resume/portfolio data model.
 
 ## Key features
 
+- **Testing Infrastructure**: Vitest (integration) + Playwright (E2E) + GitHub Actions CI/CD
+- **Database Management UI**: Admin dashboard with reset/seed buttons (101 resume items)
+- **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
 - Structured resume data model (separate collections for SEO-friendly querying)
-- Job Ads + AI-assisted generation workflow (tailored resume + application letter)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content
 - Minimal RBAC (`admin`, `editor`) for the CMS
 - Private-by-default personal fields with explicit publish toggles
+- Google Docs export with automatic ownership transfer
 
 ## Tech stack
 
@@ -35,13 +40,114 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Public site
   - Payload Admin (`/admin`) and API routes
 
-## This repo (start here)
+## 📚 Documentation
 
-- Quick start: see [Quick start (this repo)](#quick-start-this-repo)
-- Common workflows:
-  - Reset local DB volume: see [Full database reset (hard reset)](#troubleshooting)
-  - Migrate local Docker data to online Postgres: see [Migrating local Docker data to online PostgreSQL](#migrating-local-docker-data-to-online-postgresql)
-  - Admin utility: delete document versions: see [Delete versions menu item](#troubleshooting)
+- **[QUICKSTART.md](QUICKSTART.md)** - Daily development workflow with simple commands
+- **[TESTING.md](TESTING.md)** - Complete testing guide (Vitest + Playwright + CI/CD)
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and recent changes
+- **[PLAN.md](PLAN.md)** - Project roadmap and architecture decisions
+
+## 🚀 Quick Start
+
+### Option 1: Using Make (Recommended)
+
+```bash
+# See all available commands
+make help
+
+# Start development
+make dev
+
+# Run tests
+make test
+
+# Seed database
+make seed
+```
+
+### Option 2: Using Docker Compose
+
+```bash
+# Start all services (app + PostgreSQL)
+docker compose up -d
+
+# View logs
+docker compose logs -f app
+
+# Seed database
+docker compose exec app pnpm run seed:resume
+```
+
+### First Time Setup
+
+1. Start services: `make dev` or `docker compose up -d`
+2. Visit http://localhost:3000/admin
+3. Create your first admin user
+4. Use the **Database Management** panel on the dashboard to seed resume data
+
+## 🧪 Testing
+
+### Run Tests Locally
+
+```bash
+# All tests (integration + E2E)
+make test
+
+# Watch mode (tests run as you code)
+make test-watch
+
+# Integration tests only
+make test-int
+
+# E2E tests only
+make test-e2e
+```
+
+### Automatic Testing (CI/CD)
+
+Tests run automatically on GitHub when you:
+- Push to `main` or `develop` branch
+- Create a pull request
+
+**No manual action needed!** ✅
+
+See [TESTING.md](TESTING.md) for complete testing documentation.
+
+## 🗄️ Database Management
+
+### Admin Dashboard (Easiest)
+
+1. Login to http://localhost:3000/admin
+2. Go to **Dashboard**
+3. Use the **Database Management** panel:
+   - **Reset & Seed Database** - One-click complete refresh
+   - **Reset Database** - Clear all resume data
+   - **Seed Database** - Populate with resume data
+
+### Command Line
+
+```bash
+# Seed database
+make seed
+# or
+docker compose exec app pnpm run seed:resume
+
+# Reset database
+make reset
+# or
+docker compose exec app pnpm run reset:database
+```
+
+### What Gets Seeded
+
+- **Site Settings** (1 global) - Social links (Portfolio, Email, LinkedIn, GitHub)
+- **Resume Profile** (1 global) - Full contact info + summary
+- **Experiences** (9 items) - Work history
+- **Projects** (25 items) - Full-stack, WordPress, automation projects
+- **Education** (1 item) - BS Computer Science
+- **Certifications** (65 items) - LinkedIn Learning courses
+
+**Total: 101 resume items**
 
 ## Routes
 
