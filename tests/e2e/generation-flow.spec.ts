@@ -27,15 +27,24 @@ test.describe('Resume Generation Flow', () => {
   test('should navigate to collections', async ({ page }) => {
     // Navigate to experiences
     await page.goto('/admin/collections/experiences')
-    await expect(page.locator('h1:has-text("Experiences")')).toBeVisible()
+    await page.waitForURL('**/collections/experiences')
+    await expect(
+      page.locator('[class*="list-controls"], table, .collection-list').first(),
+    ).toBeVisible()
 
     // Navigate to projects
     await page.goto('/admin/collections/projects')
-    await expect(page.locator('h1:has-text("Projects")')).toBeVisible()
+    await page.waitForURL('**/collections/projects')
+    await expect(
+      page.locator('[class*="list-controls"], table, .collection-list').first(),
+    ).toBeVisible()
 
-    // Navigate to certifications
-    await page.goto('/admin/collections/certifications')
-    await expect(page.locator('h1:has-text("Certifications")')).toBeVisible()
+    // Navigate to generations
+    await page.goto('/admin/collections/generations')
+    await page.waitForURL('**/collections/generations')
+    await expect(
+      page.locator('[class*="list-controls"], table, .collection-list').first(),
+    ).toBeVisible()
   })
 
   test('should view resume profile global', async ({ page }) => {

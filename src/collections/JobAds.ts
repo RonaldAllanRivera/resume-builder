@@ -138,47 +138,53 @@ export const JobAds: CollectionConfig = {
     ],
     afterRead: [
       async ({ doc, req }) => {
-        const d = doc as { displayTitle?: string; title?: string; company?: RelIdValue }
-        if (d.displayTitle) return doc
+        try {
+          const d = doc as { displayTitle?: string; title?: string; company?: RelIdValue }
+          if (d.displayTitle) return doc
 
-        // Compute displayTitle on the fly for docs saved before the hook existed.
-        const title = d.title ?? ''
-        const companyRaw = d.company
+          // Compute displayTitle on the fly for docs saved before the hook existed.
+          const title = d.title ?? ''
+          const companyRaw = d.company
 
-        let companyName = resolveCompanyName(companyRaw as RelIdValue)
+          let companyName = resolveCompanyName(companyRaw as RelIdValue)
 
-        if (!companyName && companyRaw) {
-          const companyId = extractNumericId(companyRaw)
+          if (!companyName && companyRaw) {
+            const companyId = extractNumericId(companyRaw)
 
-          if (companyId && Number.isFinite(companyId)) {
-            // Use a per-request cache to avoid repeated lookups in list views.
-            type Cache = Map<number, string | null>
-            const reqWithCache = req as unknown as { __jobAdCompanyNameCache?: Cache }
-            const cache =
-              reqWithCache.__jobAdCompanyNameCache ??
-              (reqWithCache.__jobAdCompanyNameCache = new Map<number, string | null>())
+            if (companyId && Number.isFinite(companyId)) {
+              // Use a per-request cache to avoid repeated lookups in list views.
+              type Cache = Map<number, string | null>
+              const reqWithCache = req as unknown as { __jobAdCompanyNameCache?: Cache }
+              const cache =
+                reqWithCache.__jobAdCompanyNameCache ??
+                (reqWithCache.__jobAdCompanyNameCache = new Map<number, string | null>())
 
-            if (cache.has(companyId)) {
-              companyName = cache.get(companyId) ?? null
-            } else {
-              try {
-                const companyDoc = await req.payload.findByID({
-                  collection: 'companies',
-                  id: companyId,
-                  depth: 0,
-                  req,
-                })
-                companyName = (companyDoc as { name?: string })?.name?.trim() || null
-              } catch {
-                companyName = null
+              if (cache.has(companyId)) {
+                companyName = cache.get(companyId) ?? null
+              } else {
+                try {
+                  const companyDoc = await req.payload.findByID({
+                    collection: 'companies',
+                    id: companyId,
+                    depth: 0,
+                    req,
+                  })
+                  companyName = (companyDoc as { name?: string })?.name?.trim() || null
+                } catch {
+                  companyName = null
+                }
+                cache.set(companyId, companyName)
               }
-              cache.set(companyId, companyName)
             }
           }
-        }
 
-        d.displayTitle = companyName ? `${companyName} – ${title}` : title || ''
-        return doc
+          d.displayTitle = companyName ? `${companyName} – ${title}` : title || ''
+          return doc
+        } catch (error) {
+          // If displayTitle computation fails, return doc as-is to prevent delete failures
+          console.error('Error in JobAds afterRead hook:', error)
+          return doc
+        }
       },
     ],
   },

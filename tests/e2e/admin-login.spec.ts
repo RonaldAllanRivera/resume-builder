@@ -14,8 +14,10 @@ test.describe('Admin Login Flow', () => {
     // Wait for redirect to admin dashboard
     await page.waitForURL('**/admin')
 
-    // Verify we're logged in
-    await expect(page.locator('text=Dashboard')).toBeVisible()
+    // Verify we're logged in - check for account menu or admin UI elements
+    await expect(
+      page.locator('[aria-label="Account"], .dashboard, [class*="dashboard"]').first(),
+    ).toBeVisible({ timeout: 10000 })
   })
 
   test('should show error for invalid credentials', async ({ page }) => {

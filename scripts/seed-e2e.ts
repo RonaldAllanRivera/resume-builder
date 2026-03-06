@@ -4,6 +4,7 @@
  * Creates test user and minimal data needed for E2E tests
  */
 
+import 'dotenv/config'
 import { getPayload } from 'payload'
 import config from '../src/payload.config'
 

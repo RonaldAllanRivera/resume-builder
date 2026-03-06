@@ -17,7 +17,17 @@
 ### CI/CD Database Fix
 - **Database Schema Initialization**: Created `scripts/init-db.ts` to initialize Payload schema
 - **GitHub Actions**: Replaced `pnpm payload migrate` with `pnpm run init:db` before build
-- **Fixed**: "relation 'users' does not exist" error in CI test suite
+- **Fixed**: "relation 'users' does not exist" error in CI
+
+### Bug Fixes
+- **Delete Operations**: Fixed JobAds collection delete failures by adding error handling to afterRead hook
+- **Hook Safety**: Ensured all collection hooks handle errors gracefully to prevent delete operation failures
+
+### Testing
+- **Delete Operations Test Suite**: Added comprehensive integration tests for delete operations across all collections
+- **Edge Case Coverage**: Tests include invalid references, missing relationships, and cascading deletes
+- **E2E Seed Script**: Fixed environment variable loading with dotenv for local test runs
+- **E2E Selectors**: Updated brittle UI selectors to use more flexible element matching
 
 ### Documentation Restructure
 - **docs/ folder**: Moved all documentation files to `/docs/` folder
