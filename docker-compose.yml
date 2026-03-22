@@ -21,6 +21,7 @@ services:
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
+      - PAYLOAD_CLI_ACCEPT_WARNINGS=true
       # Override DATABASE_URL to use Docker service name instead of 127.0.0.1
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/payload
     restart: unless-stopped

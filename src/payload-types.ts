@@ -890,6 +890,7 @@ export interface Project {
   id: number;
   title: string;
   slug: string;
+  category: 'full-stack' | 'wordpress' | 'automation' | 'graphic-design';
   summary?: string | null;
   content?: {
     root: {
@@ -1661,6 +1662,7 @@ export interface EducationsSelect<T extends boolean = true> {
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  category?: T;
   summary?: T;
   content?: T;
   featured?: T;
@@ -2128,6 +2130,14 @@ export interface SiteSetting {
   siteName: string;
   defaultMetaTitle?: string | null;
   defaultMetaDescription?: string | null;
+  /**
+   * Choose the template for your public site. Changes apply instantly.
+   */
+  publicTemplate: 'default' | 'modern' | 'minimal';
+  showExperience?: boolean | null;
+  showEducation?: boolean | null;
+  showProjects?: boolean | null;
+  showCertifications?: boolean | null;
   socialLinks?:
     | {
         label: string;
@@ -2242,6 +2252,11 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
   defaultMetaTitle?: T;
   defaultMetaDescription?: T;
+  publicTemplate?: T;
+  showExperience?: T;
+  showEducation?: T;
+  showProjects?: T;
+  showCertifications?: T;
   socialLinks?:
     | T
     | {

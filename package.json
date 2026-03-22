@@ -11,6 +11,7 @@
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "seed:resume": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-resume.ts",
     "seed:complete": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-resume-complete.ts",
+    "seed:projects": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-projects-only.ts",
     "seed:e2e": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed-e2e.ts",
     "reset:database": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/reset-database.ts",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

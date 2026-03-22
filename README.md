@@ -22,6 +22,10 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Database Management UI**: Admin dashboard with reset/seed buttons (101 resume items)
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
 - **Google Docs Export**: OAuth2 authentication with personal Drive quota
+- **Project SEO Privacy**: Complete search engine blocking for contract compliance
+  - All projects hidden from search engines (robots.txt + noindex meta tags)
+  - Projects remain visible to human visitors
+  - 26 projects across 4 categories (Full Stack, WordPress, Automation, Graphic Design)
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content

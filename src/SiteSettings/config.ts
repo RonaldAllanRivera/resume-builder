@@ -23,18 +23,85 @@ export const SiteSettings: GlobalConfig = {
       type: 'textarea',
     },
     {
-      name: 'socialLinks',
-      type: 'array',
-      fields: [
+      type: 'tabs',
+      tabs: [
         {
-          name: 'label',
-          type: 'text',
-          required: true,
+          label: 'Template',
+          fields: [
+            {
+              name: 'publicTemplate',
+              type: 'select',
+              required: true,
+              defaultValue: 'default',
+              options: [
+                {
+                  label: 'Default',
+                  value: 'default',
+                },
+                {
+                  label: 'Modern',
+                  value: 'modern',
+                },
+                {
+                  label: 'Minimal',
+                  value: 'minimal',
+                },
+              ],
+              admin: {
+                description: 'Choose the template for your public site. Changes apply instantly.',
+              },
+            },
+          ],
         },
         {
-          name: 'url',
-          type: 'text',
-          required: true,
+          label: 'Navigation',
+          fields: [
+            {
+              name: 'showExperience',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Experience in Navigation',
+            },
+            {
+              name: 'showEducation',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Education in Navigation',
+            },
+            {
+              name: 'showProjects',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Projects in Navigation',
+            },
+            {
+              name: 'showCertifications',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show Certifications in Navigation',
+            },
+          ],
+        },
+        {
+          label: 'Social Links',
+          fields: [
+            {
+              name: 'socialLinks',
+              type: 'array',
+              fields: [
+                {
+                  name: 'label',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'url',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+          ],
         },
       ],
     },

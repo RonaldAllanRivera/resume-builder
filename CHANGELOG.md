@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.5.0] - 2026-03-22
+
+### Project SEO Privacy & Contract Compliance
+- **Complete Search Engine Blocking**: All projects hidden from search engines for contract compliance
+  - `robots.txt` blocks `/projects` and `/project/` routes
+  - `noindex, nofollow` meta tags on all project pages
+  - Projects excluded from `sitemap.xml`
+  - Projects remain fully visible to human visitors
+- **Removed noindexProject Field**: Simplified implementation by removing per-project toggle
+  - Removed field from Projects collection schema
+  - Removed filters from data fetching utilities
+  - Updated TypeScript types
+
+### Project Management
+- **Project Sorting**: Fixed sort order to display newest projects first
+  - Reversed `order` field values (26=newest to 1=oldest)
+  - Projects now correctly sorted by creation date
+- **Project Categories**: Comprehensive categorization of 26 projects
+  - Full Stack Development (8 projects)
+  - WordPress Development (13 projects)
+  - Automation & Software Engineering (4 projects)
+  - Graphic Design (1 project)
+- **Project Seeder**: Enhanced seeder with detailed project descriptions and tech stacks
+  - Created `seed-projects-updated.ts` with all projects categorized
+  - Updated `seed-resume-complete.ts` with `skipProjects` parameter
+  - Fixed duplicate slug errors during seeding
+
+### Docker Configuration
+- **Auto-Accept Schema Changes**: Added `PAYLOAD_CLI_ACCEPT_WARNINGS=true` to prevent interactive prompts
+- **Port Configuration**: Standardized Docker to always use port 3000
+- **Performance Optimization**: Fresh rebuild process for optimal container performance
+
+### Bug Fixes
+- **TypeScript Errors**: Fixed type errors in legacy seeder with proper type assertions
+- **ESLint Warnings**: Suppressed warnings for legacy code that never executes
+
 ## [0.4.0] - 2026-03-03
 
 ### Google Docs Export with OAuth2
@@ -114,8 +150,76 @@
 - Updated Database Manager UI text to reflect all operations (Site Settings + Resume Profile)
 - Added comprehensive documentation for testing workflows
 
-## Unreleased
+## [Unreleased]
 
+### Phase 4: Public Site Pages & Template System [COMPLETED]
+
+#### Public Routes
+- **Homepage** (`/`) - Profile summary with featured projects and JSON-LD structured data
+- **Experience** (`/experience`) - Professional experience timeline
+- **Education** (`/education`) - Educational background
+- **Projects** (`/projects`) - All projects overview
+- **Project Categories** - 4 category pages (`/projects/full-stack`, `/projects/wordpress`, `/projects/automation`, `/projects/graphic-design`)
+- **Project Details** (`/project/[slug]`) - Individual project pages with selective noindex
+- **Certifications** (`/certifications`) - Chronological certifications list
+
+#### Template System
+- **Template Registry**: Flexible template system with instant switching (no rebuild required)
+- **Default Template**: Professional, responsive template with grid layouts
+- **Template Preview**: Support for `?template=` query parameter to preview templates
+- **Admin Control**: Template selection via Site Settings global
+- **Future-Ready**: Placeholder support for Modern and Minimal templates
+
+#### Collections & Schema Updates
+- **Projects Categories**: Added 4 category options (Full Stack, WordPress, Automation, Graphic Design)
+- **Selective Privacy**: Added `noindexProject` field for SEO control on individual projects
+- **Site Settings**: Enhanced with template selection and navigation visibility controls
+
+#### Template Components (Default)
+- **Layout**: Navigation with category submenu + footer
+- **HomePage**: Profile summary with featured projects grid
+- **ExperiencePage**: Timeline view with company details
+- **EducationPage**: Chronological education history
+- **ProjectsPage**: All projects overview with category filtering
+- **ProjectCategoryPage**: Category-specific project listings
+- **ProjectDetailPage**: Full project details with tech stack and external links
+- **CertificationsPage**: Chronological certifications with semantic HTML
+
+#### Data Fetching Utilities
+- **Security-First**: All queries use `overrideAccess: false` and filter by published status
+- **Optimized**: Proper sorting, depth control, and query constraints
+- **Reusable**: Centralized data fetching functions in `fetchPublicData.ts`
+
+#### SEO Features
+- **External Links**: Proper `rel` attributes (`nofollow noopener noreferrer`)
+- **Referrer Policy**: `no-referrer` on external project links
+- **Selective Noindex**: Per-project privacy control
+- **Semantic HTML**: Proper use of `<article>`, `<time>`, heading hierarchy
+- **Chronological Ordering**: Latest-first for certifications and experiences
+
+#### Navigation
+- **Dynamic Visibility**: Show/hide sections via Site Settings
+- **Category Submenu**: Projects dropdown with 4 categories
+- **Responsive**: Mobile-friendly navigation
+- **Accessible**: Proper ARIA attributes and semantic markup
+
+#### SEO & Discoverability
+- **Sitemap.xml**: Dynamic sitemap generation with all public routes and published projects
+- **Robots.txt**: Proper crawler instructions (allow public routes, disallow admin/api)
+- **JSON-LD Structured Data**:
+  - Person schema on homepage with social links
+  - WebSite schema for site metadata
+  - SoftwareApplication/CreativeWork schemas for projects
+  - EducationalOccupationalCredential schemas for certifications
+- **Meta Tags**: Proper titles, descriptions, and OpenGraph support
+- **Selective Noindex**: Per-project privacy control via `noindexProject` field
+
+#### Documentation
+- **Template System Guide**: Comprehensive docs in `/docs/TEMPLATE_SYSTEM.md`
+- **Component Props**: Fully typed interfaces for all template components
+- **Best Practices**: Guidelines for adding new templates
+
+### CI/CD Improvements
 - Added admin UI copy-to-clipboard buttons on `generations` edit view:
   - Resume Draft: copy as plain text or markdown.
   - Application Letter: copy as plain text.

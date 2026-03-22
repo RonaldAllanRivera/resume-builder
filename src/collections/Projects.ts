@@ -20,7 +20,7 @@ export const Projects: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['title', 'slug', 'featured', 'updatedAt'],
+    defaultColumns: ['title', 'category', 'featured', 'updatedAt'],
     useAsTitle: 'title',
     components: {
       edit: {
@@ -40,6 +40,33 @@ export const Projects: CollectionConfig = {
       index: true,
       unique: true,
       required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'category',
+      type: 'select',
+      required: true,
+      options: [
+        {
+          label: 'Full Stack Development',
+          value: 'full-stack',
+        },
+        {
+          label: 'WordPress Development',
+          value: 'wordpress',
+        },
+        {
+          label: 'Automation & Software Engineering',
+          value: 'automation',
+        },
+        {
+          label: 'Graphic Design',
+          value: 'graphic-design',
+        },
+      ],
+      defaultValue: 'full-stack',
       admin: {
         position: 'sidebar',
       },

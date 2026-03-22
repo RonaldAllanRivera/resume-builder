@@ -8,10 +8,12 @@ export const seedResumeComplete = async ({
   payload,
   req,
   overrideAccess = false,
+  skipProjects = false,
 }: {
   payload: Payload
   req: PayloadRequest
   overrideAccess?: boolean
+  skipProjects?: boolean
 }): Promise<void> => {
   payload.logger.info('Starting complete resume seed...')
 
@@ -286,322 +288,327 @@ export const seedResumeComplete = async ({
     })
   }
 
-  // Seed Projects
-  payload.logger.info('Seeding projects...')
-  const projects = [
-    {
-      title: 'Meet Lessons',
-      slug: 'meet-lessons',
-      summary:
-        'Full Stack Django + Python Developer - Built a production-style SaaS platform combining a Python OCR desktop client and Django backend for AI-assisted Q&A from screenshots.',
-      techStack: [
-        { name: 'Django' },
-        { name: 'Python' },
-        { name: 'OCR' },
-        { name: 'AI/ML' },
-        { name: 'Stripe' },
-        { name: 'Docker' },
-      ],
-      repoUrl: 'https://github.com/RonaldAllanRivera/auto-respond/',
-      featured: true,
-      order: 1,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Forex Signals Platform (D1/W1/MN1)',
-      slug: 'forex-signals-platform',
-      summary:
-        'Full Stack Laravel Developer - Developed a Laravel 12 trading analysis platform with automated candlestick syncing, AI-generated trade signals, TradingView chart rendering, scheduler-driven jobs, admin trade workflows, and daily email reports.',
-      techStack: [
-        { name: 'Laravel' },
-        { name: 'PHP' },
-        { name: 'TradingView' },
-        { name: 'AI/ML' },
-        { name: 'Docker' },
-      ],
-      repoUrl: 'https://github.com/RonaldAllanRivera/forex',
-      featured: true,
-      order: 2,
-      _status: 'published' as const,
-    },
-    {
-      title: 'AWS E-commerce Microservices',
-      slug: 'aws-ecommerce-microservices',
-      summary:
-        'Full Stack Laravel Developer - Architected a microservices-based e-commerce system using three Laravel services and a Vue 3 SPA frontend with asynchronous messaging and AWS deployment.',
-      techStack: [
-        { name: 'Laravel' },
-        { name: 'Vue.js' },
-        { name: 'Microservices' },
-        { name: 'AWS' },
-        { name: 'Docker' },
-      ],
-      repoUrl: 'https://github.com/RonaldAllanRivera/aws_ecommerce',
-      featured: true,
-      order: 3,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Modular Frontend with Advanced Marketing & Lead Gen Tools',
-      slug: 'traderai-live',
-      summary:
-        'Full Stack Laravel Developer - Engineered a modular Laravel platform with multi-template switching, advanced lead generation pipelines, CAPTCHA validation, rate limiting, rule-based cloaking middleware, and dynamic pixel injection.',
-      techStack: [
-        { name: 'Laravel' },
-        { name: 'Filament' },
-        { name: 'Cloudflare Turnstile' },
-        { name: 'Marketing Automation' },
-      ],
-      repoUrl: 'https://github.com/RonaldAllanRivera/traderai.live',
-      featured: true,
-      order: 4,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Multi-Source Marketing Data Dashboard',
-      slug: 'marketing-data-dashboard',
-      summary:
-        'Full Stack Laravel Developer - Built a performance marketing reporting system that normalizes CSV and JSON exports from multiple platforms into structured dashboards.',
-      techStack: [{ name: 'Laravel' }, { name: 'Data Processing' }, { name: 'CSV/JSON' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/report-system-laravel',
-      featured: false,
-      order: 5,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Cars Images API',
-      slug: 'cars-images-api',
-      summary:
-        'Full Stack Laravel Developer - Developed a Laravel and Filament system integrating with Wikimedia Commons to fetch, validate, and manage high-resolution car images.',
-      techStack: [{ name: 'Laravel' }, { name: 'Filament' }, { name: 'API Integration' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/cars-images-api',
-      featured: false,
-      order: 6,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Book Reader',
-      slug: 'book-reader',
-      summary:
-        'Full Stack AI Systems Developer - Created a Python automation system using Selenium, OCR, and LLM integration to extract text from browser-based reading platforms.',
-      techStack: [{ name: 'Python' }, { name: 'Selenium' }, { name: 'OCR' }, { name: 'OpenAI' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/book-reader',
-      featured: false,
-      order: 7,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Figma to Elementor Clone',
-      slug: 'figma-to-elementor',
-      summary:
-        'Full Stack Laravel Developer - Built a Laravel platform that converts Figma designs into clean HTML previews and Elementor-compatible JSON exports for WordPress import.',
-      techStack: [
-        { name: 'Laravel' },
-        { name: 'Figma API' },
-        { name: 'WordPress' },
-        { name: 'Docker' },
-      ],
-      repoUrl: 'https://github.com/RonaldAllanRivera/elementor-clone',
-      featured: false,
-      order: 8,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Featured Resource Block',
-      slug: 'featured-resource-block',
-      summary:
-        'WordPress Plugin Developer - Developed a production-ready WordPress plugin featuring a custom post type, Elementor widget, scheduled JSON syncing, and hardened security.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'PHP' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/featured-resource-block',
-      featured: false,
-      order: 9,
-      _status: 'published' as const,
-    },
-    {
-      title: 'IRANK Calc & Cards',
-      slug: 'irank-calc-cards',
-      summary:
-        'WordPress Plugin Developer - Engineered high-performance Gutenberg blocks including a real-time calculator and swipeable product cards using server-rendered architecture.',
-      techStack: [{ name: 'WordPress' }, { name: 'Gutenberg' }, { name: 'JavaScript' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/irank-calc-cards',
-      featured: false,
-      order: 10,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Used Cars Search',
-      slug: 'used-cars-search',
-      summary:
-        'WordPress Plugin Developer - Built a scalable search and comparison plugin with autosuggest, AI-generated SEO metadata, REST endpoints, and optimized asset loading.',
-      techStack: [{ name: 'WordPress' }, { name: 'OpenAI' }, { name: 'REST API' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/used-cars-search',
-      featured: false,
-      order: 11,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Popular AI Software Search',
-      slug: 'popular-ai-software-search',
-      summary:
-        'WordPress Plugin Developer - Created a modern AJAX-powered search plugin using vanilla JavaScript and Fetch API with autosuggest and filtering.',
-      techStack: [{ name: 'WordPress' }, { name: 'JavaScript' }, { name: 'AJAX' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/software-search',
-      featured: false,
-      order: 12,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Ozeum Museum',
-      slug: 'ozeum-museum',
-      summary:
-        'Custom WordPress Theme Developer - Built a professional custom WordPress theme for museums with custom post types, GSAP animations, and WCAG accessibility.',
-      techStack: [{ name: 'WordPress' }, { name: 'GSAP' }, { name: 'Custom Theme' }],
-      liveUrl: 'https://artworkwebsite.com/',
-      featured: false,
-      order: 13,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Cloudflare Multiple Domain Delete',
-      slug: 'cloudflare-domain-delete',
-      summary:
-        'Full Stack Python Developer - Built a Tkinter-based desktop tool for safely bulk deleting Cloudflare domains with progress tracking.',
-      techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Cloudflare API' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete',
-      featured: false,
-      order: 14,
-      _status: 'published' as const,
-    },
-    {
-      title: 'HTTrack-like Clone',
-      slug: 'httrack-clone',
-      summary:
-        'Full Stack Python Developer - Developed a desktop application that mirrors web pages into clean offline folders with asset rewriting and preview capabilities.',
-      techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Web Scraping' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/httrack-clone',
-      featured: false,
-      order: 15,
-      _status: 'published' as const,
-    },
-    {
-      title: 'GaitBeacon.com',
-      slug: 'gaitbeacon',
-      summary:
-        'WordPress and Elementor Developer - Custom WordPress and WooCommerce site built with Elementor, optimized checkout flow, SEO configuration, performance tuning, and security hardening.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
-      liveUrl: 'https://gaitbeacon.com',
-      featured: false,
-      order: 16,
-      _status: 'published' as const,
-    },
-    {
-      title: 'EverythingUsedCars.com',
-      slug: 'everything-used-cars',
-      summary:
-        'WordPress and Elementor Developer - Developed a responsive WordPress site with advanced search filters, SEO optimization, caching setup, and scalable architecture.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'SEO' }],
-      liveUrl: 'https://everythingusedcars.com',
-      featured: false,
-      order: 17,
-      _status: 'published' as const,
-    },
-    {
-      title: 'PopularAISoftware.com',
-      slug: 'popular-ai-software',
-      summary:
-        'WordPress and Elementor Developer - Built an AI tools directory integrating OpenAI, automation workflows, and WordPress customization for a dynamic user experience.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'OpenAI' }],
-      liveUrl: 'https://popularaisoftware.com',
-      featured: false,
-      order: 18,
-      _status: 'published' as const,
-    },
-    {
-      title: '78Dragons.com',
-      slug: '78dragons',
-      summary:
-        'WordPress and Elementor Developer - Developed a WooCommerce eCommerce platform with structured product management and optimized purchasing flow.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
-      liveUrl: 'https://78dragons.com',
-      featured: false,
-      order: 19,
-      _status: 'published' as const,
-    },
-    {
-      title: 'SmarterSafetySystems.com',
-      slug: 'smarter-safety-systems',
-      summary:
-        'WordPress and Elementor Developer - Built a WordPress site for an IoT safety solutions provider with structured content and scalable architecture.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }],
-      liveUrl: 'https://smartersafetysystems.com',
-      featured: false,
-      order: 20,
-      _status: 'published' as const,
-    },
-    {
-      title: 'LumbardConsulting.com',
-      slug: 'lumbard-consulting',
-      summary:
-        'WordPress and Elementor Developer - Created a professional WordPress site for a leadership consulting firm with optimized UX and structured service pages.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }],
-      liveUrl: 'https://lumbardconsulting.com',
-      featured: false,
-      order: 21,
-      _status: 'published' as const,
-    },
-    {
-      title: '24Aries.com',
-      slug: '24aries',
-      summary:
-        'WordPress Developer - Developed a WordPress website showcasing advanced technology products with responsive layout and structured presentation.',
-      techStack: [{ name: 'WordPress' }],
-      liveUrl: 'https://24aries.com',
-      featured: false,
-      order: 22,
-      _status: 'published' as const,
-    },
-    {
-      title: 'PulseIQ.com',
-      slug: 'pulseiq',
-      summary:
-        'WordPress and Elementor Developer - Built a WordPress site for energy benchmarking and management solutions with SEO configuration and performance optimization.',
-      techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'SEO' }],
-      liveUrl: 'https://pulseiq.com',
-      featured: false,
-      order: 23,
-      _status: 'published' as const,
-    },
-    {
-      title: 'Interactive Map Scraper',
-      slug: 'interactive-map-scraper',
-      summary:
-        'Software Developer - Created a Python GUI tool to extract structured data from Mapbox-based interactive maps.',
-      techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Mapbox' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/mapscraper',
-      featured: false,
-      order: 24,
-      _status: 'published' as const,
-    },
-    {
-      title: 'CSV Scraper GUI',
-      slug: 'csv-scraper-gui',
-      summary:
-        'Software Developer - Built a Selenium-based desktop scraper designed for heavily protected websites using realistic browser automation techniques.',
-      techStack: [{ name: 'Python' }, { name: 'Selenium' }, { name: 'Tkinter' }],
-      repoUrl: 'https://github.com/RonaldAllanRivera/csv_scraper_gui',
-      featured: false,
-      order: 25,
-      _status: 'published' as const,
-    },
-  ]
+  // Seed Projects (skip if using new seeder)
+  if (!skipProjects) {
+    payload.logger.info('Seeding projects...')
+    const projects = [
+      // FULL STACK DEVELOPMENT
+      {
+        title: 'Meet Lessons',
+        slug: 'meet-lessons',
+        summary:
+          'Engineered an AI-powered SaaS platform combining a Python OCR desktop client and Django backend to generate real-time answers from screenshots and study materials. Implemented multi-tenant architecture, secure device pairing with token validation, Stripe subscription billing with webhook sync, document ingestion for PDFs/images, and live AI response streaming via SSE. Containerized with Docker and deployed to cloud infrastructure for production-ready scalability.',
+        techStack: [
+          { name: 'Django' },
+          { name: 'Python' },
+          { name: 'OCR' },
+          { name: 'AI/ML' },
+          { name: 'Stripe' },
+          { name: 'Docker' },
+        ],
+        repoUrl: 'https://github.com/RonaldAllanRivera/auto-respond/',
+        category: 'full-stack' as const,
+        featured: true,
+        order: 1,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Forex Signals Platform (D1/W1/MN1)',
+        slug: 'forex-signals-platform',
+        summary:
+          'Full Stack Laravel Developer - Developed a Laravel 12 trading analysis platform with automated candlestick syncing, AI-generated trade signals, TradingView chart rendering, scheduler-driven jobs, admin trade workflows, and daily email reports.',
+        techStack: [
+          { name: 'Laravel' },
+          { name: 'PHP' },
+          { name: 'TradingView' },
+          { name: 'AI/ML' },
+          { name: 'Docker' },
+        ],
+        repoUrl: 'https://github.com/RonaldAllanRivera/forex',
+        featured: true,
+        order: 2,
+        _status: 'published' as const,
+      },
+      {
+        title: 'AWS E-commerce Microservices',
+        slug: 'aws-ecommerce-microservices',
+        summary:
+          'Full Stack Laravel Developer - Architected a microservices-based e-commerce system using three Laravel services and a Vue 3 SPA frontend with asynchronous messaging and AWS deployment.',
+        techStack: [
+          { name: 'Laravel' },
+          { name: 'Vue.js' },
+          { name: 'Microservices' },
+          { name: 'AWS' },
+          { name: 'Docker' },
+        ],
+        repoUrl: 'https://github.com/RonaldAllanRivera/aws_ecommerce',
+        featured: true,
+        order: 3,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Modular Frontend with Advanced Marketing & Lead Gen Tools',
+        slug: 'traderai-live',
+        summary:
+          'Full Stack Laravel Developer - Engineered a modular Laravel platform with multi-template switching, advanced lead generation pipelines, CAPTCHA validation, rate limiting, rule-based cloaking middleware, and dynamic pixel injection.',
+        techStack: [
+          { name: 'Laravel' },
+          { name: 'Filament' },
+          { name: 'Cloudflare Turnstile' },
+          { name: 'Marketing Automation' },
+        ],
+        repoUrl: 'https://github.com/RonaldAllanRivera/traderai.live',
+        featured: true,
+        order: 4,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Multi-Source Marketing Data Dashboard',
+        slug: 'marketing-data-dashboard',
+        summary:
+          'Full Stack Laravel Developer - Built a performance marketing reporting system that normalizes CSV and JSON exports from multiple platforms into structured dashboards.',
+        techStack: [{ name: 'Laravel' }, { name: 'Data Processing' }, { name: 'CSV/JSON' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/report-system-laravel',
+        featured: false,
+        order: 5,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Cars Images API',
+        slug: 'cars-images-api',
+        summary:
+          'Full Stack Laravel Developer - Developed a Laravel and Filament system integrating with Wikimedia Commons to fetch, validate, and manage high-resolution car images.',
+        techStack: [{ name: 'Laravel' }, { name: 'Filament' }, { name: 'API Integration' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/cars-images-api',
+        featured: false,
+        order: 6,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Book Reader',
+        slug: 'book-reader',
+        summary:
+          'Full Stack AI Systems Developer - Created a Python automation system using Selenium, OCR, and LLM integration to extract text from browser-based reading platforms.',
+        techStack: [{ name: 'Python' }, { name: 'Selenium' }, { name: 'OCR' }, { name: 'OpenAI' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/book-reader',
+        featured: false,
+        order: 7,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Figma to Elementor Clone',
+        slug: 'figma-to-elementor',
+        summary:
+          'Full Stack Laravel Developer - Built a Laravel platform that converts Figma designs into clean HTML previews and Elementor-compatible JSON exports for WordPress import.',
+        techStack: [
+          { name: 'Laravel' },
+          { name: 'Figma API' },
+          { name: 'WordPress' },
+          { name: 'Docker' },
+        ],
+        repoUrl: 'https://github.com/RonaldAllanRivera/elementor-clone',
+        featured: false,
+        order: 8,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Featured Resource Block',
+        slug: 'featured-resource-block',
+        summary:
+          'WordPress Plugin Developer - Developed a production-ready WordPress plugin featuring a custom post type, Elementor widget, scheduled JSON syncing, and hardened security.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'PHP' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/featured-resource-block',
+        featured: false,
+        order: 9,
+        _status: 'published' as const,
+      },
+      {
+        title: 'IRANK Calc & Cards',
+        slug: 'irank-calc-cards',
+        summary:
+          'WordPress Plugin Developer - Engineered high-performance Gutenberg blocks including a real-time calculator and swipeable product cards using server-rendered architecture.',
+        techStack: [{ name: 'WordPress' }, { name: 'Gutenberg' }, { name: 'JavaScript' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/irank-calc-cards',
+        featured: false,
+        order: 10,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Used Cars Search',
+        slug: 'used-cars-search',
+        summary:
+          'WordPress Plugin Developer - Built a scalable search and comparison plugin with autosuggest, AI-generated SEO metadata, REST endpoints, and optimized asset loading.',
+        techStack: [{ name: 'WordPress' }, { name: 'OpenAI' }, { name: 'REST API' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/used-cars-search',
+        featured: false,
+        order: 11,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Popular AI Software Search',
+        slug: 'popular-ai-software-search',
+        summary:
+          'WordPress Plugin Developer - Created a modern AJAX-powered search plugin using vanilla JavaScript and Fetch API with autosuggest and filtering.',
+        techStack: [{ name: 'WordPress' }, { name: 'JavaScript' }, { name: 'AJAX' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/software-search',
+        featured: false,
+        order: 12,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Ozeum Museum',
+        slug: 'ozeum-museum',
+        summary:
+          'Custom WordPress Theme Developer - Built a professional custom WordPress theme for museums with custom post types, GSAP animations, and WCAG accessibility.',
+        techStack: [{ name: 'WordPress' }, { name: 'GSAP' }, { name: 'Custom Theme' }],
+        liveUrl: 'https://artworkwebsite.com/',
+        featured: false,
+        order: 13,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Cloudflare Multiple Domain Delete',
+        slug: 'cloudflare-domain-delete',
+        summary:
+          'Full Stack Python Developer - Built a Tkinter-based desktop tool for safely bulk deleting Cloudflare domains with progress tracking.',
+        techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Cloudflare API' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete',
+        featured: false,
+        order: 14,
+        _status: 'published' as const,
+      },
+      {
+        title: 'HTTrack-like Clone',
+        slug: 'httrack-clone',
+        summary:
+          'Full Stack Python Developer - Developed a desktop application that mirrors web pages into clean offline folders with asset rewriting and preview capabilities.',
+        techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Web Scraping' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/httrack-clone',
+        featured: false,
+        order: 15,
+        _status: 'published' as const,
+      },
+      {
+        title: 'GaitBeacon.com',
+        slug: 'gaitbeacon',
+        summary:
+          'WordPress and Elementor Developer - Custom WordPress and WooCommerce site built with Elementor, optimized checkout flow, SEO configuration, performance tuning, and security hardening.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
+        liveUrl: 'https://gaitbeacon.com',
+        featured: false,
+        order: 16,
+        _status: 'published' as const,
+      },
+      {
+        title: 'EverythingUsedCars.com',
+        slug: 'everything-used-cars',
+        summary:
+          'WordPress and Elementor Developer - Developed a responsive WordPress site with advanced search filters, SEO optimization, caching setup, and scalable architecture.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'SEO' }],
+        liveUrl: 'https://everythingusedcars.com',
+        featured: false,
+        order: 17,
+        _status: 'published' as const,
+      },
+      {
+        title: 'PopularAISoftware.com',
+        slug: 'popular-ai-software',
+        summary:
+          'WordPress and Elementor Developer - Built an AI tools directory integrating OpenAI, automation workflows, and WordPress customization for a dynamic user experience.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'OpenAI' }],
+        liveUrl: 'https://popularaisoftware.com',
+        featured: false,
+        order: 18,
+        _status: 'published' as const,
+      },
+      {
+        title: '78Dragons.com',
+        slug: '78dragons',
+        summary:
+          'WordPress and Elementor Developer - Developed a WooCommerce eCommerce platform with structured product management and optimized purchasing flow.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
+        liveUrl: 'https://78dragons.com',
+        featured: false,
+        order: 19,
+        _status: 'published' as const,
+      },
+      {
+        title: 'SmarterSafetySystems.com',
+        slug: 'smarter-safety-systems',
+        summary:
+          'WordPress and Elementor Developer - Built a WordPress site for an IoT safety solutions provider with structured content and scalable architecture.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }],
+        liveUrl: 'https://smartersafetysystems.com',
+        featured: false,
+        order: 20,
+        _status: 'published' as const,
+      },
+      {
+        title: 'LumbardConsulting.com',
+        slug: 'lumbard-consulting',
+        summary:
+          'WordPress and Elementor Developer - Created a professional WordPress site for a leadership consulting firm with optimized UX and structured service pages.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }],
+        liveUrl: 'https://lumbardconsulting.com',
+        featured: false,
+        order: 21,
+        _status: 'published' as const,
+      },
+      {
+        title: '24Aries.com',
+        slug: '24aries',
+        summary:
+          'WordPress Developer - Developed a WordPress website showcasing advanced technology products with responsive layout and structured presentation.',
+        techStack: [{ name: 'WordPress' }],
+        liveUrl: 'https://24aries.com',
+        featured: false,
+        order: 22,
+        _status: 'published' as const,
+      },
+      {
+        title: 'PulseIQ.com',
+        slug: 'pulseiq',
+        summary:
+          'WordPress and Elementor Developer - Built a WordPress site for energy benchmarking and management solutions with SEO configuration and performance optimization.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'SEO' }],
+        liveUrl: 'https://pulseiq.com',
+        featured: false,
+        order: 23,
+        _status: 'published' as const,
+      },
+      {
+        title: 'Interactive Map Scraper',
+        slug: 'interactive-map-scraper',
+        summary:
+          'Software Developer - Created a Python GUI tool to extract structured data from Mapbox-based interactive maps.',
+        techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Mapbox' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/mapscraper',
+        featured: false,
+        order: 24,
+        _status: 'published' as const,
+      },
+      {
+        title: 'CSV Scraper GUI',
+        slug: 'csv-scraper-gui',
+        summary:
+          'Software Developer - Built a Selenium-based desktop scraper designed for heavily protected websites using realistic browser automation techniques.',
+        techStack: [{ name: 'Python' }, { name: 'Selenium' }, { name: 'Tkinter' }],
+        repoUrl: 'https://github.com/RonaldAllanRivera/csv_scraper_gui',
+        featured: false,
+        order: 25,
+        _status: 'published' as const,
+      },
+    ]
 
-  for (const project of projects) {
-    await payload.create({
-      collection: 'projects',
-      data: project,
-      req,
-      overrideAccess,
-    })
+    for (const project of projects) {
+      await payload.create({
+        collection: 'projects',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data: project as any,
+        req,
+        overrideAccess,
+      })
+    }
   }
 
   // Seed Certifications (Complete list - 50+ certifications)
@@ -1270,6 +1277,6 @@ export const seedResumeComplete = async ({
   }
 
   payload.logger.info(
-    `Resume seed completed! Seeded: Site Settings (1), Resume Profile (1), Experiences (${experiences.length}), Education (${educations.length}), Projects (${projects.length}), Certifications (${certifications.length})`,
+    `Resume seed completed! Seeded: Site Settings (1), Resume Profile (1), Experiences (${experiences.length}), Education (${educations.length}), Projects (${skipProjects ? 'skipped' : '25'}), Certifications (${certifications.length})`,
   )
 }

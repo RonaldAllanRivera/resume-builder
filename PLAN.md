@@ -131,25 +131,47 @@ Status: Completed
   - Added admin-only backfill endpoint `/next/backfill-generations-company` to populate existing records.
   - Company now displays correctly in Generations list and edit views (same pattern as Job Ads).
 
-## Phase 4 — Public site pages (SEO-first)
+## Phase 4 — Public site pages (SEO-first) [COMPLETED]
 
-- Build public routes (App Router):
-  - `/` Home/overview (summary + featured projects)
-  - `/experience` Experience timeline/list
-  - `/education` Education history
-  - `/projects` Project grid/list
-  - `/projects/[slug]` Project detail
-  - `/certifications` Certifications (grid + rail + modal)
-  - Optional later:
-    - `/about`
-    - `/contact`
-    - `/resume.pdf`
+### Requirements
+- **Project Categories**: 4 categories as submenu navigation ✅
+  - Full Stack Development
+  - WordPress Development
+  - Automation & Software Engineering
+  - Graphic Design
+- **Project Privacy**: Complete SEO Blocking (Enhanced Implementation) ✅
+  - ALL projects hidden from search engines for contract compliance
+  - `robots.txt` blocks `/projects` and `/project/` routes
+  - `noindex, nofollow` meta tags on all project pages
+  - Projects excluded from `sitemap.xml`
+  - Projects remain visible to human visitors
+- **Certifications**: Single page, chronological (latest to oldest), SEO-optimized
+- **Template System**: Instant switching (no rebuild required)
+- **Brand Colors**: Template-specific (no CMS needed, hardcoded in template files)
 
-- Template system (best-practice for extensibility):
-  - Choose template via a public setting (e.g. `siteSettings.publicTemplate`) with a safe allowlist.
-  - Support preview override via query param (e.g. `?template=modern`) without changing persisted settings.
-  - Implement templates via a registry (map template key -> layout/components) so adding a new template is a file-only change.
-  - Keep core data fetching shared; templates should only change presentation.
+### Public Routes (App Router) ✅
+- `/` Home/overview (summary + featured projects) ✅
+- `/experience` Experience timeline/list ✅
+- `/education` Education history ✅
+- `/projects` All projects overview ✅
+- `/projects/full-stack` Full Stack Development category ✅
+- `/projects/wordpress` WordPress Development category ✅
+- `/projects/automation` Automation & Software Engineering category ✅
+- `/projects/graphic-design` Graphic Design category ✅
+- `/project/[slug]` Project detail (all pages noindexed) ✅
+- `/certifications` All certifications (chronological, SEO-optimized) ✅
+- Optional later:
+  - `/about`
+  - `/contact`
+  - `/resume.pdf`
+
+### Template System (Instant Switching) ✅
+- Choose template via `siteSettings.publicTemplate` with safe allowlist ✅
+- Support preview override via query param (`?template=modern`) ✅
+- Template registry pattern (map template key -> layout/components) ✅
+- ISR/dynamic rendering for instant template changes ✅
+- Keep core data fetching shared; templates only change presentation ✅
+- Brand colors hardcoded per template (no CMS) ✅
 
 - Data fetching (public pages):
   - Prefer Server Components for page shells.
@@ -171,17 +193,17 @@ Status: Completed
   - Optional hardening:
     - Set a global `Referrer-Policy: no-referrer` header at the Next.js app level (still keep per-link attributes for clarity).
 
-- SEO requirements:
-  - Use `generateMetadata` per route
-  - `sitemap.xml` generated from Payload content
-  - `robots.txt`
-  - OpenGraph + Twitter card metadata on all public pages
-  - JSON-LD structured data (entity-first):
-    - `Person` for profile (include `sameAs` links)
-    - `WebSite` + `WebPage`
-    - Projects: `SoftwareApplication` when applicable (fallback to `CreativeWork`)
-  - Canonicals + clean slugs
-  - Prefer static rendering/ISR for speed
+- SEO requirements: ✅
+  - Use `generateMetadata` per route ✅
+  - `sitemap.xml` generated from Payload content ✅
+  - `robots.txt` ✅
+  - OpenGraph + Twitter card metadata on all public pages ✅
+  - JSON-LD structured data (entity-first): ✅
+    - `Person` for profile (include `sameAs` links) ✅
+    - `WebSite` + `WebPage` ✅
+    - Projects: `SoftwareApplication` when applicable (fallback to `CreativeWork`) ✅
+  - Canonicals + clean slugs ✅
+  - Prefer static rendering/ISR for speed ✅
   - Internal linking (build a “topic graph”):
     - Link experiences to related projects/skills
     - Link projects to related certifications/skills

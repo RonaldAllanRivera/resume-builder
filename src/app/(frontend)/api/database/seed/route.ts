@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextResponse } from 'next/server'
 import { seedResumeComplete } from '@/endpoints/seed-resume-complete'
+import { seedProjectsUpdated } from '@/endpoints/seed-projects-updated'
 
 /**
  * Admin-only endpoint to seed resume data
@@ -29,8 +30,30 @@ export async function POST(request: Request) {
       headers: request.headers,
     } as any
 
-    // Run seed function
+    // First, delete all existing projects
+    const { docs: existingProjects } = await payload.find({
+      collection: 'projects',
+      limit: 1000,
+    })
+
+    for (const project of existingProjects) {
+      await payload.delete({
+        collection: 'projects',
+        id: project.id,
+        req,
+      })
+    }
+
+    // Run seed function for everything except projects
     await seedResumeComplete({
+      payload,
+      req,
+      overrideAccess: true,
+      skipProjects: true,
+    })
+
+    // Then seed projects with categories
+    await seedProjectsUpdated({
       payload,
       req,
       overrideAccess: true,
