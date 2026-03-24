@@ -152,13 +152,24 @@ Status: Completed
 ### Public Routes (App Router) ✅
 - `/` Home/overview (summary + featured projects) ✅
 - `/experience` Experience timeline/list ✅
+  - Proper date formatting (MMM YYYY)
+  - RECENT/EARLIER grouping
+  - Position, company, and responsibilities displayed
 - `/education` Education history ✅
+  - Proper date formatting (MMM YYYY)
+  - School, location, and degree displayed
 - `/projects` All projects overview ✅
+  - **Card-based design** - all project info visible without clicking through
+  - Grouped by category (Full Stack → WordPress → Automation → Graphic Design)
+  - Expandable full descriptions
+  - Tech stack tags (ready for custom backgrounds)
+  - View Live Site and View Code buttons
+  - Projects sorted by newest first within each category
 - `/projects/full-stack` Full Stack Development category ✅
 - `/projects/wordpress` WordPress Development category ✅
 - `/projects/automation` Automation & Software Engineering category ✅
 - `/projects/graphic-design` Graphic Design category ✅
-- `/project/[slug]` Project detail (all pages noindexed) ✅
+- ~~`/project/[slug]` Project detail~~ **REMOVED** - All content now on main projects page
 - `/certifications` All certifications (chronological, SEO-optimized) ✅
 - Optional later:
   - `/about`

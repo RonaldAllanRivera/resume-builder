@@ -40,11 +40,6 @@ export interface TemplateComponents {
     projects?: Project[]
     settings?: SiteSetting | null
   }>
-  ProjectDetailPage: ComponentType<{
-    slug: string
-    project?: Project | null
-    settings?: SiteSetting | null
-  }>
   CertificationsPage: ComponentType<{
     certifications?: Certification[]
     settings?: SiteSetting | null
@@ -60,7 +55,6 @@ import { ExperiencePage as DefaultExperiencePage } from './default/ExperiencePag
 import { EducationPage as DefaultEducationPage } from './default/EducationPage'
 import { ProjectsPage as DefaultProjectsPage } from './default/ProjectsPage'
 import { ProjectCategoryPage as DefaultProjectCategoryPage } from './default/ProjectCategoryPage'
-import { ProjectDetailPage as DefaultProjectDetailPage } from './default/ProjectDetailPage'
 import { CertificationsPage as DefaultCertificationsPage } from './default/CertificationsPage'
 
 // Template registry
@@ -72,7 +66,6 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     EducationPage: DefaultEducationPage,
     ProjectsPage: DefaultProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage,
-    ProjectDetailPage: DefaultProjectDetailPage,
     CertificationsPage: DefaultCertificationsPage,
   },
   // Placeholder for future templates
@@ -83,7 +76,6 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     EducationPage: DefaultEducationPage,
     ProjectsPage: DefaultProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage,
-    ProjectDetailPage: DefaultProjectDetailPage,
     CertificationsPage: DefaultCertificationsPage,
   },
   minimal: {
@@ -93,7 +85,6 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     EducationPage: DefaultEducationPage,
     ProjectsPage: DefaultProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage,
-    ProjectDetailPage: DefaultProjectDetailPage,
     CertificationsPage: DefaultCertificationsPage,
   },
 }

@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.6.0] - 2026-03-24
+
+### UI/UX Improvements - Experience, Education & Projects Pages
+
+**Experience Page**
+- **Date Formatting**: Fixed dates to display as "MMM YYYY" format (e.g., "Jun 2015" instead of ISO timestamps)
+- **RECENT/EARLIER Grouping**: Most recent experience highlighted with blue accent, earlier experiences grouped separately
+- **Responsibilities Display**: Shows position title, date range, and bullet-pointed responsibilities from highlights array
+- **Professional Layout**: Clean design with left border accents and proper spacing
+
+**Education Page**
+- **Date Formatting**: Fixed dates to display as "MMM YYYY" format
+- **Location Display**: Shows school name with location (e.g., "Quezon City, Philippines")
+- **Consistent Styling**: Matches experience page layout for visual coherence
+
+**Projects Page - Complete Redesign**
+- **Card-Based Design**: All project information visible in cards without needing individual project pages
+  - Title, category tag, summary, tech stack, and action buttons all in one view
+  - Expandable "Full Description" button for detailed content
+- **Tech Stack Tags**: Displayed as rounded pills with gray background (ready for custom styling)
+- **Action Buttons**: 
+  - Green "View Live Site" button for live URLs
+  - Gray "View Code" button for repository URLs
+- **Category Organization**: 
+  - Projects grouped by category in specific order: Full Stack → WordPress → Automation → Graphic Design
+  - Shows project count per category
+- **Smart Sorting**: Projects sorted by newest first within each category (based on order field)
+- **Removed Individual Project Pages**: `/project/[slug]` routes removed - all content now on main projects page
+- **Client-Side Interactivity**: React state for expand/collapse functionality
+- **Template Registry Cleanup**: Removed ProjectDetailPage from template system
+
+### Code Quality
+- **DRY Principles**: Reusable ProjectCard component used across ProjectsPage and ProjectCategoryPage
+- **Best Practices**: 
+  - Semantic HTML with proper article/section tags
+  - Security: `rel="nofollow noopener noreferrer"` on external links
+  - Responsive grid layouts (1/2/3 columns)
+  - Smooth transitions and hover effects
+
 ## [0.5.0] - 2026-03-22
 
 ### Project SEO Privacy & Contract Compliance
