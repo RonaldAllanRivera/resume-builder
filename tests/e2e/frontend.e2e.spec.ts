@@ -8,6 +8,6 @@ test.describe('Frontend', () => {
 
     const heading = page.locator('h1').first()
 
-    await expect(heading).toHaveText('Test Resume Builder')
+    await expect(heading).toHaveText('Test User')
   })
 })
