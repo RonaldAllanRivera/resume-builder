@@ -13,7 +13,7 @@ This plan scaffolds a single-repo Next.js app with embedded Payload CMS, deploye
 - Projects admin create/edit working (uses a plain `slug` text field with automatic generation from `title`)
 - **Testing infrastructure complete** (Vitest + Playwright + GitHub Actions CI/CD)
 - **Database management UI** implemented (admin dashboard with reset/seed buttons)
-- **Complete seed script** with 101 resume items (Site Settings + Resume Profile + 9 Experiences + 25 Projects + 1 Education + 65 Certifications)
+- **Complete seed script** with 100 resume items (Site Settings + Resume Profile + 9 Experiences + 25 Projects + 1 Education + 63 Certifications with categories)
 - **Google Docs export** working with OAuth2 authentication (uses personal Drive quota)
 - **AI generation workflow** complete with job ads, companies, and tailored resume/cover letter generation
 - **Environment variables** properly configured for OAuth2 and all services
@@ -223,12 +223,17 @@ Status: Completed
     - Prefer structured lists for skills/tech stacks
   - (Optional) Add `llms.txt` that points to the most important pages for AI crawlers
 
-- Certifications UI (best-practice UX + a11y):
-  - “Netflix-style” horizontal rail with arrow controls and keyboard support.
-  - Responsive toggle: rail view vs grid view.
-  - Modal detail view implemented as a route-friendly pattern:
-    - Prefer App Router intercepting/parallel routes so modals are deep-linkable.
-  - Deterministic gradients/icons per certification (derived from a stable hash of the cert ID/title).
+- Certifications UI (best-practice UX + a11y): 
+  - Categorization system implemented with 9 categories (Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development) 
+  - Card-based layout with gradient headers per category 
+  - Grouped display with category headers and certification counts 
+  - Sorted by newest first within each category 
+  - Centralized certifications data source (`src/endpoints/certifications-data.ts`) used by admin seed buttons 
+  - Future enhancements:
+    - "Netflix-style" horizontal rail with arrow controls and keyboard support
+    - Responsive toggle: rail view vs grid view
+    - Modal detail view with intercepting/parallel routes
+    - Deterministic gradients/icons per certification
 
 - Animated background (optional, progressive enhancement):
   - Render at layout level so it persists across navigation.

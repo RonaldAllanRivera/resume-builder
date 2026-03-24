@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.7.0] - 2026-03-24
+
+### Certifications Categorization System
+
+**Category Organization**
+- **9 Categories Implemented**: Frontend & JavaScript (11), Laravel & Backend (12), Python & Django (8), WordPress (6), AI & ML (5), Cloud/DevOps (9), Git & Collaboration (6), Video & Creative (6), General Development (1)
+- **63 Certifications**: All certifications properly categorized with explicit category field
+- **Centralized Data Source**: Created `src/endpoints/certifications-data.ts` as single source of truth
+- **Admin Integration**: Seed buttons now use categorized data automatically
+
+**UI Improvements**
+- **Grouped Display**: Certifications grouped by category with headers showing category name and count
+- **Card Layout**: Each certification displayed in a card with gradient header matching category
+- **Smart Sorting**: Certifications sorted by newest first (issue date) within each category
+- **Visual Hierarchy**: Category sections clearly separated with proper spacing and styling
+
+**Code Quality**
+- **Single Source of Truth**: Removed duplicate standalone seed script
+- **Type Safety**: Proper TypeScript typing with `as const` for category values
+- **Maintainability**: All certification data in one file, imported by seed functions
+- **Best Practices**: Consistent code formatting and proper URL line breaks
+
 ## [0.6.0] - 2026-03-24
 
 ### UI/UX Improvements - Experience, Education & Projects Pages

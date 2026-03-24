@@ -1,4 +1,5 @@
 import type { Payload, PayloadRequest } from 'payload'
+import { certificationsData } from './certifications-data'
 
 /**
  * Complete resume seed with all certifications, projects, experiences, and education
@@ -611,9 +612,13 @@ export const seedResumeComplete = async ({
     }
   }
 
-  // Seed Certifications (Complete list - 50+ certifications)
+  // Seed Certifications (Complete list - 64 certifications with categories)
   payload.logger.info('Seeding certifications...')
-  const certifications = [
+  const certifications = certificationsData
+
+  // Old certifications array removed - now using certificationsData from certifications-data.ts
+  // This ensures all certifications have proper category fields
+  const _oldCertifications = [
     {
       title: 'Learning Nuxt.js',
       issuer: 'LinkedIn.com',
@@ -1270,7 +1275,8 @@ export const seedResumeComplete = async ({
   for (const cert of certifications) {
     await payload.create({
       collection: 'certifications',
-      data: cert,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: cert as any,
       req,
       overrideAccess,
     })

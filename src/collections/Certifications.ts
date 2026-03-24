@@ -27,6 +27,53 @@ export const Certifications: CollectionConfig = {
       required: true,
     },
     {
+      name: 'category',
+      type: 'select',
+      required: true,
+      options: [
+        {
+          label: 'Frontend & JavaScript',
+          value: 'frontend-javascript',
+        },
+        {
+          label: 'Laravel & Backend',
+          value: 'laravel-backend',
+        },
+        {
+          label: 'Python & Django',
+          value: 'python-django',
+        },
+        {
+          label: 'WordPress',
+          value: 'wordpress',
+        },
+        {
+          label: 'AI & Machine Learning',
+          value: 'ai-ml',
+        },
+        {
+          label: 'Cloud, DevOps & Architecture',
+          value: 'cloud-devops',
+        },
+        {
+          label: 'Git & Collaboration',
+          value: 'git-collaboration',
+        },
+        {
+          label: 'Video & Creative',
+          value: 'video-creative',
+        },
+        {
+          label: 'General Development',
+          value: 'general-dev',
+        },
+      ],
+      defaultValue: 'general-dev',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'issuer',
       type: 'text',
     },

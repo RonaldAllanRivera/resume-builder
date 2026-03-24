@@ -19,7 +19,7 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 
 - **Docker-First Development**: Consistent environment, zero local setup
 - **Testing Infrastructure**: Vitest (integration) + Playwright (E2E) + GitHub Actions CI/CD
-- **Database Management UI**: Admin dashboard with reset/seed buttons (101 resume items)
+- **Database Management UI**: Admin dashboard with reset/seed buttons (100 resume items with categorized certifications)
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
 - **Google Docs Export**: OAuth2 authentication with personal Drive quota
 - **Modern Projects Showcase**: Card-based design with all information visible
@@ -30,6 +30,10 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Project SEO Privacy**: Complete search engine blocking for contract compliance
   - All projects hidden from search engines (robots.txt + noindex meta tags)
   - Projects remain visible to human visitors
+- **Categorized Certifications**: 63 certifications organized into 9 categories
+  - Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development
+  - Card-based layout with category grouping and smart sorting (newest first)
+  - Centralized data source for easy maintenance
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content

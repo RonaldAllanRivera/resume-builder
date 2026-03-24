@@ -929,6 +929,16 @@ export interface Project {
 export interface Certification {
   id: number;
   title: string;
+  category:
+    | 'frontend-javascript'
+    | 'laravel-backend'
+    | 'python-django'
+    | 'wordpress'
+    | 'ai-ml'
+    | 'cloud-devops'
+    | 'git-collaboration'
+    | 'video-creative'
+    | 'general-dev';
   issuer?: string | null;
   duration?: string | null;
   issueDate?: string | null;
@@ -1686,6 +1696,7 @@ export interface ProjectsSelect<T extends boolean = true> {
  */
 export interface CertificationsSelect<T extends boolean = true> {
   title?: T;
+  category?: T;
   issuer?: T;
   duration?: T;
   issueDate?: T;
