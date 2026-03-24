@@ -21,6 +21,7 @@ type ProjectSeed = {
   liveUrl?: string
   techStack?: string[]
   publishedAt?: string
+  category?: string
 }
 
 type CertificationSeed = {
@@ -29,6 +30,7 @@ type CertificationSeed = {
   duration?: string
   issueDate?: string
   credentialUrl?: string
+  category?: string
 }
 
 const toISODate = (value: string): string => {
@@ -289,6 +291,11 @@ const upsertProject = async ({
     summary: item.summary,
     repoUrl: item.repoUrl,
     liveUrl: item.liveUrl,
+    category: (item.category ?? 'full-stack') as
+      | 'full-stack'
+      | 'wordpress'
+      | 'automation'
+      | 'graphic-design',
     featured: false,
     techStack: (item.techStack ?? []).map((name) => ({ name })),
     publishedAt,
@@ -313,6 +320,7 @@ const upsertProject = async ({
     depth: 0,
     overrideAccess,
     req,
+    draft: false,
   })
 }
 
@@ -354,6 +362,16 @@ const upsertCertification = async ({
     duration: item.duration,
     issueDate: item.issueDate,
     credentialUrl: item.credentialUrl,
+    category: (item.category ?? 'general-dev') as
+      | 'frontend-javascript'
+      | 'laravel-backend'
+      | 'python-django'
+      | 'wordpress'
+      | 'ai-ml'
+      | 'cloud-devops'
+      | 'git-collaboration'
+      | 'video-creative'
+      | 'general-dev',
     publishedAt: item.issueDate ?? new Date().toISOString(),
     _status: 'published' as const,
   }
@@ -376,6 +394,7 @@ const upsertCertification = async ({
     depth: 0,
     overrideAccess,
     req,
+    draft: false,
   })
 }
 

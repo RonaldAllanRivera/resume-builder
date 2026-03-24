@@ -79,9 +79,11 @@ async function seedE2E() {
         title: 'Test Project 1',
         slug: 'test-project-1',
         summary: 'Test project summary',
+        category: 'full-stack',
         featured: true,
         _status: 'published',
       },
+      draft: false,
     })
 
     await payload.create({
@@ -90,9 +92,11 @@ async function seedE2E() {
         title: 'Test Project 2',
         slug: 'test-project-2',
         summary: 'Another test project',
+        category: 'full-stack',
         featured: false,
         _status: 'published',
       },
+      draft: false,
     })
 
     // Create test company

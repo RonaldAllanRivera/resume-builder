@@ -229,8 +229,10 @@ describe('Delete Operations', () => {
         data: {
           title: 'Test Project',
           slug: 'test-project-delete',
+          category: 'full-stack',
           _status: 'published',
         },
+        draft: false,
       })
 
       await expect(
@@ -283,8 +285,10 @@ describe('Delete Operations', () => {
         data: {
           title: 'Test Certification',
           issuer: 'Test Issuer',
+          category: 'general-dev',
           _status: 'published',
         },
+        draft: false,
       })
 
       await expect(

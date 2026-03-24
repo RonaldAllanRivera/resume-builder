@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  
+
   return {
     title: settings?.defaultMetaTitle || 'Home',
     description: settings?.defaultMetaDescription || '',
@@ -15,9 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: { template?: string }
+  searchParams: Promise<{ template?: string }>
 }) {
-  const template = await getTemplate(searchParams.template)
+  const params = await searchParams
+  const template = await getTemplate(params.template)
   const settings = await getSiteSettings()
   const profile = await getResumeProfile()
   const featuredProjects = await getFeaturedProjects()
