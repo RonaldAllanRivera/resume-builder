@@ -35,7 +35,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/auto-respond/',
       category: 'full-stack' as const,
       featured: true,
-      order: 26,
+      order: 1,
       _status: 'published' as const,
     },
     {
@@ -54,7 +54,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/forex',
       category: 'full-stack' as const,
       featured: true,
-      order: 25,
+      order: 2,
       _status: 'published' as const,
     },
     {
@@ -73,7 +73,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/aws_ecommerce',
       category: 'full-stack' as const,
       featured: true,
-      order: 24,
+      order: 3,
       _status: 'published' as const,
     },
     {
@@ -91,7 +91,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/traderai.live',
       category: 'full-stack' as const,
       featured: true,
-      order: 23,
+      order: 4,
       _status: 'published' as const,
     },
     {
@@ -108,7 +108,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/report-system-laravel',
       category: 'full-stack' as const,
       featured: false,
-      order: 22,
+      order: 5,
       _status: 'published' as const,
     },
     {
@@ -125,7 +125,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/cars-images-api',
       category: 'full-stack' as const,
       featured: false,
-      order: 21,
+      order: 6,
       _status: 'published' as const,
     },
     {
@@ -143,7 +143,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/book-reader',
       category: 'full-stack' as const,
       featured: false,
-      order: 20,
+      order: 7,
       _status: 'published' as const,
     },
     {
@@ -161,7 +161,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/elementor-clone',
       category: 'full-stack' as const,
       featured: false,
-      order: 19,
+      order: 8,
       _status: 'published' as const,
     },
 
@@ -183,7 +183,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/used-cars-search',
       category: 'wordpress' as const,
       featured: true,
-      order: 18,
+      order: 9,
       _status: 'published' as const,
     },
     {
@@ -201,7 +201,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/featured-resource-block',
       category: 'wordpress' as const,
       featured: false,
-      order: 17,
+      order: 10,
       _status: 'published' as const,
     },
     {
@@ -218,7 +218,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/irank-calc-cards',
       category: 'wordpress' as const,
       featured: false,
-      order: 16,
+      order: 11,
       _status: 'published' as const,
     },
     {
@@ -235,7 +235,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/software-search',
       category: 'wordpress' as const,
       featured: false,
-      order: 15,
+      order: 12,
       _status: 'published' as const,
     },
     {
@@ -253,7 +253,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://artworkwebsite.com/',
       category: 'wordpress' as const,
       featured: false,
-      order: 14,
+      order: 13,
       _status: 'published' as const,
     },
     {
@@ -270,7 +270,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://gaitbeacon.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 13,
+      order: 14,
       _status: 'published' as const,
     },
     {
@@ -287,7 +287,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://everythingusedcars.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 12,
+      order: 15,
       _status: 'published' as const,
     },
     {
@@ -304,7 +304,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://popularaisoftware.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 11,
+      order: 16,
       _status: 'published' as const,
     },
     {
@@ -316,7 +316,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://78dragons.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 10,
+      order: 17,
       _status: 'published' as const,
     },
     {
@@ -328,7 +328,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://smartersafetysystems.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 9,
+      order: 18,
       _status: 'published' as const,
     },
     {
@@ -340,7 +340,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://lumbardconsulting.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 8,
+      order: 19,
       _status: 'published' as const,
     },
     {
@@ -352,7 +352,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://24aries.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 7,
+      order: 20,
       _status: 'published' as const,
     },
     {
@@ -364,7 +364,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://pulseiq.com',
       category: 'wordpress' as const,
       featured: false,
-      order: 6,
+      order: 21,
       _status: 'published' as const,
     },
 
@@ -380,7 +380,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete',
       category: 'automation' as const,
       featured: false,
-      order: 5,
+      order: 22,
       _status: 'published' as const,
     },
     {
@@ -392,7 +392,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/httrack-clone',
       category: 'automation' as const,
       featured: false,
-      order: 4,
+      order: 23,
       _status: 'published' as const,
     },
     {
@@ -404,7 +404,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/mapscraper',
       category: 'automation' as const,
       featured: false,
-      order: 3,
+      order: 24,
       _status: 'published' as const,
     },
     {
@@ -416,7 +416,7 @@ export const seedProjectsUpdated = async ({
       repoUrl: 'https://github.com/RonaldAllanRivera/csv_scraper_gui',
       category: 'automation' as const,
       featured: false,
-      order: 2,
+      order: 25,
       _status: 'published' as const,
     },
 
@@ -437,7 +437,7 @@ export const seedProjectsUpdated = async ({
       liveUrl: 'https://www.flickr.com/photos/ronald-allan-rivera/',
       category: 'graphic-design' as const,
       featured: false,
-      order: 1,
+      order: 26,
       _status: 'published' as const,
     },
   ]
