@@ -1,6 +1,10 @@
 import React from 'react'
 import { getTemplate, getSiteSettings } from '@/utilities/getTemplate'
-import { getFeaturedProjects, getResumeProfile } from '@/utilities/fetchPublicData'
+import {
+  getFeaturedProjects,
+  getResumeProfile,
+  getLatestProjectByCategory,
+} from '@/utilities/fetchPublicData'
 import { generatePersonSchema, generateWebSiteSchema } from '@/utilities/jsonLd'
 import { JsonLd } from '@/components/JsonLd'
 import type { Metadata } from 'next'
@@ -27,6 +31,15 @@ export default async function HomePage({
   const profile = await getResumeProfile()
   const featuredProjects = await getFeaturedProjects()
 
+  // Fetch latest non-featured projects by category
+  const [latestFullStack, latestWordPress, latestAutomation] = await Promise.all([
+    getLatestProjectByCategory('full-stack'),
+    getLatestProjectByCategory('wordpress'),
+    getLatestProjectByCategory('automation'),
+  ])
+
+  const latestProjects = [latestFullStack, latestWordPress, latestAutomation]
+
   const personSchema = generatePersonSchema(profile, settings)
   const webSiteSchema = generateWebSiteSchema(settings)
 
@@ -40,6 +53,7 @@ export default async function HomePage({
         <HomePageComponent
           profile={profile}
           featuredProjects={featuredProjects}
+          latestProjects={latestProjects}
           settings={settings}
         />
       </Layout>

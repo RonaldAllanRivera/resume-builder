@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.8.1] - 2026-03-25
+
+### Rainbow Homepage Project Showcase Enhancements
+
+- Added a new `Featured Work` homepage section for Payload-managed featured projects.
+- Added dynamic floating tech stack icons on project media using `react-icons`.
+- Implemented count-aware icon positioning so layouts adapt to available tech tags.
+- Added fallback icon resolution from project descriptions plus generic fallbacks to ensure a minimum icon presence per card.
+- Added glass morphism project title overlays and removed duplicate category/title content from project bodies.
+- Tuned overlay opacity and icon sizing for large and small project cards.
+- Removed distracting active styling from the Rainbow `Home` navigation item.
+- Added a new `Latest Projects` section limited to 3 cards:
+  - latest non-featured Full Stack project
+  - latest non-featured WordPress project
+  - latest non-featured Automation project
+- Added `getLatestProjectByCategory` to support category-specific homepage project selection.
+- Matched `Open Link` button gradients to Rainbow navigation colors for both Featured Work and Latest Projects.
+
 ## [0.8.0] - 2026-03-25
 
 ### Rainbow Theme Implementation

@@ -1,5 +1,11 @@
 import React from 'react'
 import type { Project } from '@/payload-types'
+import {
+  techStackIcons,
+  getDynamicIconPosition,
+  extractTechFromDescription,
+  getFallbackIcons,
+} from '@/utilities/techStackIcons'
 
 interface FeaturedWorkProps {
   projects: Project[]
@@ -12,14 +18,6 @@ const gradients = [
   'from-orange-900/20 via-red-900/20 to-pink-900/20',
   'from-blue-900/20 via-indigo-900/20 to-purple-900/20',
   'from-green-900/20 via-cyan-900/20 to-blue-900/20',
-]
-
-const innerGradients = [
-  'from-purple-500/5 via-blue-500/5 to-pink-500/5',
-  'from-cyan-500/5 via-teal-500/5 to-emerald-500/5',
-  'from-orange-500/5 via-red-500/5 to-pink-500/5',
-  'from-blue-500/5 via-indigo-500/5 to-purple-500/5',
-  'from-green-500/5 via-cyan-500/5 to-blue-500/5',
 ]
 
 export function FeaturedWork({ projects }: FeaturedWorkProps) {
@@ -44,23 +42,82 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
               key={project.id}
               className="overflow-hidden rounded-[28px] border border-white/10 bg-[#0a0b0f]/40 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur"
             >
-              {/* Project Image Placeholder */}
+              {/* Project Image with Floating Tech Stack Icons */}
               <div
                 className={`relative aspect-[16/10] border-b border-white/5 bg-gradient-to-br ${gradients[index % gradients.length]}`}
               >
-                <div
-                  className={`absolute inset-5 rounded-[20px] border border-white/10 bg-gradient-to-br ${innerGradients[index % innerGradients.length]}`}
-                />
+                {/* Gradient overlay for depth */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.24),transparent_28%),linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.38))]" />
+
+                {/* Floating Tech Stack Icons */}
+                {(() => {
+                  // Get valid icons from tech stack and normalize to string array
+                  const validIconNames = (project.techStack || [])
+                    .map((tech) =>
+                      typeof tech === 'object' && tech !== null && 'name' in tech
+                        ? tech.name
+                        : String(tech),
+                    )
+                    .filter((techName) => techStackIcons[techName])
+
+                  // If less than 3 icons, try to extract from description
+                  let iconsToShow = [...validIconNames]
+                  if (iconsToShow.length < 3) {
+                    const descriptionTech = extractTechFromDescription(project.summary || '')
+                    const additionalIcons = descriptionTech.filter(
+                      (tech) => !iconsToShow.includes(tech),
+                    )
+                    iconsToShow = [...iconsToShow, ...additionalIcons]
+                  }
+
+                  // If still less than 3, add fallback generic icons
+                  if (iconsToShow.length < 3) {
+                    const fallbacks = getFallbackIcons(3 - iconsToShow.length)
+                    iconsToShow = [...iconsToShow, ...fallbacks]
+                  }
+
+                  return iconsToShow.slice(0, 10).map((techName, techIndex) => {
+                    const Icon = techStackIcons[techName]
+                    if (!Icon) return null
+
+                    const position = getDynamicIconPosition(
+                      Math.min(iconsToShow.length, 10),
+                      techIndex,
+                    )
+
+                    return (
+                      <Icon
+                        key={techIndex}
+                        className="absolute text-white/90 drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)] z-10"
+                        style={{
+                          fontSize: `${position.size}rem`,
+                          top: position.top,
+                          left: position.left,
+                          right: position.right,
+                          bottom: position.bottom,
+                          transform:
+                            `${position.transform || ''} rotate(${position.rotation}deg)`.trim(),
+                        }}
+                      />
+                    )
+                  })
+                })()}
+
+                {/* Project Title Overlay (bottom) */}
+                <div className="absolute inset-x-0 bottom-0 p-5 z-30">
+                  <div className="rounded-[1.35rem] border border-white/15 bg-black/65 p-4 backdrop-blur-md">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-white/80">
+                      {project.category?.replace('-', ' ')}
+                    </p>
+                    <h3 className="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-white">
+                      {project.title}
+                    </h3>
+                  </div>
+                </div>
               </div>
 
               {/* Project Content */}
               <div className="p-6">
-                <span className="mb-3.5 inline-flex text-[0.84rem] uppercase tracking-[0.08em] text-cyan-400">
-                  {index === 0 ? 'Featured project' : project.category?.replace('-', ' ')}
-                </span>
-                <h3 className="mb-2.5 text-[clamp(1.35rem,3vw,2rem)] leading-[1.05] tracking-[-0.04em] text-white">
-                  {project.title}
-                </h3>
                 <p className="text-white/60">{project.summary}</p>
 
                 {/* Tech Stack */}
@@ -105,23 +162,83 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
                 key={project.id}
                 className="overflow-hidden rounded-[28px] border border-white/10 bg-[#0a0b0f]/40 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur"
               >
-                {/* Project Image Placeholder */}
+                {/* Project Image with Floating Tech Stack Icons */}
                 <div
                   className={`relative aspect-[16/10] border-b border-white/5 bg-gradient-to-br ${gradients[(index + 2) % gradients.length]}`}
                 >
-                  <div
-                    className={`absolute inset-5 rounded-[20px] border border-white/10 bg-gradient-to-br ${innerGradients[(index + 2) % innerGradients.length]}`}
-                  />
+                  {/* Gradient overlay for depth */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.24),transparent_28%),linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.38))]" />
+
+                  {/* Floating Tech Stack Icons */}
+                  {(() => {
+                    // Get valid icons from tech stack and normalize to string array
+                    const validIconNames = (project.techStack || [])
+                      .map((tech) =>
+                        typeof tech === 'object' && tech !== null && 'name' in tech
+                          ? tech.name
+                          : String(tech),
+                      )
+                      .filter((techName) => techStackIcons[techName])
+
+                    // If less than 3 icons, try to extract from description
+                    let iconsToShow = [...validIconNames]
+                    if (iconsToShow.length < 3) {
+                      const descriptionTech = extractTechFromDescription(project.summary || '')
+                      const additionalIcons = descriptionTech.filter(
+                        (tech) => !iconsToShow.includes(tech),
+                      )
+                      iconsToShow = [...iconsToShow, ...additionalIcons]
+                    }
+
+                    // If still less than 3, add fallback generic icons
+                    if (iconsToShow.length < 3) {
+                      const fallbacks = getFallbackIcons(3 - iconsToShow.length)
+                      iconsToShow = [...iconsToShow, ...fallbacks]
+                    }
+
+                    return iconsToShow.slice(0, 10).map((techName, techIndex) => {
+                      const Icon = techStackIcons[techName]
+                      if (!Icon) return null
+
+                      const position = getDynamicIconPosition(
+                        Math.min(iconsToShow.length, 10),
+                        techIndex,
+                        0.7, // Smaller icons for 3-column grid cards
+                      )
+
+                      return (
+                        <Icon
+                          key={techIndex}
+                          className="absolute text-white/90 drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)] z-10"
+                          style={{
+                            fontSize: `${position.size}rem`,
+                            top: position.top,
+                            left: position.left,
+                            right: position.right,
+                            bottom: position.bottom,
+                            transform:
+                              `${position.transform || ''} rotate(${position.rotation}deg)`.trim(),
+                          }}
+                        />
+                      )
+                    })
+                  })()}
+
+                  {/* Project Title Overlay (bottom) */}
+                  <div className="absolute inset-x-0 bottom-0 p-5 z-30">
+                    <div className="rounded-[1.35rem] border border-white/15 bg-black/65 p-4 backdrop-blur-md">
+                      <p className="text-[11px] uppercase tracking-[0.18em] text-white/80">
+                        {project.category?.replace('-', ' ')}
+                      </p>
+                      <h3 className="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-white">
+                        {project.title}
+                      </h3>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Project Content */}
                 <div className="p-6">
-                  <span className="mb-3.5 inline-flex text-[0.84rem] uppercase tracking-[0.08em] text-cyan-400">
-                    {project.category?.replace('-', ' ')}
-                  </span>
-                  <h3 className="mb-2.5 text-[clamp(1.35rem,3vw,2rem)] leading-[1.05] tracking-[-0.04em] text-white">
-                    {project.title}
-                  </h3>
                   <p className="text-white/60">{project.summary}</p>
 
                   {/* Tech Stack */}

@@ -28,11 +28,16 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - Animated starfield hero section with dynamic content
     - Fully responsive with mobile-first design
     - All content managed via Resume Profile global (headline, summary, hero description)
+    - Featured Work homepage section with Payload-driven featured projects
+    - Dynamic floating tech stack icons using `react-icons` with count-aware positioning
+    - Latest Projects homepage section showing the latest non-featured Full Stack, WordPress, and Automation projects
+    - Glass morphism project title overlays and category-aware project card presentation
   - **Default Theme**: Clean, professional layout
   - **Modern Theme**: Contemporary design with smooth animations
   - **Minimal Theme**: Simple, focused presentation
   - Template selection at `Site Settings → Public Template`
-- **Modern Projects Showcase**: Card-based design with all information visible
+- **Modern Projects Showcase**: Card-based design with homepage highlights and all information visible
+  - Homepage includes a Featured Work rail for featured projects and a Latest Projects rail for selected non-featured categories
   - No clicking through to individual project pages - everything on one page
   - Expandable descriptions, tech stack tags, and action buttons
   - Organized by category with smart sorting (newest first)

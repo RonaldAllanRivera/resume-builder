@@ -205,16 +205,22 @@ Status: Completed
   - Fixed header with highest z-index (9999) ✅
   - Clean separation: Rainbow header visible, Payload header hidden ✅
 - **Content Management**:
-  - All hero content managed via Resume Profile global ✅
-  - Added `heroDescription` field to Resume Profile config ✅
-  - No hardcoded fallbacks - fully dynamic from database ✅
-  - Edit at: `http://localhost:3000/admin/globals/resumeProfile` ✅
+  - All hero content managed via Resume Profile global 
+  - Added `heroDescription` field to Resume Profile config 
+  - No hardcoded fallbacks - fully dynamic from database 
+  - Edit at: `http://localhost:3000/admin/globals/resumeProfile` 
 - **Technical Implementation**:
-  - Fixed Pages collection error (removed DeleteVersionsMenuItem) ✅
-  - Converted Hero to Client Component to avoid styled-jsx Server Component errors ✅
-  - Used external CSS files for complex animations (Hero.css, Layout.css) ✅
-  - Proper TypeScript typing with Payload generated types ✅
-  - Best practices: semantic HTML, accessibility, mobile-first design ✅
+  - Fixed Pages collection error (removed DeleteVersionsMenuItem) 
+  - Converted Hero to Client Component to avoid styled-jsx Server Component errors 
+  - Used external CSS files for complex animations (Hero.css, Layout.css) 
+  - Proper TypeScript typing with Payload generated types 
+  - Best practices: semantic HTML, accessibility, mobile-first design 
+- **Homepage Project Showcase**:
+  - Added a Payload-driven `Featured Work` section for featured projects on the Rainbow homepage 
+  - Implemented dynamic floating tech stack icons using `react-icons` with fallback extraction from project descriptions 
+  - Added count-aware icon positioning so project cards adapt to available tech tags/icons 
+  - Added glass morphism title overlays to project media areas and removed duplicate title/category content below 
+  - Added a `Latest Projects` section limited to 3 cards: latest non-featured Full Stack, WordPress, and Automation projects 
 
 - Data fetching (public pages):
   - Prefer Server Components for page shells.

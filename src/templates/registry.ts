@@ -21,6 +21,7 @@ export interface TemplateComponents {
   HomePage: ComponentType<{
     profile?: ResumeProfile1 | null
     featuredProjects?: Project[]
+    latestProjects?: (Project | null)[]
     settings?: SiteSetting | null
   }>
   ExperiencePage: ComponentType<{
