@@ -56,7 +56,8 @@ export const seedResumeComplete = async ({
     data: {
       fullName: 'Ronald Allan Rivera',
       headline: 'Full-Stack Web Developer | Python, Laravel, WordPress | 20+ Years Experience',
-      summary: `I'm a full-stack Web Developer with 20+ years of experience delivering production-ready solutions across eCommerce, SaaS, AI, and marketing technology. I specialize in Python automation, backend systems with Laravel/PHP and Python/Django, scalable WordPress plugin development, and modern frontends with React, Vue, Next.js, and Inertia. My recent work includes building Python desktop applications for data automation, developing Laravel 12 + Filament apps with advanced admin dashboards, lead capture and user management, pixel tracking, cloaking middleware, deployment pipelines, and reporting, and creating custom WordPress plugins for search, eCommerce, and content management. I focus on performance, security, SEO, and maintainability, ensuring every project is scalable, optimized, and future-proof.`,
+      summary: ` I build scalable web apps, powerful WordPress systems, and AI-driven tools.`,
+      heroDescription: ` Ronald Allan Rivera is a Web Designer and Programmer with 20+ years of experience creating production-ready websites, SaaS platforms, automation tools, and premium digital experiences using Laravel, Django, React, Next.js, WordPress, and AI-assisted workflows.`,
       email: 'jaeron.rivera@gmail.com',
       publishEmail: true,
       phone: '+63-927-023-8592',

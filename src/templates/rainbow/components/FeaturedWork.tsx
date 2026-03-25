@@ -142,10 +142,11 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
                     <a
                       href={(project.liveUrl || project.repoUrl) ?? ''}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="nofollow noopener noreferrer"
+                      referrerPolicy="no-referrer"
                       className="inline-flex items-center rounded-full bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 px-3 py-2 text-xs font-semibold text-black shadow-[0_0_20px_rgba(255,180,100,0.3)] transition hover:shadow-[0_0_30px_rgba(255,180,100,0.5)]"
                     >
-                      Open Link
+                      {project.liveUrl ? 'View Live' : 'View Code'}
                     </a>
                   </div>
                 )}
@@ -263,10 +264,11 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
                       <a
                         href={(project.liveUrl || project.repoUrl) ?? ''}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="nofollow noopener noreferrer"
+                        referrerPolicy="no-referrer"
                         className="inline-flex items-center rounded-full bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 px-3 py-2 text-xs font-semibold text-black shadow-[0_0_20px_rgba(255,180,100,0.3)] transition hover:shadow-[0_0_30px_rgba(255,180,100,0.5)]"
                       >
-                        Open Link
+                        {project.liveUrl ? 'View Live' : 'View Code'}
                       </a>
                     </div>
                   )}
