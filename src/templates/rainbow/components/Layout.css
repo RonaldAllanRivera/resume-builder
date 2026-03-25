@@ -1,0 +1,34 @@
+/* Hide Payload AdminBar */
+.admin-bar,
+[class*="admin-bar"],
+[class*="payload-admin-bar"],
+[class*="AdminBar"],
+[class*="payloadcms-admin-bar"] {
+  display: none !important;
+}
+
+/* Hide the specific Payload header (container z-20) and all its contents */
+header.container.z-20,
+header.container.z-20 *,
+header.z-20,
+header.z-20 * {
+  display: none !important;
+}
+
+/* Hide root layout header that doesn't have rainbow-header class */
+body > div > header:not(.rainbow-header),
+body > div > footer {
+  display: none !important;
+}
+
+/* Hide any admin links */
+a[href*="/admin"] {
+  display: none !important;
+}
+
+/* Ensure Rainbow template header is visible and has highest z-index */
+.rainbow-header {
+  display: block !important;
+  position: fixed !important;
+  z-index: 9999 !important;
+}

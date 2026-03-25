@@ -2144,7 +2144,7 @@ export interface SiteSetting {
   /**
    * Choose the template for your public site. Changes apply instantly.
    */
-  publicTemplate: 'default' | 'modern' | 'minimal';
+  publicTemplate: 'default' | 'modern' | 'minimal' | 'rainbow';
   showExperience?: boolean | null;
   showEducation?: boolean | null;
   showProjects?: boolean | null;
@@ -2168,6 +2168,10 @@ export interface ResumeProfile1 {
   fullName: string;
   headline?: string | null;
   summary?: string | null;
+  /**
+   * Full description text shown below the main heading in the hero section (e.g., "Ronald Allan Rivera is a Web Designer and Programmer with extensive experience...")
+   */
+  heroDescription?: string | null;
   email?: string | null;
   publishEmail?: boolean | null;
   phone?: string | null;
@@ -2287,6 +2291,7 @@ export interface ResumeProfileSelect<T extends boolean = true> {
   fullName?: T;
   headline?: T;
   summary?: T;
+  heroDescription?: T;
   email?: T;
   publishEmail?: T;
   phone?: T;

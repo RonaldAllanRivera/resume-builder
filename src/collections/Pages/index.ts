@@ -53,11 +53,6 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
-    components: {
-      edit: {
-        editMenuItems: ['@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem'],
-      },
-    },
   },
   fields: [
     {

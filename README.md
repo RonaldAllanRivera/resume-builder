@@ -22,6 +22,16 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Database Management UI**: Admin dashboard with reset/seed buttons (100 resume items with categorized certifications)
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
 - **Google Docs Export**: OAuth2 authentication with personal Drive quota
+- **Multiple Template System**: Switchable public templates via admin panel
+  - **Rainbow Theme**: Modern space-themed design with dynamic gradients
+    - Glass morphism navigation with unique gradient colors per menu item
+    - Animated starfield hero section with dynamic content
+    - Fully responsive with mobile-first design
+    - All content managed via Resume Profile global (headline, summary, hero description)
+  - **Default Theme**: Clean, professional layout
+  - **Modern Theme**: Contemporary design with smooth animations
+  - **Minimal Theme**: Simple, focused presentation
+  - Template selection at `Site Settings → Public Template`
 - **Modern Projects Showcase**: Card-based design with all information visible
   - No clicking through to individual project pages - everything on one page
   - Expandable descriptions, tech stack tags, and action buttons

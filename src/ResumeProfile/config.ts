@@ -37,6 +37,14 @@ export const ResumeProfile: GlobalConfig = {
       type: 'textarea',
     },
     {
+      name: 'heroDescription',
+      type: 'textarea',
+      admin: {
+        description:
+          'Full description text shown below the main heading in the hero section (e.g., "Ronald Allan Rivera is a Web Designer and Programmer with extensive experience...")',
+      },
+    },
+    {
       name: 'email',
       type: 'text',
       access: {

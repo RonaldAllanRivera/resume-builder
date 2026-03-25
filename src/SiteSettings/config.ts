@@ -46,6 +46,10 @@ export const SiteSettings: GlobalConfig = {
                   label: 'Minimal',
                   value: 'minimal',
                 },
+                {
+                  label: 'Rainbow',
+                  value: 'rainbow',
+                },
               ],
               admin: {
                 description: 'Choose the template for your public site. Changes apply instantly.',

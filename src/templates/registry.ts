@@ -46,7 +46,7 @@ export interface TemplateComponents {
   }>
 }
 
-export type TemplateKey = 'default' | 'modern' | 'minimal'
+export type TemplateKey = 'default' | 'modern' | 'minimal' | 'rainbow'
 
 // Import default template
 import { Layout as DefaultLayout } from './default/Layout'
@@ -56,6 +56,14 @@ import { EducationPage as DefaultEducationPage } from './default/EducationPage'
 import { ProjectsPage as DefaultProjectsPage } from './default/ProjectsPage'
 import { ProjectCategoryPage as DefaultProjectCategoryPage } from './default/ProjectCategoryPage'
 import { CertificationsPage as DefaultCertificationsPage } from './default/CertificationsPage'
+
+// Import Rainbow template
+import { Layout as RainbowLayout } from './rainbow/components/Layout'
+import { HomePage as RainbowHomePage } from './rainbow/HomePage'
+import { ExperiencePage as RainbowExperiencePage } from './rainbow/ExperiencePage'
+import { EducationPage as RainbowEducationPage } from './rainbow/EducationPage'
+import { ProjectsPage as RainbowProjectsPage } from './rainbow/ProjectsPage'
+import { CertificationsPage as RainbowCertificationsPage } from './rainbow/CertificationsPage'
 
 // Template registry
 const templates: Record<TemplateKey, TemplateComponents> = {
@@ -87,6 +95,15 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     ProjectCategoryPage: DefaultProjectCategoryPage,
     CertificationsPage: DefaultCertificationsPage,
   },
+  rainbow: {
+    Layout: RainbowLayout,
+    HomePage: RainbowHomePage,
+    ExperiencePage: RainbowExperiencePage,
+    EducationPage: RainbowEducationPage,
+    ProjectsPage: RainbowProjectsPage,
+    ProjectCategoryPage: DefaultProjectCategoryPage, // Reuse default for now
+    CertificationsPage: RainbowCertificationsPage,
+  },
 }
 
 /**
@@ -94,7 +111,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
  * Falls back to default template if key is invalid
  */
 export function getTemplate(key: string): TemplateComponents {
-  const validKeys: TemplateKey[] = ['default', 'modern', 'minimal']
+  const validKeys: TemplateKey[] = ['default', 'modern', 'minimal', 'rainbow']
   const templateKey = validKeys.includes(key as TemplateKey) ? (key as TemplateKey) : 'default'
   return templates[templateKey]
 }
