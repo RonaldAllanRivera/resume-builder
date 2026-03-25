@@ -2,11 +2,9 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
@@ -27,11 +25,7 @@ export function Header() {
             >
               <Link
                 href="/"
-                className={`nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold transition-all duration-300 ${
-                  pathname === '/'
-                    ? 'text-black bg-gradient-to-r from-pink-400 via-yellow-300 to-purple-400 shadow-[0_0_20px_rgba(255,200,255,0.3)]'
-                    : 'text-white/90 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400 hover:shadow-[0_0_20px_rgba(255,200,255,0.3)]'
-                }`}
+                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400 hover:shadow-[0_0_20px_rgba(255,200,255,0.3)]"
               >
                 Home
               </Link>
@@ -124,11 +118,7 @@ export function Header() {
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`nav-link rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ${
-                  pathname === '/'
-                    ? 'text-black bg-gradient-to-r from-pink-400 via-yellow-300 to-purple-400'
-                    : 'text-white/90 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400'
-                }`}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400"
               >
                 Home
               </Link>
