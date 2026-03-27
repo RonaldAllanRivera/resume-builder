@@ -2,6 +2,7 @@
 
 import React from 'react'
 import type { ResumeProfile1 } from '@/payload-types'
+import { CTAButtons } from './CTAButtons'
 import './Hero.css'
 
 interface HeroProps {
@@ -40,20 +41,7 @@ export function Hero({ profile }: HeroProps) {
             )}
 
             {/* CTA Buttons */}
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <a
-                href="#contact"
-                className="inline-flex min-h-[60px] items-center justify-center rounded-2xl bg-white px-7 text-base font-extrabold text-[#111111] shadow-nav transition hover:-translate-y-0.5"
-              >
-                CHAT WITH AI
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex min-h-[60px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 text-base font-extrabold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
-              >
-                BOOK ME NOW
-              </a>
-            </div>
+            <CTAButtons className="justify-center" />
 
             {/* Tech stack tags */}
             <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm">

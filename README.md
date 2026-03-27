@@ -32,6 +32,13 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - Dynamic floating tech stack icons using `react-icons` with count-aware positioning
     - Latest Projects homepage section showing the latest non-featured Full Stack, WordPress, and Automation projects
     - Glass morphism project title overlays and category-aware project card presentation
+    - **All Projects page** (`/projects`) with complete portfolio showcase
+      - Header dropdown navigation with category sub-menu (Full Stack, WordPress, Automation, Design)
+      - Netflix-style hero section with project statistics
+      - Category-organized sections with anchor link navigation
+      - Reusable CTAButtons component (CHAT WITH AI, BOOK ME NOW)
+      - Smart project ordering by priority with category-based grouping
+      - Scroll-margin optimization for fixed header navigation
   - **Default Theme**: Clean, professional layout
   - **Modern Theme**: Contemporary design with smooth animations
   - **Minimal Theme**: Simple, focused presentation

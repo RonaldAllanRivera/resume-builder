@@ -27,7 +27,7 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
   const remaining = projects.slice(2)
 
   return (
-    <section id="services" className="py-16">
+    <section id="services" className="scroll-mt-24 py-16">
       <div className="mx-auto w-[min(calc(100%-40px),1320px)]">
         <div className="mb-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <h2 className="text-[clamp(2rem,4vw,3.4rem)] leading-none tracking-[-0.045em] text-white">

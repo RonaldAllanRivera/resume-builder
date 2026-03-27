@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.8.2] - 2026-03-27
+
+### All Projects Page Implementation
+
+**Complete Portfolio Showcase**
+- **New `/projects` Route**: Dedicated page displaying all 26 projects organized by category
+- **Netflix-Style Hero Section**: Project statistics (26 projects, 4 categories, 20+ years experience, Live production status)
+- **Category Organization**: Projects grouped by Full Stack → WordPress → Automation → Design priority
+- **Smart Project Ordering**: Projects sorted by `order` field (lower = higher priority) within each category
+- **Header Navigation Enhancement**: Added Projects dropdown menu with category sub-links
+  - All Projects
+  - Full Stack Development (8 projects)
+  - WordPress Development (13 projects)
+  - Automation & Software Engineering (4 projects)
+  - Graphic Design (1 project)
+- **Anchor Link Navigation**: Hash-based navigation to category sections with scroll-margin optimization
+- **Scroll Position Fix**: Added `scroll-mt-24` to sections for proper spacing below fixed header
+- **Reusable CTAButtons Component**: Extracted CHAT WITH AI and BOOK ME NOW buttons for reuse across pages
+  - Configurable `className`, `chatHref`, and `bookHref` props
+  - Default navigation to homepage contact section (`/#contact`)
+  - Used in both Hero and AllProjectsPage components
+- **Absolute Path Navigation**: Fixed all header links to use absolute paths (`/#section`) for proper navigation from internal pages
+- **Clean Implementation**: Removed buggy filter navigation in favor of simple HTML anchor-based scrolling
+- **Project Card Design**: Gradient backgrounds, floating tech stack icons, and View Live/View Code buttons
+- **Mobile Responsive**: Full mobile menu support with category sub-items
+
+**Technical Improvements**
+- Converted navigation links from relative (`#section`) to absolute (`/#section`) paths
+- Optimized performance by removing unnecessary state management
+- Applied KISS principle - native browser features over complex JavaScript
+- Zero lint warnings with proper TypeScript types
+
 ## [0.8.1] - 2026-03-25
 
 ### Rainbow Homepage Project Showcase Enhancements

@@ -5,6 +5,7 @@ import Link from 'next/link'
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [projectsDropdownOpen, setProjectsDropdownOpen] = useState(false)
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
@@ -29,42 +30,82 @@ export function Header() {
               >
                 Home
               </Link>
-              <a
-                href="#services"
+              <Link
+                href="/#services"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-400 hover:via-orange-400 hover:to-pink-400 hover:shadow-[0_0_20px_rgba(255,180,100,0.3)]"
               >
                 Featured Work
-              </a>
-              <a
-                href="#projects"
-                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400 hover:shadow-[0_0_20px_rgba(255,150,200,0.3)]"
+              </Link>
+              <div
+                className="nav-dropdown relative"
+                onMouseEnter={() => setProjectsDropdownOpen(true)}
+                onMouseLeave={() => setProjectsDropdownOpen(false)}
               >
-                Projects
-              </a>
-              <a
-                href="#experience"
+                <Link
+                  href="/projects"
+                  className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400 hover:shadow-[0_0_20px_rgba(255,150,200,0.3)]"
+                >
+                  Projects
+                </Link>
+                {projectsDropdownOpen && (
+                  <div className="nav-dropdown-menu absolute top-full left-0 mt-2 min-w-[200px] rounded-xl border border-white/10 bg-[#191a21]/95 p-2 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur">
+                    <Link
+                      href="/projects"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400 hover:text-black"
+                    >
+                      All Projects
+                    </Link>
+                    <Link
+                      href="/projects#full-stack"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400 hover:text-black"
+                    >
+                      Full Stack
+                    </Link>
+                    <Link
+                      href="/projects#wordpress"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400 hover:text-black"
+                    >
+                      WordPress
+                    </Link>
+                    <Link
+                      href="/projects#automation"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-yellow-300 hover:via-orange-300 hover:to-red-400 hover:text-black"
+                    >
+                      Automation
+                    </Link>
+                    <Link
+                      href="/projects#graphic-design"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 hover:text-black"
+                    >
+                      Design
+                    </Link>
+                  </div>
+                )}
+              </div>
+              <Link
+                href="/#experience"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400 hover:shadow-[0_0_20px_rgba(100,255,255,0.3)]"
               >
                 Experience
-              </a>
-              <a
-                href="#education"
+              </Link>
+              <Link
+                href="/#education"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400 hover:shadow-[0_0_20px_rgba(150,150,255,0.3)]"
               >
                 Education
-              </a>
-              <a
-                href="#certifications"
+              </Link>
+              <Link
+                href="/#certifications"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-teal-300 hover:via-emerald-300 hover:to-green-400 hover:shadow-[0_0_20px_rgba(100,255,180,0.3)]"
               >
                 Certifications
-              </a>
-              <a
-                href="#contact"
+              </Link>
+              <Link
+                href="/#contact"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400 hover:shadow-[0_0_20px_rgba(100,200,255,0.3)]"
               >
                 Contact
-              </a>
+              </Link>
             </nav>
           </div>
 
@@ -122,48 +163,76 @@ export function Header() {
               >
                 Home
               </Link>
-              <a
-                href="#services"
+              <Link
+                href="/#services"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-400 hover:via-orange-400 hover:to-pink-400"
               >
                 Featured Work
-              </a>
-              <a
-                href="#projects"
+              </Link>
+              <Link
+                href="/projects"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400"
               >
-                Projects
-              </a>
-              <a
-                href="#experience"
+                All Projects
+              </Link>
+              <Link
+                href="/projects#full-stack"
+                onClick={() => setMobileMenuOpen(false)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400 pl-8"
+              >
+                → Full Stack
+              </Link>
+              <Link
+                href="/projects#wordpress"
+                onClick={() => setMobileMenuOpen(false)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400 pl-8"
+              >
+                → WordPress
+              </Link>
+              <Link
+                href="/projects#automation"
+                onClick={() => setMobileMenuOpen(false)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-300 hover:via-orange-300 hover:to-red-400 pl-8"
+              >
+                → Automation
+              </Link>
+              <Link
+                href="/projects#graphic-design"
+                onClick={() => setMobileMenuOpen(false)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 pl-8"
+              >
+                → Design
+              </Link>
+              <Link
+                href="/#experience"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400"
               >
                 Experience
-              </a>
-              <a
-                href="#education"
+              </Link>
+              <Link
+                href="/#education"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400"
               >
                 Education
-              </a>
-              <a
-                href="#certifications"
+              </Link>
+              <Link
+                href="/#certifications"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-teal-300 hover:via-emerald-300 hover:to-green-400"
               >
                 Certifications
-              </a>
-              <a
-                href="#contact"
+              </Link>
+              <Link
+                href="/#contact"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400"
               >
                 Contact
-              </a>
+              </Link>
             </nav>
           </div>
         )}
