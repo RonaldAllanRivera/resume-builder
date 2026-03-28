@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.8.3] - 2026-03-28
+
+### Unified ProjectCard Component
+
+**Reusable Card Design Across All Pages**
+- **Created ProjectCard Component**: Extracted reusable project card component from AllProjectsPage
+  - Single source of truth for project card design
+  - Used across Featured Work, Latest Projects, and All Projects pages
+  - Eliminates 450+ lines of duplicate code
+- **Bright Gradient Backgrounds**: Updated to vibrant, eye-catching color schemes
+  - 11 gradient variations (emerald-cyan-blue, rose-orange-amber, etc.)
+  - Consistent with All Projects page design
+  - Removed dark, muted gradients in favor of bright colors
+- **Dynamic Floating Tech Stack Icons**: Smart icon positioning with fallbacks
+  - Up to 10 icons per card with dynamic sizing
+  - Extracts icons from tech stack and project descriptions
+  - Generic fallback icons ensure minimum 3 icons per card
+- **Glass Morphism Title Overlays**: Semi-transparent dark overlays at card bottom
+  - Category badge (FULL STACK, WORDPRESS, etc.)
+  - Project title in large, bold text
+  - Backdrop blur effect for depth
+- **Gradient Action Buttons**: Yellow→Orange→Pink gradient for View Live/View Code
+- **Full Description Visible**: All project summaries displayed on cards
+- **Consistent Spacing**: Professional polish with unified shadows and borders
+
+**Technical Improvements**
+- DRY principle: Single ProjectCard component replaces 3 duplicate implementations
+- Better maintainability: Update once, applies everywhere
+- Type safety: Consistent TypeScript interfaces
+- Clean architecture: Separation of concerns
+- Added `data-version="v2-unified"` attribute for debugging
+
+**Files Modified**
+- Created: `src/templates/rainbow/components/ProjectCard.tsx`
+- Updated: `src/templates/rainbow/components/FeaturedWork.tsx`
+- Updated: `src/templates/rainbow/components/LatestProjects.tsx`
+- Updated: `src/templates/rainbow/AllProjectsPage.tsx`
+
 ## [0.8.2] - 2026-03-27
 
 ### All Projects Page Implementation

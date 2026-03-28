@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen text-white bg-[#050608]">
+    <div data-theme="dark" className="min-h-screen text-white bg-[#050608]">
       <Header />
 
       {/* Main content - no padding since Hero is full-height */}

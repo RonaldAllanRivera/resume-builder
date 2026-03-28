@@ -28,10 +28,15 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - Animated starfield hero section with dynamic content
     - Fully responsive with mobile-first design
     - All content managed via Resume Profile global (headline, summary, hero description)
+    - **Unified ProjectCard component** - Reusable card design across all pages
+      - Bright, vibrant gradient backgrounds (11 color variations)
+      - Dynamic floating tech stack icons with smart positioning
+      - Glass morphism title overlays with category badges
+      - Full project descriptions visible on cards
+      - Gradient action buttons (View Live/View Code)
+      - Consistent design from homepage to All Projects page
     - Featured Work homepage section with Payload-driven featured projects
-    - Dynamic floating tech stack icons using `react-icons` with count-aware positioning
     - Latest Projects homepage section showing the latest non-featured Full Stack, WordPress, and Automation projects
-    - Glass morphism project title overlays and category-aware project card presentation
     - **All Projects page** (`/projects`) with complete portfolio showcase
       - Header dropdown navigation with category sub-menu (Full Stack, WordPress, Automation, Design)
       - Netflix-style hero section with project statistics
@@ -345,6 +350,24 @@ docker compose restart app
     docker compose up
     ```
   - Use this when you want a completely clean database or after schema changes that require a fresh start.
+
+- **Complete Docker rebuild (fresh start)**
+  - Rebuild everything from scratch after major changes or container issues:
+    ```bash
+    # 1. Stop and remove all containers and volumes
+    docker compose down --volumes
+
+    # 2. Rebuild and start containers from scratch
+    docker compose up -d --build
+
+    # 3. Wait 30 seconds for app to start
+    # Then access: http://localhost:3000/admin
+    ```
+  - Use this after:
+    - Major code changes that aren't reflecting
+    - Container corruption or build cache issues
+    - Complete system restart
+    - When you need a guaranteed fresh environment
 
 ## 🌍 Environment Variables
 

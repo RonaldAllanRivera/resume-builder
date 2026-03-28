@@ -232,6 +232,16 @@ Status: Completed
   - Absolute path navigation (`/#section`) for proper internal page routing ✅
   - Clean implementation using native HTML anchors (removed buggy filter navigation) ✅
   - Mobile responsive with full category sub-menu support ✅
+- **Unified ProjectCard Component**:
+  - Extracted reusable ProjectCard component from AllProjectsPage ✅
+  - Single source of truth for project card design across all pages ✅
+  - Bright, vibrant gradient backgrounds (11 color variations) ✅
+  - Dynamic floating tech stack icons with smart positioning and fallbacks ✅
+  - Glass morphism title overlays with category badges ✅
+  - Gradient action buttons (View Live/View Code) ✅
+  - Consistent design from Featured Work → Latest Projects → All Projects ✅
+  - Eliminated 450+ lines of duplicate code ✅
+  - DRY principle: Update once, applies everywhere ✅
 
 - Data fetching (public pages):
   - Prefer Server Components for page shells.
