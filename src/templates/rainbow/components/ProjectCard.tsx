@@ -97,9 +97,6 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
               {project.liveUrl ? 'View Live' : 'View Code'}
             </a>
           )}
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
-            Full description visible
-          </span>
         </div>
       </div>
     </article>

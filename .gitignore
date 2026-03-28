@@ -4,6 +4,8 @@ node_modules
 .DS_Store
 .env
 .env.test
+.env.production
+.env.*.local
 .next
 .vercel
 
