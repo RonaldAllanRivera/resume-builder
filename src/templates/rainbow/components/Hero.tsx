@@ -3,6 +3,7 @@
 import React from 'react'
 import type { ResumeProfile1 } from '@/payload-types'
 import { CTAButtons } from './CTAButtons'
+import { Starfield } from './Starfield'
 import './Hero.css'
 
 interface HeroProps {
@@ -12,6 +13,9 @@ interface HeroProps {
 export function Hero({ profile }: HeroProps) {
   return (
     <section className="space-hero relative overflow-hidden min-h-screen">
+      {/* Animated starfield canvas - layered on top of CSS background */}
+      <Starfield />
+
       {/* Hero overlay */}
       <div className="hero-overlay absolute inset-0" />
 

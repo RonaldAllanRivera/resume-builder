@@ -4,6 +4,7 @@ import React from 'react'
 import type { Project } from '@/payload-types'
 import { CTAButtons } from './components/CTAButtons'
 import { ProjectCard } from './components/ProjectCard'
+import { Starfield } from './components/Starfield'
 
 interface AllProjectsPageProps {
   projects: Project[]
@@ -75,6 +76,8 @@ export function AllProjectsPage({ projects }: AllProjectsPageProps) {
     <div className="min-h-screen bg-[#050608] text-white">
       {/* Hero Section */}
       <section className="hero-bg relative overflow-hidden px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-28 lg:pt-32">
+        {/* Animated starfield canvas */}
+        <Starfield />
         <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">

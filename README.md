@@ -25,7 +25,14 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Multiple Template System**: Switchable public templates via admin panel
   - **Rainbow Theme**: Modern space-themed design with dynamic gradients
     - Glass morphism navigation with unique gradient colors per menu item
-    - Animated starfield hero section with dynamic content
+    - **Animated 3D Starfield** - Interactive canvas animation with progressive enhancement
+      - 4,300 rotating stars in 3D space with depth-based sizing
+      - Interactive mouse movement (rotation speeds up on interaction)
+      - Twinkling stars with varying brightness and glow effects
+      - CSS gradient fallback for instant loading on slow connections
+      - Respects `prefers-reduced-motion` accessibility setting
+      - 60fps performance with optimized rendering
+      - Reusable Starfield component on homepage and All Projects page
     - Fully responsive with mobile-first design
     - All content managed via Resume Profile global (headline, summary, hero description)
     - **Unified ProjectCard component** - Reusable card design across all pages

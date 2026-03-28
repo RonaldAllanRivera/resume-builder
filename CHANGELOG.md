@@ -1,5 +1,61 @@
 # Changelog
 
+## [0.8.4] - 2026-03-28
+
+### Animated 3D Starfield Background
+
+**Interactive Canvas Animation with Progressive Enhancement**
+- **Created Starfield Component**: Reusable React component with 3D rotating starfield animation
+  - 4,300 stars distributed in 3D spherical space
+  - Real-time 3D rotation with yaw, pitch, and roll transformations
+  - Depth-based perspective projection for realistic star sizing
+  - Stars sorted by depth (back-to-front rendering)
+- **Interactive Mouse Movement**: Dynamic rotation speed based on mouse activity
+  - Smooth physics with inertia and damping
+  - Rotation speeds up when mouse moves, coasts when idle
+  - Multi-layer smoothing for premium feel
+  - Procedural speed variation with sine waves
+- **Visual Effects**: Professional polish with multiple rendering techniques
+  - Twinkling stars with individual speeds and offsets
+  - Glow effects on brighter stars (3 brightness tiers)
+  - Varying star sizes (0.42px to 3.4px)
+  - Alpha transparency for depth perception
+- **Progressive Enhancement**: CSS gradient fallback for instant loading
+  - Existing CSS background shows immediately
+  - Canvas animation layers on top when JavaScript loads
+  - No blank screen on slow connections
+  - Graceful degradation if JavaScript disabled
+- **Accessibility First**: Respects user preferences
+  - Honors `prefers-reduced-motion` media query
+  - `aria-hidden="true"` (decorative element)
+  - `pointer-events: none` (doesn't block interactions)
+- **Performance Optimized**: 60fps smooth animation
+  - `requestAnimationFrame` for optimal timing
+  - Viewport culling (only renders visible stars)
+  - Device pixel ratio capped at 2x
+  - Efficient canvas clearing with `clearRect`
+  - Proper cleanup on component unmount
+
+**Implementation**
+- Integrated on homepage hero section (`/`)
+- Integrated on All Projects page hero (`/projects`)
+- Reusable component: `<Starfield />` can be added to any page
+- Canvas opacity set to 85% to blend with CSS background
+
+**Technical Details**
+- TypeScript with full type safety and null checks
+- React hooks (`useEffect`, `useRef`) for lifecycle management
+- 3D mathematics: spherical distribution, rotation matrices, perspective projection
+- Smooth damping functions for natural motion
+- Event listeners with passive flag for performance
+
+**Files Created**
+- Created: `src/templates/rainbow/components/Starfield.tsx`
+
+**Files Modified**
+- Updated: `src/templates/rainbow/components/Hero.tsx`
+- Updated: `src/templates/rainbow/AllProjectsPage.tsx`
+
 ## [0.8.3] - 2026-03-28
 
 ### Unified ProjectCard Component

@@ -52,7 +52,7 @@
   pointer-events: none;
 }
 
-.cockpit-glow {
+/* .cockpit-glow {
   position: absolute;
   left: 50%;
   bottom: -9rem;
@@ -74,4 +74,4 @@
 
 .hero-overlay {
   background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.40) 70%, rgba(0,0,0,0.75) 100%);
-}
+} */
