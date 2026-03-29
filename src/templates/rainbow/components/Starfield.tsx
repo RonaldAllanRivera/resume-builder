@@ -14,15 +14,6 @@ interface Star {
   depthBias: number
 }
 
-interface MouseState {
-  lastX: number
-  lastY: number
-  initialized: boolean
-  impulse: number
-  smoothedImpulse: number
-  influence: number
-}
-
 export function Starfield() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -51,15 +42,6 @@ export function Starfield() {
 
     const STAR_COUNT = 4300
     const stars: Star[] = []
-
-    const mouseState: MouseState = {
-      lastX: 0,
-      lastY: 0,
-      initialized: false,
-      impulse: 0,
-      smoothedImpulse: 0,
-      influence: 0,
-    }
 
     let currentYawSpeed = 0.09
 
@@ -162,12 +144,6 @@ export function Starfield() {
       const waveB = Math.sin(t * 0.91 + 1.7) * 0.012
       const waveC = Math.sin(t * 0.17 + 3.2) * 0.009
       return Math.max(0.06, base + waveA + waveB + waveC)
-    }
-
-    function getInteractiveMultiplier(influence: number): number {
-      const minMultiplier = 0.94
-      const maxMultiplier = 1.48
-      return lerp(minMultiplier, maxMultiplier, influence)
     }
 
     function projectStar(star: Star) {
@@ -285,28 +261,6 @@ export function Starfield() {
       }
     }
 
-    function handlePointerMove(event: MouseEvent) {
-      const x = event.clientX
-      const y = event.clientY
-
-      if (!mouseState.initialized) {
-        mouseState.lastX = x
-        mouseState.lastY = y
-        mouseState.initialized = true
-        return
-      }
-
-      const dx = x - mouseState.lastX
-      const dy = y - mouseState.lastY
-      const distance = Math.hypot(dx, dy)
-
-      const impulse = clamp(distance / 34, 0, 1)
-
-      mouseState.impulse = Math.max(mouseState.impulse, impulse)
-      mouseState.lastX = x
-      mouseState.lastY = y
-    }
-
     function animate(now: number) {
       if (!lastTime) lastTime = now
 
@@ -314,30 +268,12 @@ export function Starfield() {
       lastTime = now
       time += dt
 
-      mouseState.impulse *= Math.exp(-1.15 * dt)
-
-      mouseState.smoothedImpulse = damp(
-        mouseState.smoothedImpulse,
-        mouseState.impulse,
-        mouseState.impulse > mouseState.smoothedImpulse ? 4.0 : 1.35,
-        dt,
-      )
-
-      mouseState.influence = damp(
-        mouseState.influence,
-        clamp(mouseState.smoothedImpulse, 0, 1),
-        mouseState.smoothedImpulse > mouseState.influence ? 2.6 : 0.9,
-        dt,
-      )
-
       const proceduralSpeed = getProceduralSpeed(time)
-      const interactiveMultiplier = getInteractiveMultiplier(mouseState.influence)
-      const targetYawSpeed = proceduralSpeed * interactiveMultiplier
 
       currentYawSpeed = damp(
         currentYawSpeed,
-        targetYawSpeed,
-        targetYawSpeed > currentYawSpeed ? 1.8 : 0.65,
+        proceduralSpeed,
+        proceduralSpeed > currentYawSpeed ? 1.8 : 0.65,
         dt,
       )
 
@@ -351,12 +287,10 @@ export function Starfield() {
     animationId = requestAnimationFrame(animate)
 
     window.addEventListener('resize', resize, { passive: true })
-    window.addEventListener('mousemove', handlePointerMove, { passive: true })
 
     return () => {
       cancelAnimationFrame(animationId)
       window.removeEventListener('resize', resize)
-      window.removeEventListener('mousemove', handlePointerMove)
     }
   }, [])
 
