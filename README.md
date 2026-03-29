@@ -50,7 +50,16 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - Category-organized sections with anchor link navigation
       - Reusable CTAButtons component (CHAT WITH AI, BOOK ME NOW)
       - Smart project ordering by priority with category-based grouping
-      - Scroll-margin optimization for fixed header navigation
+      - Reusable component: Can be added to any page with `<Starfield />` 
+    - **All Certifications Page** (`/certifications`) with duration-based card sizing
+      - Hero section with animated starfield and dynamic stats dashboard
+      - Cards sized by certification hours (15+ hours = 2 columns wide)
+      - 11 rotating gradient variations for visual variety
+      - Category-organized sections (9 categories: Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development)
+      - Header dropdown navigation with "All Certifications" and category sub-menu
+      - Certificate icon, duration badge, and credential links on each card
+      - Reusable CTAButtons component for consistent navigation
+      - Responsive grid layout adapting to screen size
   - **Default Theme**: Clean, professional layout
   - **Modern Theme**: Contemporary design with smooth animations
   - **Minimal Theme**: Simple, focused presentation

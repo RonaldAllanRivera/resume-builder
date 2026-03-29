@@ -1,5 +1,59 @@
 # Changelog
 
+## [0.8.5] - 2026-03-29
+
+### All Certifications Page (Rainbow Template)
+
+**Complete Certifications Gallery with Duration-Based Card Sizing**
+- **Created AllCertificationsPage Component**: Dedicated certifications showcase page for Rainbow template
+  - Reusable component matching AllProjectsPage design and structure
+  - Hero section with animated 3D starfield background
+  - Dynamic stats dashboard (total certificates, skill categories, longest learning path, LinkedIn badge)
+  - Category-organized sections with anchor link navigation
+  - 11 rotating gradient variations for visual variety
+- **Duration-Based Card Sizing**: Cards dynamically sized based on certification hours
+  - 15+ hours: 2 columns wide (md:col-span-2)
+  - 5-14 hours: 2 columns on medium screens, 1 on 2xl (md:col-span-2 2xl:col-span-1)
+  - <5 hours: 1 column (default)
+  - Longer courses visually stand out with wider cards
+- **Card Design**: Premium certification card layout
+  - Gradient header with certificate icon (rotated -10deg)
+  - Duration badge in top-right corner
+  - Title overlay with issuer name and glass morphism effect
+  - Issue date, duration, and provider information
+  - "View Certificate" button with gradient styling
+  - "Duration-sized card" label for visual feedback
+- **Navigation Enhancement**: Updated Rainbow Header with certifications dropdown
+  - Desktop: Hover-activated dropdown menu with 10 items
+  - Mobile: Expandable menu with arrow indicators
+  - Categories: All Certifications, Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development
+  - Each category link navigates to `/certifications#category-id`
+- **Category Organization**: 9 certification categories with descriptions
+  - Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress
+  - AI & Machine Learning, Cloud/DevOps & Architecture
+  - Git & Collaboration, Video & Creative, General Development
+  - Categories sorted by priority with smart grouping
+  - Category descriptions provide context for each skill area
+- **Template Registry Integration**: Updated registry to use AllCertificationsPage
+  - Rainbow template now uses AllCertificationsPage component
+  - Properly typed with optional certifications and settings props
+  - Route already exists at `/certifications?template=rainbow`
+
+**Technical Implementation**
+- TypeScript with full type safety and default parameter handling
+- Duration parsing utility: Converts "1h 32m" format to total hours
+- Card span calculation: Dynamic Tailwind classes based on hours
+- Reusable CTAButtons component for consistent navigation
+- Starfield component integration for animated background
+- Responsive grid layout (1/2/3 columns based on screen size)
+
+**Files Created**
+- Created: `src/templates/rainbow/AllCertificationsPage.tsx`
+
+**Files Modified**
+- Updated: `src/templates/rainbow/components/Header.tsx`
+- Updated: `src/templates/registry.ts`
+
 ## [0.8.4] - 2026-03-28
 
 ### Animated 3D Starfield Background

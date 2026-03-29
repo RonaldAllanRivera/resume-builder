@@ -253,6 +253,19 @@ Status: Completed
   - Integrated on homepage hero and All Projects page hero ✅
   - TypeScript with full type safety and proper null checks ✅
   - Reusable component: Can be added to any page with `<Starfield />` ✅
+- **All Certifications Page** (`/certifications`):
+  - Created AllCertificationsPage component for Rainbow template ✅
+  - Hero section with animated starfield background and dynamic stats dashboard ✅
+  - Duration-based card sizing (15+ hours = 2 columns wide, 5-14 hours = 2 columns on md, <5 hours = 1 column) ✅
+  - 11 rotating gradient variations for visual variety ✅
+  - Category-organized sections (9 categories: Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development) ✅
+  - Header dropdown navigation with "All Certifications" and category sub-menu ✅
+  - Certificate icon, duration badge, and credential links on each card ✅
+  - Reusable CTAButtons component for consistent navigation ✅
+  - Responsive grid layout (1/2/3 columns based on screen size) ✅
+  - Template registry integration with proper TypeScript typing ✅
+  - Duration parsing utility converts "1h 32m" format to total hours ✅
+  - Card span calculation uses dynamic Tailwind classes based on hours ✅
 
 - Data fetching (public pages):
   - Prefer Server Components for page shells.

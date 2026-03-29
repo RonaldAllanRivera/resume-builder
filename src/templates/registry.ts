@@ -66,7 +66,7 @@ import { HomePage as RainbowHomePage } from './rainbow/HomePage'
 import { ExperiencePage as RainbowExperiencePage } from './rainbow/ExperiencePage'
 import { EducationPage as RainbowEducationPage } from './rainbow/EducationPage'
 import { ProjectsPage as RainbowProjectsPage } from './rainbow/ProjectsPage'
-import { CertificationsPage as RainbowCertificationsPage } from './rainbow/CertificationsPage'
+import { AllCertificationsPage as RainbowCertificationsPage } from './rainbow/AllCertificationsPage'
 
 // Template registry
 const templates: Record<TemplateKey, TemplateComponents> = {
