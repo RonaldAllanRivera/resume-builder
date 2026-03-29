@@ -1,4 +1,5 @@
 import { getPayload } from 'payload'
+import type { PayloadRequest } from 'payload'
 import config from '@payload-config'
 import { NextResponse } from 'next/server'
 import { seedResumeComplete } from '@/endpoints/seed-resume-complete'
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
       user,
       payload,
       headers: request.headers,
-    } as any
+    } as PayloadRequest
 
     // First, delete all existing projects
     const { docs: existingProjects } = await payload.find({

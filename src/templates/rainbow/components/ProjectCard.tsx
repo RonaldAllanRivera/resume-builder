@@ -84,6 +84,26 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
       <div className="space-y-4 p-6">
         <p className="text-[15px] leading-7 text-white/82">{project.summary}</p>
 
+        {/* Tech Stack Badges */}
+        {project.techStack && project.techStack.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {project.techStack.map((tech, index) => {
+              const techName =
+                typeof tech === 'object' && tech !== null && 'name' in tech
+                  ? tech.name
+                  : String(tech)
+              return (
+                <span
+                  key={index}
+                  className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/90"
+                >
+                  {techName}
+                </span>
+              )
+            })}
+          </div>
+        )}
+
         {/* Action Button */}
         <div className="flex items-center justify-between gap-3">
           {(project.liveUrl || project.repoUrl) && (

@@ -100,17 +100,17 @@ export function Starfield() {
         let glowStrength: number
 
         if (bias < 0.84) {
-          size = rand(0.42, 0.95)
-          alpha = rand(0.11, 0.28)
-          glowStrength = rand(0.0, 0.08)
+          size = rand(0.5, 0.9)
+          alpha = rand(0.4, 0.7)
+          glowStrength = rand(0.0, 0.02)
         } else if (bias < 0.975) {
-          size = rand(0.95, 1.75)
-          alpha = rand(0.24, 0.54)
-          glowStrength = rand(0.04, 0.18)
+          size = rand(0.9, 1.4)
+          alpha = rand(0.6, 0.85)
+          glowStrength = rand(0.0, 0.04)
         } else {
-          size = rand(1.75, 3.4)
-          alpha = rand(0.42, 0.9)
-          glowStrength = rand(0.12, 0.32)
+          size = rand(1.4, 2.2)
+          alpha = rand(0.75, 1.0)
+          glowStrength = rand(0.0, 0.06)
         }
 
         stars.push({
@@ -277,7 +277,7 @@ export function Starfield() {
         const perspectiveBoost = clamp(projected.scale * 1.48, 0.62, 1.98)
         const radius = star.size * perspectiveBoost
 
-        const alpha = clamp(star.alpha * twinkle * perspectiveBoost * 0.92, 0.05, 1)
+        const alpha = clamp(star.alpha * twinkle * perspectiveBoost * 1.1, 0.3, 1)
 
         const glow = clamp(star.glowStrength * perspectiveBoost, 0, 0.34)
 
@@ -365,7 +365,7 @@ export function Starfield() {
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none"
       aria-hidden="true"
-      style={{ opacity: 0.85 }}
+      style={{ opacity: 1.0 }}
     />
   )
 }
