@@ -95,7 +95,7 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
               return (
                 <span
                   key={index}
-                  className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/90"
+                  className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/90"
                 >
                   {techName}
                 </span>

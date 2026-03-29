@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import type { Payload } from 'payload'
+import type { Payload, PayloadRequest } from 'payload'
 import { seedResumeComplete } from '../../src/endpoints/seed-resume-complete'
 
 describe('Seed Resume Complete', () => {
@@ -22,7 +22,7 @@ describe('Seed Resume Complete', () => {
       payload,
       user: null,
       headers: new Headers(),
-    } as any
+    } as PayloadRequest
 
     await seedResumeComplete({ payload, req, overrideAccess: true })
 
