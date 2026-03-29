@@ -1,9 +1,19 @@
 import React from 'react'
-import type { Project, SiteSetting, ResumeProfile1 } from '@/payload-types'
+import type {
+  Project,
+  SiteSetting,
+  ResumeProfile1,
+  Experience,
+  Education,
+  Certification,
+} from '@/payload-types'
 
 interface HomePageProps {
   profile?: ResumeProfile1 | null
   featuredProjects?: Project[]
+  experiences?: Experience[]
+  educations?: Education[]
+  certifications?: Certification[]
   settings?: SiteSetting | null
 }
 

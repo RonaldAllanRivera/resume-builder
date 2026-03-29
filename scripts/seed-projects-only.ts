@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
-import { seedProjectsUpdated } from '../src/endpoints/seed-projects-updated'
+import { seedResumeComplete } from '../src/endpoints/seed-resume-complete'
 
 const run = async (): Promise<void> => {
   const payload = await getPayload({ config })
@@ -33,7 +33,12 @@ const run = async (): Promise<void> => {
   console.log(`Deleted ${existingProjects.length} existing projects`)
 
   // Seed new projects with categories
-  await seedProjectsUpdated({ payload, req, overrideAccess: true })
+  await seedResumeComplete({
+    payload,
+    req,
+    overrideAccess: true,
+    skipProjects: false,
+  })
 
   await payload.destroy()
   console.log('✅ Projects seeding complete!')

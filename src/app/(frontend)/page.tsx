@@ -1,6 +1,12 @@
 import React from 'react'
 import { getTemplate, getSiteSettings } from '@/utilities/getTemplate'
-import { getFeaturedProjects, getResumeProfile } from '@/utilities/fetchPublicData'
+import {
+  getFeaturedProjects,
+  getResumeProfile,
+  getAllExperiences,
+  getAllEducations,
+  getAllCertifications,
+} from '@/utilities/fetchPublicData'
 import { generatePersonSchema, generateWebSiteSchema } from '@/utilities/jsonLd'
 import { JsonLd } from '@/components/JsonLd'
 import type { Metadata } from 'next'
@@ -26,6 +32,9 @@ export default async function HomePage({
   const settings = await getSiteSettings()
   const profile = await getResumeProfile()
   const featuredProjects = await getFeaturedProjects()
+  const experiences = await getAllExperiences()
+  const educations = await getAllEducations()
+  const certifications = await getAllCertifications()
 
   const personSchema = generatePersonSchema(profile, settings)
   const webSiteSchema = generateWebSiteSchema(settings)
@@ -40,6 +49,9 @@ export default async function HomePage({
         <HomePageComponent
           profile={profile}
           featuredProjects={featuredProjects}
+          experiences={experiences}
+          educations={educations}
+          certifications={certifications}
           settings={settings}
         />
       </Layout>
