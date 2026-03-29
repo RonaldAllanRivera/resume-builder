@@ -491,6 +491,17 @@ export const seedResumeComplete = async ({
         _status: 'published' as const,
       },
       {
+        title: 'StrategicGrowthPlanning.com',
+        slug: 'strategicgrowthplanning',
+        summary:
+          'WordPress and Elementor Developer - Custom WordPress and WooCommerce site built with Elementor, optimized checkout flow, SEO configuration, performance tuning, and security hardening.',
+        techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
+        liveUrl: 'https://gaitbeacon.com',
+        featured: false,
+        order: 16,
+        _status: 'published' as const,
+      },
+      {
         title: 'GaitBeacon.com',
         slug: 'gaitbeacon',
         summary:
@@ -498,7 +509,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
         liveUrl: 'https://gaitbeacon.com',
         featured: false,
-        order: 16,
+        order: 17,
         _status: 'published' as const,
       },
       {
@@ -509,7 +520,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'SEO' }],
         liveUrl: 'https://everythingusedcars.com',
         featured: false,
-        order: 17,
+        order: 18,
         _status: 'published' as const,
       },
       {
@@ -520,7 +531,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'OpenAI' }],
         liveUrl: 'https://popularaisoftware.com',
         featured: false,
-        order: 18,
+        order: 19,
         _status: 'published' as const,
       },
       {
@@ -531,7 +542,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'WooCommerce' }],
         liveUrl: 'https://78dragons.com',
         featured: false,
-        order: 19,
+        order: 20,
         _status: 'published' as const,
       },
       {
@@ -542,7 +553,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }],
         liveUrl: 'https://smartersafetysystems.com',
         featured: false,
-        order: 20,
+        order: 21,
         _status: 'published' as const,
       },
       {
@@ -553,7 +564,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }],
         liveUrl: 'https://lumbardconsulting.com',
         featured: false,
-        order: 21,
+        order: 22,
         _status: 'published' as const,
       },
       {
@@ -564,7 +575,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }],
         liveUrl: 'https://24aries.com',
         featured: false,
-        order: 22,
+        order: 23,
         _status: 'published' as const,
       },
       {
@@ -575,7 +586,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'Elementor' }, { name: 'SEO' }],
         liveUrl: 'https://pulseiq.com',
         featured: false,
-        order: 23,
+        order: 24,
         _status: 'published' as const,
       },
       {
@@ -586,7 +597,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'Python' }, { name: 'Tkinter' }, { name: 'Mapbox' }],
         repoUrl: 'https://github.com/RonaldAllanRivera/mapscraper',
         featured: false,
-        order: 24,
+        order: 25,
         _status: 'published' as const,
       },
       {
@@ -597,7 +608,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'Python' }, { name: 'Selenium' }, { name: 'Tkinter' }],
         repoUrl: 'https://github.com/RonaldAllanRivera/csv_scraper_gui',
         featured: false,
-        order: 25,
+        order: 26,
         _status: 'published' as const,
       },
     ]

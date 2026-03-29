@@ -4,7 +4,6 @@ import type { Project, SiteSetting, ResumeProfile1 } from '@/payload-types'
 interface HomePageProps {
   profile?: ResumeProfile1 | null
   featuredProjects?: Project[]
-  latestProjects?: (Project | null)[]
   settings?: SiteSetting | null
 }
 

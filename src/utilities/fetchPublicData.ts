@@ -62,30 +62,6 @@ export async function getFeaturedProjects() {
 }
 
 /**
- * Fetch latest non-featured project by category
- */
-export async function getLatestProjectByCategory(category: string) {
-  const payload = await getPayload({ config })
-
-  const { docs } = await payload.find({
-    collection: 'projects',
-    where: {
-      and: [
-        { _status: { equals: 'published' } },
-        { category: { equals: category } },
-        { featured: { not_equals: true } },
-      ],
-    },
-    sort: '-publishedAt',
-    limit: 1,
-    depth: 0,
-    overrideAccess: false,
-  })
-
-  return docs[0] || null
-}
-
-/**
  * Fetch project by slug
  */
 export async function getProjectBySlug(slug: string) {

@@ -2,7 +2,6 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextResponse } from 'next/server'
 import { seedResumeComplete } from '@/endpoints/seed-resume-complete'
-import { seedProjectsUpdated } from '@/endpoints/seed-projects-updated'
 
 /**
  * Admin-only endpoint to seed resume data
@@ -44,19 +43,12 @@ export async function POST(request: Request) {
       })
     }
 
-    // Run seed function for everything except projects
+    // Seed everything (experiences, education, projects, certifications, globals)
     await seedResumeComplete({
       payload,
       req,
       overrideAccess: true,
-      skipProjects: true,
-    })
-
-    // Then seed projects with categories
-    await seedProjectsUpdated({
-      payload,
-      req,
-      overrideAccess: true,
+      skipProjects: false,
     })
 
     return NextResponse.json({
