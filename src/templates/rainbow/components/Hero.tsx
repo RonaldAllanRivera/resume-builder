@@ -1,16 +1,43 @@
 'use client'
 
-import React from 'react'
-import type { ResumeProfile1 } from '@/payload-types'
+import React, { useMemo } from 'react'
+import type { ResumeProfile1, Project } from '@/payload-types'
 import { CTAButtons } from './CTAButtons'
 import { Starfield } from './Starfield'
 import './Hero.css'
 
 interface HeroProps {
   profile?: ResumeProfile1 | null
+  projects?: Project[]
 }
 
-export function Hero({ profile }: HeroProps) {
+export function Hero({ profile, projects }: HeroProps) {
+  // Extract unique tech stacks from all projects, sorted by usage count
+  const uniqueTechStacks = useMemo(() => {
+    if (!projects || projects.length === 0) return []
+
+    const techStackCount = new Map<string, number>()
+
+    projects.forEach((project) => {
+      if (project.techStack && Array.isArray(project.techStack)) {
+        project.techStack.forEach((tech) => {
+          if (tech && typeof tech === 'object' && tech.name && tech.name.trim()) {
+            const techName = tech.name.trim()
+            techStackCount.set(techName, (techStackCount.get(techName) || 0) + 1)
+          }
+        })
+      }
+    })
+
+    // Sort by count (descending), then alphabetically for ties, limit to top 5
+    return Array.from(techStackCount.entries())
+      .sort((a, b) => {
+        if (b[1] !== a[1]) return b[1] - a[1] // Sort by count descending
+        return a[0].localeCompare(b[0]) // Sort alphabetically for same count
+      })
+      .slice(0, 8) // Limit to top 8 most used tech stacks
+      .map(([tech]) => tech)
+  }, [projects])
   return (
     <section className="space-hero relative overflow-hidden min-h-screen">
       {/* Animated starfield canvas - layered on top of CSS background */}
@@ -47,27 +74,19 @@ export function Hero({ profile }: HeroProps) {
             {/* CTA Buttons */}
             <CTAButtons className="justify-center" />
 
-            {/* Tech stack tags */}
-            <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm">
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">
-                Laravel
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">
-                Django
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">
-                React
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">
-                Next.js
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">
-                WordPress
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">
-                Automation
-              </span>
-            </div>
+            {/* Tech stack tags - Dynamic from projects */}
+            {uniqueTechStacks.length > 0 && (
+              <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm">
+                {uniqueTechStacks.map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>

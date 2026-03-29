@@ -2,6 +2,7 @@ import React from 'react'
 import { getTemplate, getSiteSettings } from '@/utilities/getTemplate'
 import {
   getFeaturedProjects,
+  getAllProjects,
   getResumeProfile,
   getAllExperiences,
   getAllEducations,
@@ -32,6 +33,7 @@ export default async function HomePage({
   const settings = await getSiteSettings()
   const profile = await getResumeProfile()
   const featuredProjects = await getFeaturedProjects()
+  const allProjects = await getAllProjects()
   const experiences = await getAllExperiences()
   const educations = await getAllEducations()
   const certifications = await getAllCertifications()
@@ -49,6 +51,7 @@ export default async function HomePage({
         <HomePageComponent
           profile={profile}
           featuredProjects={featuredProjects}
+          allProjects={allProjects}
           experiences={experiences}
           educations={educations}
           certifications={certifications}

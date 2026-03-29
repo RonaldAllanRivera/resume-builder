@@ -21,6 +21,7 @@ export interface TemplateComponents {
   HomePage: ComponentType<{
     profile?: ResumeProfile1 | null
     featuredProjects?: Project[]
+    allProjects?: Project[]
     experiences?: Experience[]
     educations?: Education[]
     certifications?: Certification[]
