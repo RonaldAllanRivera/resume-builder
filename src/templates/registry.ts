@@ -48,6 +48,9 @@ export interface TemplateComponents {
     certifications?: Certification[]
     settings?: SiteSetting | null
   }>
+  ContactPage?: ComponentType<{
+    settings?: SiteSetting | null
+  }>
 }
 
 export type TemplateKey = 'default' | 'modern' | 'minimal' | 'rainbow'
@@ -62,6 +65,7 @@ import { ProjectCategoryPage as DefaultProjectCategoryPage } from './default/Pro
 import { CertificationsPage as DefaultCertificationsPage } from './default/CertificationsPage'
 
 // Import Rainbow template
+import { ContactPage as RainbowContactPage } from './rainbow/ContactPage'
 import { Layout as RainbowLayout } from './rainbow/components/Layout'
 import { HomePage as RainbowHomePage } from './rainbow/HomePage'
 import { ExperiencePage as RainbowExperiencePage } from './rainbow/ExperiencePage'
@@ -107,6 +111,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     ProjectsPage: RainbowProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage, // Reuse default for now
     CertificationsPage: RainbowCertificationsPage,
+    ContactPage: RainbowContactPage,
   },
 }
 

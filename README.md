@@ -71,6 +71,17 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - Premium card design matching AllCertificationsPage
       - Floating tech icons on each card
       - Gradient headers with glass morphism title overlay
+    - **Contact Page** (`/contact`) with Resend email integration
+      - Full-screen form with starfield animation background
+      - Dark glassmorphism design matching site aesthetic
+      - Fields: Name, Email, Company Website, Message, Referral Source
+      - Multi-layer anti-spam protection (rate limiting, honeypot, content filtering)
+      - Real-time validation with error/success feedback
+      - Serverless API route (`/api/contact`) for Vercel deployment
+      - Environment variable configuration for easy email setup
+      - Beautiful HTML email templates with gradient styling
+      - Rate limiting: 3 submissions per IP per hour
+      - Professional email formatting with metadata (IP, timestamp)
   - **Default Theme**: Clean, professional layout
   - **Modern Theme**: Contemporary design with smooth animations
   - **Minimal Theme**: Simple, focused presentation
@@ -88,6 +99,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development
   - Card-based layout with category grouping and smart sorting (newest first)
   - Centralized data source for easy maintenance
+- **Custom Domain Setup**: Production deployment with `allanai.dev`
+  - Vercel hosting with automatic SSL/TLS certificates
+  - Cloudflare DNS management with proxy protection
+  - Resend email service with custom domain (`contact@allanai.dev`)
+  - Google OAuth configured for custom domain
+  - Comprehensive setup guide: [docs/DOMAIN_SETUP.md](./docs/DOMAIN_SETUP.md)
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content

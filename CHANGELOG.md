@@ -1,5 +1,117 @@
 # Changelog
 
+## [0.8.7] - 2026-03-30
+
+### Contact Form with Resend Integration
+
+**Production-Ready Contact Form with Multi-Layer Anti-Spam Protection**
+- **Created Contact Page** (`/contact`) with starfield animation background
+  - Full-screen centered form with dark glassmorphism design
+  - Matches screenshot design aesthetic with modern styling
+  - Starfield component reused for consistent visual experience
+  - Responsive layout adapting to all screen sizes
+  - Form fields: Name, Email, Company Website, Message, Referral Source
+  - Real-time validation with error/success feedback
+  - Loading states during submission with animated spinner
+  - Success/error toast notifications
+  - Professional footer with privacy notice
+- **Serverless API Route** (`/api/contact`) with comprehensive security
+  - Built with Next.js App Router for Vercel serverless deployment
+  - Zod validation for type-safe input validation
+  - Rate limiting: 3 submissions per IP per hour (in-memory store)
+  - Honeypot field for bot detection
+  - Spam content detection with pattern matching
+  - Email validation with proper regex
+  - Detailed error logging and monitoring
+  - Proper HTTP status codes and error messages
+- **Resend Email Integration**
+  - Modern email API designed for serverless/Next.js
+  - Beautiful HTML email template with gradient styling
+  - Plain text fallback for accessibility
+  - Reply-To header set to sender's email for easy responses
+  - Optional CC recipients support
+  - Professional email formatting with metadata (IP, timestamp)
+- **Environment Variable Configuration**
+  - All email settings configurable via .env
+  - `RESEND_API_KEY`: Resend API key
+  - `CONTACT_FORM_TO_EMAIL`: Recipient email (your Gmail)
+  - `CONTACT_FORM_FROM_EMAIL`: Sender email (your domain or resend.dev)
+  - `CONTACT_FORM_FROM_NAME`: Display name for sender
+  - `CONTACT_FORM_CC_EMAILS`: Optional comma-separated CC recipients
+  - Easy to update without code changes
+- **Navigation Updates**
+  - Desktop header: Contact link navigates to `/contact`
+  - Mobile header: Contact link navigates to `/contact`
+  - Consistent gradient hover effects matching other nav items
+
+**Anti-Spam Protection (Multi-Layer)**
+- Rate limiting: Max 3 submissions per IP per hour
+- Honeypot field: Hidden field to catch bots
+- Server-side validation: Strict input validation with Zod
+- Email validation: Proper regex + format checking
+- Content filtering: Blocks common spam patterns (viagra, casino, suspicious URLs)
+- Submission tracking: IP-based tracking with automatic cleanup
+
+**Technical Implementation**
+- TypeScript with full type safety throughout
+- Zod schema validation for runtime type checking
+- Next.js 14 App Router with Server Components
+- Resend SDK for reliable email delivery
+- In-memory rate limiting (resets on deployment)
+- Client-side form state management with React hooks
+- Proper error handling and user feedback
+- Accessible form with proper labels and ARIA attributes
+- SEO-optimized with metadata and OpenGraph tags
+
+**Dependencies Added**
+- `resend`: Modern email API for serverless
+- `zod`: TypeScript-first schema validation
+
+**Files Created**
+- Created: `src/app/(frontend)/api/contact/route.ts`
+- Created: `src/app/(frontend)/contact/page.tsx`
+- Created: `src/templates/rainbow/ContactPage.tsx`
+
+**Files Modified**
+- Updated: `src/templates/registry.ts`
+- Updated: `src/templates/rainbow/components/Header.tsx`
+- Updated: `.env.example`
+- Updated: `package.json` (dependencies)
+
+**Documentation Added**
+- Created: `docs/RESEND.md` - Comprehensive Resend email integration guide
+
+**Custom Domain Setup (allanai.dev)**
+- Domain purchased via Cloudflare
+- Resend auto-configure for Cloudflare DNS (automatic DNS record setup)
+- Custom email address configured: `contact@allanai.dev`
+- Domain verified and ready for production use
+- Email deliverability tested and confirmed working
+
+**Next Steps for Production Deployment**
+1. **Vercel Domain Configuration**
+   - Add `allanai.dev` to Vercel project
+   - Configure DNS records in Cloudflare
+   - Set up SSL/TLS certificates (automatic)
+   - Update `NEXT_PUBLIC_SERVER_URL` environment variable
+
+2. **Google OAuth Update**
+   - Update authorized redirect URIs to include `allanai.dev`
+   - Add authorized JavaScript origins
+   - Update OAuth consent screen with new domain
+
+3. **Environment Variables**
+   - Update all production environment variables in Vercel
+   - Ensure `CONTACT_FORM_FROM_EMAIL=contact@allanai.dev`
+   - Verify all API keys and secrets are set
+
+4. **Testing Checklist**
+   - Test contact form on production domain
+   - Verify email delivery from custom domain
+   - Test Google OAuth authentication flow
+   - Verify all API routes work correctly
+   - Check SSL certificate validity
+
 ## [0.8.6] - 2026-03-30
 
 ### Tech Stack Icons for Certifications

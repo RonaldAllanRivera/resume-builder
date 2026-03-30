@@ -172,7 +172,7 @@ export function Header() {
                 )}
               </div>
               <Link
-                href="/#contact"
+                href="/contact"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400 hover:shadow-[0_0_20px_rgba(100,200,255,0.3)]"
               >
                 Contact
@@ -361,7 +361,7 @@ export function Header() {
                 → General Development
               </Link>
               <Link
-                href="/#contact"
+                href="/contact"
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400"
               >

@@ -293,6 +293,40 @@ Status: Completed
   - Updated ResumeSeedButton to use modern `/api/seed-resume` endpoint ✅
   - Single source of truth: `seed-resume-complete.ts` for all seeding ✅
   - Removed ~600 lines of deprecated code ✅
+- **Contact Form** (`/contact`) with Resend Integration:
+  - Created ContactPage component with starfield animation background ✅
+  - Full-screen centered form with dark glassmorphism design ✅
+  - Form fields: Name, Email, Company Website, Message, Referral Source ✅
+  - Real-time validation with error/success feedback ✅
+  - Loading states with animated spinner ✅
+  - Serverless API route (`/api/contact`) for Vercel deployment ✅
+  - Zod validation for type-safe input validation ✅
+  - Multi-layer anti-spam protection: ✅
+    - Rate limiting: 3 submissions per IP per hour ✅
+    - Honeypot field for bot detection ✅
+    - Spam content detection with pattern matching ✅
+    - Email validation with proper regex ✅
+  - Resend email integration with beautiful HTML templates ✅
+  - Environment variable configuration (RESEND_API_KEY, CONTACT_FORM_TO_EMAIL, etc.) ✅
+  - Reply-To header set to sender's email ✅
+  - Optional CC recipients support ✅
+  - Professional email formatting with metadata (IP, timestamp) ✅
+  - Navigation updated: Contact link navigates to `/contact` ✅
+  - Template registry integration with ContactPage ✅
+  - SEO-optimized with metadata and OpenGraph tags ✅
+  - Documentation: `docs/RESEND.md` - Comprehensive Resend integration guide ✅
+- **Custom Domain Setup** (`allanai.dev`):
+  - Domain purchased via Cloudflare ✅
+  - Resend auto-configure for Cloudflare DNS (automatic DNS records) ✅
+  - Custom email address configured: `contact@allanai.dev` ✅
+  - Domain verified in Resend dashboard ✅
+  - Email deliverability tested and confirmed working ✅
+  - Documentation: `docs/DOMAIN_SETUP.md` - Complete production deployment guide ✅
+  - Next steps for production deployment:
+    - Vercel domain configuration (add domain, configure DNS, SSL/TLS)
+    - Google OAuth update (authorized redirect URIs, JavaScript origins)
+    - Environment variables update in Vercel (NEXT_PUBLIC_SERVER_URL, etc.)
+    - Production testing checklist (contact form, OAuth, API routes, SSL)
 
 - Data fetching (public pages):
   - Prefer Server Components for page shells.
