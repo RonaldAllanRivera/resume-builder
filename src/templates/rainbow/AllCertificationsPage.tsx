@@ -4,6 +4,12 @@ import React from 'react'
 import type { Certification, SiteSetting } from '@/payload-types'
 import { CTAButtons } from './components/CTAButtons'
 import { Starfield } from './components/Starfield'
+import {
+  techStackIcons,
+  getDynamicIconPosition,
+  extractTechFromCertificationTitle,
+  getFallbackIcons,
+} from '@/utilities/techStackIcons'
 
 interface AllCertificationsPageProps {
   certifications?: Certification[]
@@ -98,6 +104,12 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
   const hours = parseDurationToHours(certification.duration)
   const spanClass = getCardSpanClass(hours)
 
+  // Extract tech icons from certification title
+  const techNames = extractTechFromCertificationTitle(certification.title)
+  const fallbackCount = Math.max(0, 3 - techNames.length)
+  const fallbackTech = fallbackCount > 0 ? getFallbackIcons(fallbackCount) : []
+  const allTechNames = [...techNames, ...fallbackTech].slice(0, 5)
+
   return (
     <article
       className={`overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#11131a] shadow-[0_18px_50px_rgba(0,0,0,0.32)] ${spanClass}`}
@@ -106,14 +118,38 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
       <div className={`relative min-h-[200px] bg-gradient-to-br ${gradient}`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.24),transparent_28%),linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.38))]" />
 
-        {/* Code Icon */}
-        <div className="absolute left-6 top-6 rotate-[-10deg] text-5xl text-white/90 drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)]">
-          <i className="fa-solid fa-certificate" />
-        </div>
+        {/* Floating Tech Stack Icons */}
+        {allTechNames.map((techName, index) => {
+          const IconComponent = techStackIcons[techName]
+          if (!IconComponent) return null
+
+          const position = getDynamicIconPosition(allTechNames.length, index, 0.8)
+          const positionStyles: React.CSSProperties = {
+            position: 'absolute',
+            top: position.top,
+            bottom: position.bottom,
+            left: position.left,
+            right: position.right,
+            transform: position.transform
+              ? `${position.transform} rotate(${position.rotation}deg)`
+              : `rotate(${position.rotation}deg)`,
+            fontSize: `${position.size}rem`,
+          }
+
+          return (
+            <div
+              key={`${techName}-${index}`}
+              style={positionStyles}
+              className="text-white/75 drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+            >
+              <IconComponent />
+            </div>
+          )
+        })}
 
         {/* Duration Badge */}
         {certification.duration && (
-          <div className="absolute right-8 top-8 rounded-full border border-white/20 bg-black/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/85 backdrop-blur">
+          <div className="absolute right-8 top-8 z-10 rounded-full border border-white/20 bg-black/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/85 backdrop-blur">
             {certification.duration}
           </div>
         )}
@@ -139,11 +175,6 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
               <span className="text-white/55">Issued:</span> {formatDate(certification.issueDate)}
             </p>
           )}
-          {certification.duration && (
-            <p>
-              <span className="text-white/55">Time:</span> {certification.duration}
-            </p>
-          )}
           {certification.issuer && (
             <p>
               <span className="text-white/55">Provider:</span> {certification.issuer}
@@ -162,9 +193,6 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
               View Certificate
             </a>
           )}
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
-            Duration-sized card
-          </span>
         </div>
       </div>
     </article>

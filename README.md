@@ -54,12 +54,23 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - **All Certifications Page** (`/certifications`) with duration-based card sizing
       - Hero section with animated starfield and dynamic stats dashboard
       - Cards sized by certification hours (15+ hours = 2 columns wide)
+      - Floating tech stack icons extracted from certification titles (3-5 icons per card)
       - 11 rotating gradient variations for visual variety
       - Category-organized sections (9 categories: Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development)
       - Header dropdown navigation with "All Certifications" and category sub-menu
-      - Certificate icon, duration badge, and credential links on each card
+      - Duration badge, tech icons, and credential links on each card
       - Reusable CTAButtons component for consistent navigation
       - Responsive grid layout adapting to screen size
+    - **Dynamic Hero Section** with database-driven tech stack tags
+      - Displays top 8 most frequently used technologies from projects
+      - Sorted by usage count (most used first)
+      - Automatically updates when projects change
+      - Performance optimized with React useMemo
+    - **Latest Certifications Section** on homepage
+      - Shows top 3 most recent certifications with 10+ hours duration
+      - Premium card design matching AllCertificationsPage
+      - Floating tech icons on each card
+      - Gradient headers with glass morphism title overlay
   - **Default Theme**: Clean, professional layout
   - **Modern Theme**: Contemporary design with smooth animations
   - **Minimal Theme**: Simple, focused presentation

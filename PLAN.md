@@ -257,15 +257,42 @@ Status: Completed
   - Created AllCertificationsPage component for Rainbow template ✅
   - Hero section with animated starfield background and dynamic stats dashboard ✅
   - Duration-based card sizing (15+ hours = 2 columns wide, 5-14 hours = 2 columns on md, <5 hours = 1 column) ✅
+  - Floating tech stack icons extracted from certification titles (3-5 icons per card) ✅
+  - Tech icon extraction utility: `extractTechFromCertificationTitle()` ✅
+  - Dynamic icon positioning with rotation and sizing (0.8 scale) ✅
+  - Z-index layering: Duration badges appear above floating tech icons ✅
   - 11 rotating gradient variations for visual variety ✅
   - Category-organized sections (9 categories: Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development) ✅
   - Header dropdown navigation with "All Certifications" and category sub-menu ✅
-  - Certificate icon, duration badge, and credential links on each card ✅
+  - Duration badge, tech icons, and credential links on each card ✅
   - Reusable CTAButtons component for consistent navigation ✅
   - Responsive grid layout (1/2/3 columns based on screen size) ✅
   - Template registry integration with proper TypeScript typing ✅
   - Duration parsing utility converts "1h 32m" format to total hours ✅
   - Card span calculation uses dynamic Tailwind classes based on hours ✅
+- **Dynamic Hero Section** (Rainbow template):
+  - Database-driven tech stack tags from all projects ✅
+  - Extracts unique tech stacks from project `techStack` field ✅
+  - Sorts by usage count (most used first), alphabetically for ties ✅
+  - Limited to top 8 most frequently used technologies ✅
+  - Performance optimized with `useMemo` hook ✅
+  - Automatically updates when projects change ✅
+  - Type-safe implementation with proper null/undefined handling ✅
+- **Latest Certifications Section** (Homepage):
+  - Filters certifications by 10+ hours duration ✅
+  - Shows top 3 most recent long-duration certifications ✅
+  - Premium card design matching AllCertificationsPage ✅
+  - Floating tech icons on each card (3-5 icons) ✅
+  - Gradient headers with 3 color variations ✅
+  - Glass morphism title overlay ✅
+  - Duration badge and total hours display ✅
+  - Duration parsing for filtering logic ✅
+- **Code Cleanup - Deprecated Seed System Removed**:
+  - Deleted legacy text-parsing seed approach (`seed-resume/index.ts`) ✅
+  - Removed `/next/seed-resume` API route ✅
+  - Updated ResumeSeedButton to use modern `/api/seed-resume` endpoint ✅
+  - Single source of truth: `seed-resume-complete.ts` for all seeding ✅
+  - Removed ~600 lines of deprecated code ✅
 
 - Data fetching (public pages):
   - Prefer Server Components for page shells.

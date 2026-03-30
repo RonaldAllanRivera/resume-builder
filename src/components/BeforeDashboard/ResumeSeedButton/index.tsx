@@ -53,7 +53,7 @@ export const ResumeSeedButton: React.FC = () => {
         toast.promise(
           new Promise((resolve, reject) => {
             try {
-              fetch('/next/seed-resume', { method: 'POST', credentials: 'include' })
+              fetch('/api/seed-resume', { method: 'POST', credentials: 'include' })
                 .then((res) => {
                   if (res.ok) {
                     resolve(true)

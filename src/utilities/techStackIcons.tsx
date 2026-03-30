@@ -351,3 +351,51 @@ export function getFallbackIcons(count: number): string[] {
   const fallbacks = ['Code', 'Database', 'API', 'Docker', 'Git', 'AWS']
   return fallbacks.slice(0, count)
 }
+
+/**
+ * Extract tech icons from certification title based on keywords
+ * Best practice: Parse certification titles to identify relevant technologies
+ *
+ * @param title - Certification title
+ * @returns Array of tech icon names found in the title
+ */
+export function extractTechFromCertificationTitle(title: string): string[] {
+  if (!title) return []
+
+  const titleLower = title.toLowerCase()
+  const foundTech: string[] = []
+
+  // Check for each tech in our icon mapping
+  Object.keys(techStackIcons).forEach((techName) => {
+    const techLower = techName.toLowerCase()
+    if (titleLower.includes(techLower)) {
+      foundTech.push(techName)
+    }
+  })
+
+  // If no tech found, try to infer from common certification keywords
+  if (foundTech.length === 0) {
+    if (titleLower.includes('javascript') || titleLower.includes('js')) foundTech.push('JavaScript')
+    if (titleLower.includes('python')) foundTech.push('Python')
+    if (titleLower.includes('react')) foundTech.push('React')
+    if (titleLower.includes('node')) foundTech.push('Node.js')
+    if (titleLower.includes('django')) foundTech.push('Django')
+    if (titleLower.includes('laravel')) foundTech.push('Laravel')
+    if (titleLower.includes('wordpress')) foundTech.push('WordPress')
+    if (titleLower.includes('docker')) foundTech.push('Docker')
+    if (titleLower.includes('git')) foundTech.push('Git')
+    if (titleLower.includes('aws') || titleLower.includes('amazon')) foundTech.push('AWS')
+    if (titleLower.includes('database') || titleLower.includes('sql')) foundTech.push('Database')
+    if (titleLower.includes('api')) foundTech.push('API')
+    if (titleLower.includes('cloud')) foundTech.push('AWS')
+    if (titleLower.includes('ai') || titleLower.includes('machine learning')) foundTech.push('AI')
+    if (titleLower.includes('css')) foundTech.push('CSS')
+    if (titleLower.includes('html')) foundTech.push('HTML5')
+    if (titleLower.includes('typescript')) foundTech.push('TypeScript')
+    if (titleLower.includes('vue')) foundTech.push('Vue.js')
+    if (titleLower.includes('angular')) foundTech.push('Angular')
+    if (titleLower.includes('php')) foundTech.push('PHP')
+  }
+
+  return foundTech
+}

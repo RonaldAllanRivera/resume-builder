@@ -103,36 +103,36 @@ export const seedResumeComplete = async ({
       _status: 'published' as const,
     },
     {
-      title: 'Senior Web Programmer and Web Designer',
-      company: 'PulseIQ.com',
+      title: 'Senior Full-Stack Web Developer (Contract)',
+      company: 'Self-Employed / Independent Consultant',
       location: 'Remote',
       startDate: '2007-07-01',
       current: true,
       order: 2,
       highlights: [
         {
-          text: 'Lead the design and development of all partner websites, building custom WordPress and Elementor-based solutions tailored for high-impact marketing campaigns.',
+          text: 'Delivered full-stack web solutions for long-term clients in marketing, SaaS, and data-driven industries, including a 10+ year engagement with a U.S.-based digital marketing operator.',
         },
         {
-          text: 'Develop custom WordPress plugins and implement fully responsive themes from scratch, converting Photoshop designs into pixel-perfect front-end templates.',
+          text: 'Designed and developed high-conversion websites using WordPress, Elementor, and custom PHP/Laravel architectures tailored for performance and scalability.',
         },
         {
-          text: 'Create visual branding materials, including logos, images, and videos, using Adobe Photoshop and Premiere Pro.',
+          text: 'Built custom WordPress plugins, advanced search systems, and dynamic content workflows integrating AI (OpenAI), automation (Zapier, Make.com), and Google services.',
         },
         {
-          text: 'Utilize AI content generation tools (ChatGPT, Gemini) to create SEO-friendly web copy, significantly reducing content production time while maintaining quality.',
+          text: 'Developed Laravel-based backend systems and admin dashboards for managing content, analytics, and automation pipelines.',
         },
         {
-          text: 'Build automation pipelines using Zapier and Make.com, integrating Google Sheets, OpenAI, and WordPress, reducing manual tasks and improving productivity by up to 80%.',
+          text: 'Created automation tools using Python (Playwright, Selenium, Tkinter) for data extraction, reporting, and workflow optimization.',
         },
         {
-          text: 'Execute SEO strategies with Google Tag Manager, ensuring optimal search visibility and tracking.',
+          text: 'Implemented SEO, analytics, and tracking systems using Google Tag Manager and performance optimization strategies.',
         },
         {
-          text: 'Act as a trainer and content creator for online tutorials, educating partner teams on CMS and digital marketing processes.',
+          text: 'Produced digital assets including UI designs, branding, and video content using Adobe Creative Suite.',
         },
         {
-          text: 'Design Python-based data extraction and automation tools (Playwright, Selenium, Tkinter), enabling efficient collection of large datasets for marketing analytics.',
+          text: 'Reduced manual marketing operations by up to 80% through automation and AI-assisted workflows.',
         },
       ],
       _status: 'published' as const,
@@ -639,6 +639,8 @@ export const seedResumeComplete = async ({
       {
         title: 'Graphic Designs',
         slug: 'graphic',
+        summary:
+          'Collection of branding, layout, and digital design projects demonstrating visual communication and creative direction.',
         techStack: [{ name: 'Adobe Photoshop' }, { name: 'Adobe Illustrator' }],
         liveUrl: 'https://www.flickr.com/photos/ronald-allan-rivera/',
         category: 'graphic-design' as const,

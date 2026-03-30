@@ -1,5 +1,76 @@
 # Changelog
 
+## [0.8.6] - 2026-03-30
+
+### Tech Stack Icons for Certifications
+
+**Floating Tech Icons Based on Certification Titles**
+- **Created Tech Icon Extraction Utility**: New function to extract tech icons from certification titles
+  - Parses certification titles for technology keywords (JavaScript, Python, React, Laravel, etc.)
+  - Matches against 60+ tech icons in the mapping
+  - Fallback keyword detection for common certifications
+  - Minimum 3 icons per card, maximum 5 icons
+- **Updated AllCertificationsPage**: Added floating tech icons to certification cards
+  - Icons extracted from certification title keywords
+  - Dynamic positioning with rotation and sizing (0.8 scale)
+  - Icons float over gradient header with drop shadows
+  - Matches project card design pattern
+  - Duration badge z-index fix to ensure visibility above icons
+- **Updated Homepage Certifications Section**: Enhanced Latest Certifications display
+  - Filters certifications by 10+ hours duration
+  - Shows top 3 most recent long-duration certifications
+  - Premium card design matching AllCertificationsPage
+  - Floating tech icons on each card
+  - Gradient headers with 3 color variations
+  - Glass morphism title overlay
+  - Duration badge and total hours display
+
+**Hero Section Tech Stack Enhancement**
+- **Dynamic Tech Stack Tags**: Hero section now displays tech stacks from all projects
+  - Extracts unique tech stacks from project database
+  - Sorts by usage count (most used first)
+  - Limited to top 8 most frequently used technologies
+  - Alphabetical sorting for ties
+  - Performance optimized with `useMemo`
+  - Automatically updates when projects change
+
+**Code Cleanup - Deprecated Seed Files Removed**
+- **Removed Legacy Seed System**: Deleted old text-parsing seed approach
+  - Removed `src/endpoints/seed-resume/index.ts` (566 lines)
+  - Removed `src/endpoints/seed-resume/` folder
+  - Removed `src/app/(frontend)/next/seed-resume/route.ts` (31 lines)
+  - Removed `src/app/(frontend)/next/seed-resume/` folder
+- **Updated ResumeSeedButton**: Migrated to modern API endpoint
+  - Changed from `/next/seed-resume` to `/api/seed-resume`
+  - Now uses `seed-resume-complete.ts` for comprehensive seeding
+  - Single source of truth for all seed operations
+
+**Technical Implementation**
+- New utility: `extractTechFromCertificationTitle()` in `techStackIcons.tsx`
+- Duration parsing: Converts "1h 32m" format to total hours for filtering
+- Z-index layering: Duration badges appear above floating tech icons
+- Template registry: Added `allProjects` prop to HomePage interface
+- Type-safe implementation with proper TypeScript interfaces
+
+**Files Created**
+- None (enhancements to existing files)
+
+**Files Modified**
+- Updated: `src/utilities/techStackIcons.tsx`
+- Updated: `src/templates/rainbow/AllCertificationsPage.tsx`
+- Updated: `src/templates/rainbow/components/Certifications.tsx`
+- Updated: `src/templates/rainbow/components/Hero.tsx`
+- Updated: `src/templates/rainbow/HomePage.tsx`
+- Updated: `src/templates/registry.ts`
+- Updated: `src/app/(frontend)/page.tsx`
+- Updated: `src/components/BeforeDashboard/ResumeSeedButton/index.tsx`
+
+**Files Deleted**
+- Deleted: `src/endpoints/seed-resume/index.ts`
+- Deleted: `src/endpoints/seed-resume/` (entire folder)
+- Deleted: `src/app/(frontend)/next/seed-resume/route.ts`
+- Deleted: `src/app/(frontend)/next/seed-resume/` (entire folder)
+
 ## [0.8.5] - 2026-03-29
 
 ### All Certifications Page (Rainbow Template)
@@ -22,7 +93,6 @@
   - Title overlay with issuer name and glass morphism effect
   - Issue date, duration, and provider information
   - "View Certificate" button with gradient styling
-  - "Duration-sized card" label for visual feedback
 - **Navigation Enhancement**: Updated Rainbow Header with certifications dropdown
   - Desktop: Hover-activated dropdown menu with 10 items
   - Mobile: Expandable menu with arrow indicators
