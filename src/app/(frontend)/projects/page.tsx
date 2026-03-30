@@ -8,7 +8,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Projects | ${settings?.siteName || 'Resume'}`,
-    description: 'Portfolio of projects and work samples',
+    description:
+      'Explore full-stack web development projects including SaaS platforms, WordPress solutions, AI automation systems, and e-commerce applications built with Python, Laravel, React, and Next.js.',
     robots: {
       index: false,
       follow: false,

@@ -1,15 +1,20 @@
 import { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { getTemplate } from '@/utilities/getTemplate'
+import { getTemplate, getSiteSettings } from '@/utilities/getTemplate'
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Get in touch with me for your next project or collaboration opportunity.',
-  openGraph: {
-    title: 'Contact',
-    description: 'Get in touch with me for your next project or collaboration opportunity.',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+
+  return {
+    title: `Contact | ${settings?.siteName || 'Resume'}`,
+    description:
+      'Hire a senior full-stack developer for your web development, SaaS, AI automation, or WordPress project. Specializing in Python, Laravel, React, and Next.js. 24-hour response time.',
+    openGraph: {
+      title: 'Contact',
+      description: 'Get in touch with me for your next project or collaboration opportunity.',
+    },
+  }
 }
 
 export default async function ContactRoute() {

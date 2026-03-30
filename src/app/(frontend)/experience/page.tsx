@@ -8,7 +8,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Experience | ${settings?.siteName || 'Resume'}`,
-    description: 'Professional experience and work history',
+    description:
+      '20+ years of professional experience in full-stack web development, specializing in Python, Laravel, WordPress, React, and Next.js. Proven track record building scalable SaaS platforms and enterprise applications.',
   }
 }
 

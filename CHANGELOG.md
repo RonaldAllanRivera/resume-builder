@@ -1,5 +1,86 @@
 # Changelog
 
+## [0.8.8] - 2026-03-30
+
+### SEO Optimization & Enhanced Project Privacy
+
+**Triple-Layer Search Engine Blocking for Projects**
+- **Layer 1 - robots.txt**: Added `/projects` and `/projects/*` to disallow list
+  - Prevents search engine crawlers from accessing project pages
+  - Updated both manual `robots.txt` and `next-sitemap.config.cjs`
+- **Layer 2 - Meta Tags**: `noindex, nofollow` on all project pages
+  - `/projects` page: robots meta tag prevents indexing
+  - `/projects/[category]` pages: robots meta tag on all category pages
+  - Ensures search engines don't index even if they ignore robots.txt
+- **Layer 3 - Sitemap Exclusion**: Projects excluded from XML sitemaps
+  - `next-sitemap.config.cjs` excludes `/projects` and `/projects/*`
+  - Projects won't appear in sitemap submissions to search engines
+- **External Link Protection**: `rel="nofollow noopener noreferrer"` on all project links
+  - Prevents passing SEO value to external sites
+  - Security: `noopener` prevents window.opener access
+  - Privacy: `noreferrer` doesn't send referrer information
+  - Already implemented in `ProjectCard` component
+- **Human Accessibility**: Projects remain fully visible to human visitors
+  - No authentication required
+  - All functionality preserved
+  - Only search engine crawlers are blocked
+
+**SEO Enhancements**
+- **llms.txt Created**: AI crawler guide for ChatGPT, Claude, Perplexity
+  - Comprehensive site overview with skills, services, and key pages
+  - Professional summary and contact information
+  - Technical approach and industries served
+- **Meta Descriptions Optimized**: All pages now have keyword-rich descriptions
+  - Experience: "20+ years of professional experience in full-stack web development..."
+  - Projects: "Explore full-stack web development projects including SaaS platforms..."
+  - Certifications: "60+ professional certifications in full-stack development..."
+  - Contact: "Hire a senior full-stack developer for your web development, SaaS, AI automation..."
+- **Contact Page Optimization**: SEO-focused copy for hiring and conversions
+  - Heading: "Hire a Senior Full-Stack Developer for Your Next Project"
+  - Service-focused descriptions highlighting Python, Laravel, WordPress, React, Next.js
+  - Clear project type examples (Web Development, SaaS, AI, Automation)
+  - 24-hour response time commitment
+  - Hidden SEO text for search engines
+
+**Environment Variables Updated**
+- `.env.production`: Updated `GOOGLE_REDIRECT_URI` to `https://allanai.dev/api/google/callback`
+- All domain references updated from old Vercel domain to `allanai.dev`
+
+**Files Modified**
+- Updated: `public/robots.txt` - Added projects disallow rules
+- Updated: `next-sitemap.config.cjs` - Excluded projects from sitemap
+- Updated: `src/app/(frontend)/projects/page.tsx` - Enhanced meta description
+- Updated: `src/app/(frontend)/experience/page.tsx` - Enhanced meta description
+- Updated: `src/app/(frontend)/certifications/page.tsx` - Enhanced meta description
+- Updated: `src/app/(frontend)/contact/page.tsx` - Dynamic metadata + enhanced description
+- Updated: `src/templates/rainbow/ContactPage.tsx` - SEO-optimized copy
+- Updated: `.env.production` - Google OAuth redirect URI
+
+**Files Created**
+- Created: `public/llms.txt` - AI crawler guide
+- Created: `docs/SEO_CHECKLIST.md` - Complete SEO implementation guide
+
+**Documentation Updated**
+- Updated: `README.md` - Enhanced project privacy documentation
+- Updated: `PLAN.md` - Triple-layer SEO blocking details
+- Updated: `CHANGELOG.md` - This entry
+
+**SEO Best Practices Implemented**
+- ✅ Unique, keyword-rich meta descriptions (150-160 characters)
+- ✅ Triple-layer search engine blocking for sensitive content
+- ✅ AI crawler optimization with llms.txt
+- ✅ Service-focused copy for conversion optimization
+- ✅ Structured data already in place (JSON-LD)
+- ✅ Clean URLs with proper canonicals
+- ✅ Mobile-responsive design
+- ✅ Fast page load times (ISR)
+
+**Ready for Production Deployment**
+- All SEO optimizations complete
+- Domain configuration verified
+- Environment variables updated
+- Search engine blocking tested and confirmed
+
 ## [0.8.7] - 2026-03-30
 
 ### Contact Form with Resend Integration

@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { SiteSetting } from '@/payload-types'
 import { Starfield } from './components/Starfield'
+import { X } from 'lucide-react'
 
 interface ContactPageProps {
   settings?: SiteSetting | null
 }
 
 export function ContactPage({ settings: _settings }: ContactPageProps) {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -72,17 +75,27 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
       {/* Starfield Background */}
       <Starfield />
 
+      {/* Close Button */}
+      <button
+        onClick={() => router.back()}
+        className="fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/70 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white"
+        aria-label="Close and go back"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
       {/* Content */}
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-16">
         <div className="w-full max-w-2xl">
           {/* Header */}
           <div className="mb-12 text-center">
             <h1 className="mb-4 text-[clamp(2.5rem,5vw,4rem)] font-black leading-none tracking-[-0.045em] text-white">
-              Let&apos;s get started
+              Hire a Senior Full-Stack Developer for Your Next Project
             </h1>
             <p className="text-lg text-white/60">
-              It&apos;s time to build at <span className="text-white/80">starship speed</span>{' '}
-              <span className="italic text-white/50">without</span> cutting corners.
+              Build scalable, high-performance{' '}
+              <span className="text-white/80">web, SaaS, AI, and automation solutions</span> using{' '}
+              <span className="text-white/80">Python, Laravel, WordPress, React, and Next.js</span>.
             </p>
           </div>
 
@@ -140,7 +153,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 htmlFor="company"
                 className="mb-2 block text-xs uppercase tracking-wider text-white/70"
               >
-                Company Website
+                Company Website (Optional – helps understand your project)
               </label>
               <input
                 type="text"
@@ -161,7 +174,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 htmlFor="message"
                 className="mb-2 block text-xs uppercase tracking-wider text-white/70"
               >
-                What do you need help with?
+                Project Details (Web Development, SaaS, AI, or Automation)
               </label>
               <textarea
                 id="message"
@@ -174,7 +187,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 rows={6}
                 disabled={status === 'loading'}
                 className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Tell me about your project..."
+                placeholder="Describe your project (e.g., WordPress site, SaaS platform, AI automation, Laravel app)..."
               />
             </div>
 
@@ -184,7 +197,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 htmlFor="referral"
                 className="mb-2 block text-xs uppercase tracking-wider text-white/70"
               >
-                Where did you hear about me?
+                How did you find me? (Google, LinkedIn, GitHub, Referral)
               </label>
               <input
                 type="text"
@@ -289,7 +302,12 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
 
           {/* Footer Note */}
           <p className="mt-8 text-center text-sm text-white/40">
-            Your information is secure and will never be shared with third parties.
+            Your information is secure and confidential. I respond within 24 hours.
+          </p>
+          <p className="sr-only">
+            Ronald Allan Rivera is a senior full-stack web developer specializing in Python,
+            Laravel, WordPress, React, Next.js, AI automation, SaaS platforms, and high-performance
+            web applications.
           </p>
         </div>
       </div>

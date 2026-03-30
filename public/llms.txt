@@ -1,0 +1,69 @@
+# Ronald Allan Rivera - Senior Full-Stack Developer Portfolio
+
+## About
+This site showcases the work of Ronald Allan Rivera, a senior full-stack developer with 20+ years of experience specializing in Python automation, Laravel and Django backend systems, WordPress plugin development, React and Next.js frontends, AI/ML integration, DevOps, and scalable SaaS applications.
+
+## Key Pages
+- Homepage: https://allanai.dev/
+- Experience: https://allanai.dev/experience
+- Projects: https://allanai.dev/projects
+- Certifications: https://allanai.dev/certifications
+- Contact: https://allanai.dev/contact
+
+## Professional Summary
+Ronald Allan Rivera is a versatile full-stack developer who builds high-performance web applications, SaaS platforms, AI automation systems, and WordPress solutions. With expertise spanning Python, Laravel, PHP, JavaScript/TypeScript, React, Next.js, and modern DevOps practices, he delivers scalable, production-ready solutions for businesses and startups.
+
+## Core Skills & Technologies
+- **Backend**: Python (Django, Flask), Laravel, PHP, Node.js
+- **Frontend**: React, Next.js, Vue.js, TypeScript, Tailwind CSS
+- **WordPress**: Custom plugin development, theme customization, WooCommerce
+- **AI & Automation**: OpenAI API integration, workflow automation, data processing
+- **Cloud & DevOps**: Docker, AWS, Vercel, CI/CD, database optimization
+- **SaaS Development**: Multi-tenant architecture, payment integration, API design
+
+## Featured Projects
+Ronald has built and deployed numerous full-stack applications including:
+- E-commerce platforms with Laravel and WooCommerce
+- AI-powered automation systems using Python and OpenAI
+- Custom WordPress plugins for enterprise clients
+- React/Next.js SaaS applications with real-time features
+- Marketing automation and SEO optimization tools
+
+## Certifications
+Over 60 professional certifications in:
+- Frontend & JavaScript (React, Next.js, TypeScript)
+- Laravel & Backend Development
+- Python & Django
+- WordPress Development
+- AI & Machine Learning
+- Cloud/DevOps (AWS, Docker, Git)
+
+## Services Offered
+- Full-stack web application development
+- WordPress plugin and theme development
+- SaaS platform architecture and development
+- AI integration and automation systems
+- API design and backend development
+- Performance optimization and SEO
+- Technical consulting and code review
+
+## Contact Information
+- Email: contact@allanai.dev
+- LinkedIn: https://www.linkedin.com/in/ronald-allan-rivera-a43aaa63/
+- GitHub: https://github.com/RonaldAllanRivera/
+- Portfolio: https://allanwebdesign.com
+
+## Availability
+Available for freelance projects, contract work, and technical consulting. Specializing in web development, SaaS platforms, AI automation, and WordPress solutions.
+
+## Technical Approach
+Ronald focuses on:
+- Clean, maintainable code following industry best practices
+- Scalable architecture for long-term growth
+- Performance optimization and Core Web Vitals
+- Security-first development
+- Comprehensive testing and documentation
+- Modern development workflows and CI/CD
+
+## Industries Served
+E-commerce, SaaS, Marketing Technology, Education, Healthcare, Finance, Real Estate, and Startups.

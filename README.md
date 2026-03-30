@@ -92,9 +92,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Expandable descriptions, tech stack tags, and action buttons
   - Organized by category with smart sorting (newest first)
   - 26 projects across 4 categories (Full Stack, WordPress, Automation, Graphic Design)
-- **Project SEO Privacy**: Complete search engine blocking for contract compliance
-  - All projects hidden from search engines (robots.txt + noindex meta tags)
-  - Projects remain visible to human visitors
+- **Project SEO Privacy**: Triple-layer search engine blocking for contract compliance
+  - `robots.txt`: Disallows `/projects` and `/projects/*` routes
+  - Meta tags: `noindex, nofollow` on all project pages
+  - Sitemap exclusion: Projects excluded from XML sitemaps
+  - External links: `rel="nofollow noopener noreferrer"` on all project links
+  - Projects remain fully visible to human visitors
 - **Categorized Certifications**: 63 certifications organized into 9 categories
   - Frontend & JavaScript, Laravel & Backend, Python & Django, WordPress, AI & ML, Cloud/DevOps, Git & Collaboration, Video & Creative, General Development
   - Card-based layout with category grouping and smart sorting (newest first)
