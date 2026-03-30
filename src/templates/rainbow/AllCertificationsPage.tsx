@@ -238,15 +238,17 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
         <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
-              Gallery-style certifications library
+              FULL-STACK, AI, AND CLOUD DEVELOPER CERTIFICATIONS LIBRARY
             </span>
             <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl xl:text-8xl">
-              One page to showcase all of my certifications.
+              One page to showcase my full-stack, AI, cloud, and web development certifications.
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-white/78">
-              This page keeps the same premium card language as your projects page while adapting it
-              into a certifications gallery. Card size grows with learning time, so longer courses
-              stand out visually.
+              This certifications page highlights my continuous learning in full-stack development,
+              AI engineering, SaaS platforms, cloud infrastructure, and automation systems. Each
+              certification reflects hands-on experience with technologies such as Python, Laravel,
+              WordPress, React, Next.js, DevOps, and API development, helping me build scalable,
+              high-performance applications and real-world solutions.
             </p>
             <CTAButtons />
           </div>

@@ -23,10 +23,11 @@ export const seedResumeComplete = async ({
   await payload.updateGlobal({
     slug: 'siteSettings',
     data: {
-      siteName: 'Ronald Allan Rivera - Resume Builder',
-      defaultMetaTitle: 'Ronald Allan Rivera | Full-Stack Web Developer',
+      siteName: 'Ronald Allan Rivera | Full-Stack Developer, AI & WordPress Engineer',
+      defaultMetaTitle:
+        'Ronald Allan Rivera | Full-Stack Developer, AI Automation, Laravel, WordPress, React',
       defaultMetaDescription:
-        'Full-stack Web Developer with 20+ years of experience in Python, Laravel, WordPress, React, Vue, Next.js. Specializing in eCommerce, SaaS, AI, and marketing technology.',
+        'Portfolio of Ronald Allan Rivera, a senior full-stack developer specializing in Python automation, Laravel and Django backend systems, WordPress plugin development, React and Next.js frontends, SEO, performance optimization, and scalable SaaS applications.',
       socialLinks: [
         {
           label: 'Portfolio',
