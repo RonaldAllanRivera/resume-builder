@@ -222,3 +222,8 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+/* Hide Payload admin theme dropdown */
+[aria-label='Select a theme'] {
+  display: none !important;
+}
