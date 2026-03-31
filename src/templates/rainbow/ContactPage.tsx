@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { SiteSetting } from '@/payload-types'
-import { Starfield } from './components/Starfield'
 import { X } from 'lucide-react'
 
 interface ContactPageProps {
@@ -71,10 +70,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0a0a0f]">
-      {/* Starfield Background */}
-      <Starfield />
-
+    <div className="relative min-h-screen overflow-hidden">
       {/* Close Button */}
       <button
         onClick={() => router.back()}

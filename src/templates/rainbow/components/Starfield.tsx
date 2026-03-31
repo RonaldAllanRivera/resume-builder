@@ -311,7 +311,7 @@ export function Starfield() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none"
+      className="fixed inset-0 pointer-events-none"
       aria-hidden="true"
       style={{ opacity: 1.0 }}
     />

@@ -4,7 +4,6 @@ import React from 'react'
 import type { Project } from '@/payload-types'
 import { CTAButtons } from './components/CTAButtons'
 import { ProjectCard } from './components/ProjectCard'
-import { Starfield } from './components/Starfield'
 
 interface AllProjectsPageProps {
   projects: Project[]
@@ -73,11 +72,9 @@ export function AllProjectsPage({ projects }: AllProjectsPageProps) {
     )
 
   return (
-    <div className="min-h-screen bg-[#050608] text-white">
+    <div className="min-h-screen text-white">
       {/* Hero Section */}
       <section className="hero-bg relative overflow-hidden px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-28 lg:pt-32">
-        {/* Animated starfield canvas */}
-        <Starfield />
         <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
@@ -153,18 +150,7 @@ export function AllProjectsPage({ projects }: AllProjectsPageProps) {
 
       <style jsx>{`
         .hero-bg {
-          background:
-            linear-gradient(
-              180deg,
-              rgba(0, 0, 0, 0.22) 0%,
-              rgba(0, 0, 0, 0.55) 70%,
-              rgba(0, 0, 0, 0.88) 100%
-            ),
-            radial-gradient(circle at 20% 30%, rgba(255, 124, 148, 0.16), transparent 22%),
-            radial-gradient(circle at 55% 40%, rgba(125, 255, 141, 0.1), transparent 20%),
-            radial-gradient(circle at 78% 22%, rgba(126, 215, 255, 0.12), transparent 18%),
-            radial-gradient(circle at 50% 82%, rgba(207, 141, 255, 0.12), transparent 20%),
-            linear-gradient(120deg, #0a0b11 0%, #0c1020 55%, #07080c 100%);
+          background: transparent;
         }
         .brand-gradient {
           background: linear-gradient(

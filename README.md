@@ -120,6 +120,11 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Gzip compression, SWC minification, optimized fonts
   - Resource hints (preconnect, dns-prefetch) for faster loading
   - 53% fewer particles, 75% fewer pixels, 50% less animation overhead
+- **Persistent Starfield Background**: Continuous animation across all pages
+  - Single instance in root layout, never remounts on navigation
+  - Fixed positioning covers 100% viewport behind all content
+  - Seamless animation continuity when navigating between pages
+  - Better performance with single canvas instance vs multiple
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content

@@ -12,6 +12,7 @@ import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
+import { StarfieldClient } from '@/components/StarfieldClient'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -40,7 +41,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
         <link href="/site.webmanifest" rel="manifest" />
       </head>
-      <body>
+      <body className="relative">
+        {/* Persistent Starfield background - covers entire viewport, continues across page navigation */}
+        <StarfieldClient />
+
         <Providers>
           <AdminBar
             adminBarProps={{

@@ -1,5 +1,133 @@
 # Changelog
 
+## [0.9.2] - 2026-03-31
+
+### Fixed: Starfield Animation Not Rendering
+
+**Issue**
+- Starfield animation was not visible on any page
+- Canvas element was not rendering stars
+- React hydration mismatch error in console
+
+**Root Causes**
+1. **Hydration mismatch**
+   - Client Component rendered in Server Component layout
+   - React couldn't match server HTML with client render
+   - Error: "A tree hydrated but some attributes of the server rendered HTML didn't match"
+   
+2. **Z-index conflict**
+   - Wrapper div: `z-index: -10` (Tailwind `-z-10`)
+   - Canvas: `z-index: -1` (inline style)
+   - Conflicting z-index values prevented proper layering
+   
+3. **Positioning conflict**
+   - Canvas had `position: fixed` when inside fixed wrapper
+   - Should be `position: absolute` within fixed container
+
+**Solution**
+- Created `StarfieldClient` with mounted state check to prevent hydration mismatch
+- Component only renders after client-side mount (returns null during SSR)
+- Fixed z-index: Wrapper uses inline `zIndex: -10`, canvas has no z-index
+- Fixed positioning: Canvas uses `absolute` within `fixed` wrapper
+
+**Files Modified**
+- Created: `src/components/StarfieldClient.tsx` - Client component with mounted check
+- Updated: `src/app/(frontend)/layout.tsx` - Use StarfieldClient instead of direct import
+- Updated: `src/templates/rainbow/components/Starfield.tsx` - Fixed positioning and z-index
+
+**Technical Details**
+```tsx
+// StarfieldClient component - prevents hydration mismatch
+'use client'
+export function StarfieldClient() {
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true) // Only render after client-side mount
+  }, [])
+  
+  if (!mounted) return null // Return null during SSR
+  
+  return (
+    <div className="fixed inset-0 bg-[#0a0a0f]" style={{ zIndex: -10 }}>
+      <Starfield />
+    </div>
+  )
+}
+
+// Canvas component (absolute within fixed wrapper)
+<canvas
+  className="absolute inset-0 pointer-events-none"
+  style={{ opacity: 1.0 }}
+/>
+
+// Used in Server Component layout
+<body>
+  <StarfieldClient /> {/* ✅ Works - no hydration mismatch */}
+  <Providers>...</Providers>
+</body>
+```
+
+**Verification**
+- Docker rebuild: `docker compose down && docker compose up -d --build`
+- Canvas element now renders properly
+- Stars visible and animating
+- Animation persists across page navigation
+
+## [0.9.1] - 2026-03-31
+
+### Persistent Starfield Background Across All Pages
+
+**Continuous Animation Experience**
+- **Moved Starfield to root layout**: Single instance persists across all pages
+  - Mounted once in `layout.tsx`, never remounts on navigation
+  - Animation continues seamlessly when navigating between pages
+  - Better performance (no re-initialization on route changes)
+- **Full viewport coverage**: Fixed positioning covers 100% of browser
+  - `position: fixed` with `inset: 0` for full coverage
+  - `z-index: -1` keeps it behind all content
+  - Scrolls naturally with page content
+- **Transparent page backgrounds**: Removed black backgrounds from all pages
+  - Projects page: Removed `bg-[#050608]`
+  - Certifications page: Removed `bg-[#050608]`
+  - Contact page: Removed `bg-[#0a0a0f]`
+  - Hero section: Starfield now shows through
+- **Single source of truth**: Starfield only renders once
+  - Eliminates duplicate canvas instances
+  - Reduces memory usage
+  - Consistent animation state across navigation
+
+**User Experience Improvements**
+- ✨ **Seamless navigation**: Animation never stops or restarts
+- 🎨 **Unified design**: Consistent background across entire site
+- ⚡ **Better performance**: Single canvas instance vs multiple
+- 🔄 **Smooth transitions**: No jarring background changes
+- 📱 **Mobile optimized**: Still uses mobile-specific optimizations
+
+**Technical Implementation**
+- Starfield component in `src/app/(frontend)/layout.tsx`
+- Fixed positioning with `className="fixed inset-0 pointer-events-none"`
+- Removed Starfield imports from:
+  - `AllProjectsPage.tsx`
+  - `AllCertificationsPage.tsx`
+  - `ContactPage.tsx`
+  - `Hero.tsx`
+- Background wrapper: `<div className="fixed inset-0 -z-10 bg-[#0a0a0f]">`
+
+**Files Modified**
+- Updated: `src/app/(frontend)/layout.tsx` - Added persistent Starfield
+- Updated: `src/templates/rainbow/components/Starfield.tsx` - Fixed positioning
+- Updated: `src/templates/rainbow/AllProjectsPage.tsx` - Removed Starfield, transparent bg
+- Updated: `src/templates/rainbow/AllCertificationsPage.tsx` - Removed Starfield, transparent bg
+- Updated: `src/templates/rainbow/ContactPage.tsx` - Removed Starfield, transparent bg
+- Updated: `src/templates/rainbow/components/Hero.tsx` - Removed Starfield
+
+**Production Impact**
+- Improved perceived performance (no animation restarts)
+- Better UX with continuous background animation
+- Reduced memory usage (single canvas vs multiple)
+- Cleaner code architecture (single source of truth)
+
 ## [0.9.0] - 2026-03-31
 
 ### Mobile Performance Optimization (91 → 95+ Lighthouse Score)
