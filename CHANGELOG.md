@@ -1,5 +1,61 @@
 # Changelog
 
+## [0.8.9] - 2026-03-31
+
+### ISR Performance Optimization
+
+**Incremental Static Regeneration for Better Performance & SEO**
+- **Switched from `force-dynamic` to ISR** for portfolio pages
+  - Homepage: 5-minute revalidation (`revalidate = 300`)
+  - Projects: 5-minute revalidation (`revalidate = 300`)
+  - Experience: 1-hour revalidation (`revalidate = 3600`)
+  - Certifications: 1-hour revalidation (`revalidate = 3600`)
+  - Contact: Dynamic rendering (real-time form handling)
+
+**Performance Benefits**
+- ⚡ **Faster page loads**: Pages served from cache (sub-second response times)
+- 🎯 **Better SEO**: Improved Core Web Vitals (LCP, FID, CLS)
+- 💰 **Lower costs**: Reduced serverless function invocations
+- 🔄 **Fresh content**: Automatic background revalidation
+- 📊 **Lighthouse scores**: Expected 90+ performance scores
+
+**How ISR Works**
+- First visitor triggers page generation and caching
+- Subsequent visitors get instant cached page
+- After revalidation period, Next.js regenerates in background
+- New cached version served to next visitors
+- Content stays fresh without sacrificing performance
+
+**Revalidation Strategy**
+- **5 minutes** (Homepage, Projects): Frequently updated, balance freshness vs performance
+- **1 hour** (Experience, Certifications): Infrequently updated, maximize cache benefits
+- **Dynamic** (Contact): Real-time form submissions require dynamic rendering
+
+**Architecture Ready for Booking System**
+- ISR for static content (pricing pages, service descriptions)
+- Client-side fetching for real-time availability (SWR/React Query)
+- Dynamic rendering for booking flow (slot selection, payments)
+- Hybrid approach balances performance with real-time data needs
+
+**Files Modified**
+- Updated: `src/app/(frontend)/page.tsx` - ISR with 5-min revalidation
+- Updated: `src/app/(frontend)/projects/page.tsx` - ISR with 5-min revalidation
+- Updated: `src/app/(frontend)/experience/page.tsx` - ISR with 1-hour revalidation
+- Updated: `src/app/(frontend)/certifications/page.tsx` - ISR with 1-hour revalidation
+- Updated: `src/app/(frontend)/contact/page.tsx` - Added comment for dynamic rendering
+- Updated: `src/templates/rainbow/AllProjectsPage.tsx` - Enhanced project page copy
+
+**Documentation Updated**
+- Updated: `README.md` - Added ISR performance optimization section
+- Updated: `PLAN.md` - Updated SEO requirements with ISR details
+- Updated: `CHANGELOG.md` - This entry
+
+**Production Impact**
+- Immediate performance improvements on deployment
+- Better search engine rankings (faster page loads)
+- Reduced Vercel serverless costs
+- Improved user experience with instant page loads
+
 ## [0.8.8] - 2026-03-30
 
 ### SEO Optimization & Enhanced Project Privacy

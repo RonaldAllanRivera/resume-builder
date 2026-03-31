@@ -17,7 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export const dynamic = 'force-dynamic'
+// ISR: Revalidate every 5 minutes for fresh project updates with fast page loads
+export const revalidate = 300
 
 export default async function ProjectsPage({
   searchParams,

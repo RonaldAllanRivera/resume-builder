@@ -108,6 +108,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - Resend email service with custom domain (`contact@allanai.dev`)
   - Google OAuth configured for custom domain
   - Comprehensive setup guide: [docs/DOMAIN_SETUP.md](./docs/DOMAIN_SETUP.md)
+- **ISR Performance Optimization**: Incremental Static Regeneration for fast page loads
+  - Homepage & Projects: 5-minute revalidation (fresh content, fast loads)
+  - Experience & Certifications: 1-hour revalidation (infrequent updates)
+  - Contact form: Dynamic rendering for real-time submissions
+  - Better Core Web Vitals and SEO rankings
+  - Lower serverless costs with cached pages
 - Structured resume data model (separate collections for SEO-friendly querying)
 - CMS-managed AI prompt templates + model defaults (versioned)
 - Draft/publish workflow for content

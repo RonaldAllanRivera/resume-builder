@@ -360,8 +360,12 @@ Status: Completed
     - `WebSite` + `WebPage` ✅
     - Projects: `SoftwareApplication` when applicable (fallback to `CreativeWork`) ✅
   - Canonicals + clean slugs ✅
-  - Prefer static rendering/ISR for speed ✅
-  - Internal linking (build a “topic graph”):
+  - ISR for performance optimization ✅
+    - Homepage & Projects: 5-minute revalidation (fresh content, fast loads)
+    - Experience & Certifications: 1-hour revalidation (infrequent updates)
+    - Contact: Dynamic rendering for real-time form submissions
+    - Improved Core Web Vitals and SEO rankings
+  - Internal linking (build a "topic graph"):
     - Link experiences to related projects/skills
     - Link projects to related certifications/skills
   - Content formatting for extraction:

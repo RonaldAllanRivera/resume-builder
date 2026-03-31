@@ -13,7 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export const dynamic = 'force-dynamic'
+// ISR: Revalidate every 1 hour - experience updates infrequently
+export const revalidate = 3600
 
 export default async function ExperiencePage({
   searchParams,

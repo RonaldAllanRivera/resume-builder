@@ -17,6 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+// Dynamic rendering: Contact form needs real-time handling for submissions
+// No revalidate setting = dynamic by default (form handling, user input)
+
 export default async function ContactRoute() {
   const payload = await getPayload({ config })
 
