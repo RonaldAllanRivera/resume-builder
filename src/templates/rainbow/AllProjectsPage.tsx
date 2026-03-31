@@ -81,15 +81,24 @@ export function AllProjectsPage({ projects }: AllProjectsPageProps) {
         <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
-              Complete Project Library
+              Engineering Work & Project Library
             </span>
             <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl xl:text-8xl">
-              All Projects in One Place
+              All Projects. Real Systems. One Place.
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-white/78">
-              Explore my complete portfolio of {projects.length} projects across 4 categories. Each
-              project showcases production-ready solutions with full technical details, tech stack,
-              and live demos.
+              This is a deeper look at how I think, build, and ship. Inside are{' '}
+              <span className="text-white"> {projects.length} production-ready projects </span>
+              spanning full-stack applications, AI-powered workflows, automation tools, WordPress
+              systems, and custom Laravel platforms. Each one reflects practical problem-solving,
+              technical decision-making, and a strong focus on performance, maintainability, and
+              real-world execution.
+            </p>
+            <p className="mt-4 max-w-3xl text-lg leading-8 text-white/60">
+              Rather than just showing screenshots, this page highlights the kind of work I deliver:
+              scalable builds, clean architecture, business-focused solutions, and systems designed
+              to be used in production. You’ll find technical context, implementation details, tech
+              stack choices, and the breadth of experience behind the work.
             </p>
             <CTAButtons />
           </div>
