@@ -16,6 +16,13 @@ import { draftMode } from 'next/headers'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+// Font optimization: Prevent invisible text during font loading
+const fontOptimizationStyles = `
+  @font-face {
+    font-display: swap;
+  }
+`
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
@@ -23,6 +30,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
+        <style dangerouslySetInnerHTML={{ __html: fontOptimizationStyles }} />
+        {/* Resource hints for better performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link href="/favicon.ico" rel="icon" sizes="any" />
         <link href="/favicon-16x16.png" rel="icon" type="image/png" sizes="16x16" />
         <link href="/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32" />

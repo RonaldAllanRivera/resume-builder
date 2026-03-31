@@ -27,6 +27,10 @@ export function Starfield() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
 
+    // Detect mobile devices for performance optimization
+    const isMobile =
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768
+
     let width = 0
     let height = 0
     let cx = 0
@@ -40,7 +44,8 @@ export function Starfield() {
     let sphereRadius = 0
     let focalLength = 0
 
-    const STAR_COUNT = 4300
+    // Reduce star count on mobile for better performance
+    const STAR_COUNT = isMobile ? 2000 : 4300
     const stars: Star[] = []
 
     let currentYawSpeed = 0.09
@@ -116,7 +121,8 @@ export function Starfield() {
       height = window.innerHeight
       cx = width * 0.5
       cy = height * 0.5
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      // Limit DPR to 1 on mobile for better performance
+      dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2)
 
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
@@ -204,7 +210,8 @@ export function Starfield() {
     function drawStar(x: number, y: number, radius: number, alpha: number, glowStrength: number) {
       if (!ctx) return
 
-      if (glowStrength > 0.02 && radius > 0.7) {
+      // Disable glow effects on mobile for better performance
+      if (!isMobile && glowStrength > 0.02 && radius > 0.7) {
         ctx.beginPath()
         ctx.fillStyle = `rgba(255,255,255,${alpha * glowStrength})`
         ctx.arc(x, y, radius * 2.1, 0, Math.PI * 2)
@@ -265,6 +272,13 @@ export function Starfield() {
       if (!lastTime) lastTime = now
 
       const dt = Math.min((now - lastTime) / 1000, 0.033)
+
+      // Throttle to 30fps on mobile for better performance (60fps on desktop)
+      if (isMobile && dt < 0.033) {
+        animationId = requestAnimationFrame(animate)
+        return
+      }
+
       lastTime = now
       time += dt
 
