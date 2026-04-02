@@ -74,7 +74,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
       {/* Close Button */}
       <button
         onClick={() => router.back()}
-        className="fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white/70 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white"
+        className="fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-[#191a21]/90 text-white/70 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-[#191a21]/95 hover:text-white"
         aria-label="Close and go back"
       >
         <X className="h-5 w-5" />
@@ -116,7 +116,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                   minLength={2}
                   maxLength={100}
                   disabled={status === 'loading'}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full rounded-lg border border-white/10 bg-[#191a21]/90 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="John Doe"
                 />
               </div>
@@ -137,7 +137,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                   required
                   maxLength={100}
                   disabled={status === 'loading'}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full rounded-lg border border-white/10 bg-[#191a21]/90 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="john@example.com"
                 />
               </div>
@@ -159,7 +159,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 onChange={handleChange}
                 maxLength={200}
                 disabled={status === 'loading'}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-lg border border-white/10 bg-[#191a21]/90 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="https://example.com (optional)"
               />
             </div>
@@ -182,7 +182,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 maxLength={5000}
                 rows={6}
                 disabled={status === 'loading'}
-                className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full resize-none rounded-lg border border-white/10 bg-[#191a21]/90 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Describe your project (e.g., WordPress site, SaaS platform, AI automation, Laravel app)..."
               />
             </div>
@@ -203,7 +203,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
                 onChange={handleChange}
                 maxLength={200}
                 disabled={status === 'loading'}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-lg border border-white/10 bg-[#191a21]/90 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm transition focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="LinkedIn, Google, Referral, etc. (optional)"
               />
             </div>
@@ -289,7 +289,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
 
               <Link
                 href="/"
-                className="rounded-full border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white backdrop-blur-sm transition hover:border-white/30 hover:bg-white/10"
+                className="rounded-full border border-white/20 bg-[#191a21]/90 px-6 py-3 font-semibold text-white backdrop-blur-sm transition hover:border-white/30 hover:bg-[#191a21]/95"
               >
                 Back
               </Link>

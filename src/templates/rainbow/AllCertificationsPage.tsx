@@ -111,7 +111,7 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
 
   return (
     <article
-      className={`overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#11131a] shadow-[0_18px_50px_rgba(0,0,0,0.32)] ${spanClass}`}
+      className={`overflow-hidden rounded-[1.9rem] border border-white/10 bg-card-bg shadow-[0_18px_50px_rgba(0,0,0,0.32)] relative z-[100] ${spanClass}`}
     >
       {/* Gradient Header */}
       <div className={`relative min-h-[200px] bg-gradient-to-br ${gradient}`}>
@@ -167,7 +167,7 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
       </div>
 
       {/* Content */}
-      <div className="space-y-4 p-6">
+      <div className="space-y-4 p-6 bg-card-bg relative z-[101]">
         <div className="grid gap-2 text-[15px] leading-7 text-white/82">
           {certification.issueDate && (
             <p>
@@ -234,7 +234,7 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
       <section className="hero-bg relative overflow-hidden px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-28 lg:pt-32">
         <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
-            <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
+            <span className="inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
               FULL-STACK, AI, AND CLOUD DEVELOPER CERTIFICATIONS LIBRARY
             </span>
             <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl xl:text-8xl">
@@ -252,19 +252,19 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
 
           <aside className="rounded-[2rem] border border-white/10 bg-[#11131b]/70 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.4rem] border border-white/10 bg-white/5 p-5">
+              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
                 <div className="text-4xl font-black text-white">{totalCerts}</div>
                 <p className="mt-2 text-sm text-white/65">Certificates</p>
               </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-white/5 p-5">
+              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
                 <div className="text-4xl font-black text-white">{totalCategories}</div>
                 <p className="mt-2 text-sm text-white/65">Skill categories</p>
               </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-white/5 p-5">
+              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
                 <div className="text-4xl font-black text-white">{Math.round(longestPath)}h</div>
                 <p className="mt-2 text-sm text-white/65">Longest learning path</p>
               </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-white/5 p-5">
+              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
                 <div className="text-4xl font-black brand-gradient">LinkedIn</div>
                 <p className="mt-2 text-sm text-white/65">Verifiable certificate links included</p>
               </div>

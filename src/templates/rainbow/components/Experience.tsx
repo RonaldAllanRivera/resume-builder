@@ -30,7 +30,7 @@ export function Experience({ experiences }: ExperienceProps) {
           {currentExperiences.map((exp) => (
             <article
               key={exp.id}
-              className="grid gap-[18px] rounded-[24px] border border-white/10 bg-white/[0.03] p-[22px] sm:grid-cols-[72px_1fr] max-sm:grid-cols-[44px_1fr] max-sm:p-[18px]"
+              className="grid gap-[18px] rounded-[24px] border border-white/10 bg-card-bg p-[22px] sm:grid-cols-[72px_1fr] max-sm:grid-cols-[44px_1fr] max-sm:p-[18px] relative z-[100]"
             >
               <div className="relative z-[1] mx-auto mt-2 h-[18px] w-[18px] rounded-full bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 shadow-[0_0_0_10px_rgba(255,180,100,0.12)]"></div>
               <div>
@@ -81,7 +81,7 @@ export function Experience({ experiences }: ExperienceProps) {
           <div className="mt-6 text-center">
             <button
               onClick={() => setShowEarlier(!showEarlier)}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-[#191a21]/90 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-[#191a21]/95"
             >
               {showEarlier
                 ? 'Hide Earlier Jobs'
@@ -109,7 +109,7 @@ export function Experience({ experiences }: ExperienceProps) {
             {earlierExperiences.map((exp) => (
               <article
                 key={exp.id}
-                className="grid gap-[18px] rounded-[24px] border border-white/10 bg-white/[0.03] p-[22px] sm:grid-cols-[72px_1fr] max-sm:grid-cols-[44px_1fr] max-sm:p-[18px]"
+                className="grid gap-[18px] rounded-[24px] border border-white/10 bg-card-bg p-[22px] sm:grid-cols-[72px_1fr] max-sm:grid-cols-[44px_1fr] max-sm:p-[18px] relative z-[100]"
               >
                 <div className="relative z-[1] mx-auto mt-2 h-[18px] w-[18px] rounded-full bg-gradient-to-r from-orange-400 to-pink-400 shadow-[0_0_0_10px_rgba(255,140,100,0.12)]"></div>
                 <div>

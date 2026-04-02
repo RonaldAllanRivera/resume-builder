@@ -23,7 +23,7 @@ export function CTAButtons({
       </a>
       <a
         href={bookHref}
-        className="inline-flex min-h-[60px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 text-base font-extrabold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
+        className="inline-flex min-h-[60px] items-center justify-center rounded-2xl border border-white/15 bg-[#191a21]/90 px-7 text-base font-extrabold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-[#191a21]/95"
       >
         BOOK ME NOW
       </a>

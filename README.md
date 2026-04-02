@@ -71,6 +71,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - Premium card design matching AllCertificationsPage
       - Floating tech icons on each card
       - Gradient headers with glass morphism title overlay
+    - **Tailwind CSS Best Practices** - Zero inline styles for optimal performance
+      - All styling through Tailwind utility classes
+      - Custom `bg-card-bg` utility for consistent card backgrounds
+      - Proper Tailwind v4 configuration with content paths
+      - Better CSS caching and smaller HTML payload
+      - Single source of truth for colors and spacing
     - **Contact Page** (`/contact`) with Resend email integration
       - Full-screen form with starfield animation background
       - Dark glassmorphism design matching site aesthetic

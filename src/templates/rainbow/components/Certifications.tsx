@@ -73,7 +73,7 @@ export function Certifications({ certifications }: CertificationsProps) {
             return (
               <article
                 key={cert.id}
-                className="overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#11131a] shadow-[0_18px_50px_rgba(0,0,0,0.32)]"
+                className="overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#11131a] shadow-[0_18px_50px_rgba(0,0,0,0.32)] relative z-[100]"
               >
                 {/* Gradient Header */}
                 <div className={`relative min-h-[200px] bg-gradient-to-br ${gradient}`}>
@@ -129,7 +129,7 @@ export function Certifications({ certifications }: CertificationsProps) {
                 </div>
 
                 {/* Content */}
-                <div className="space-y-4 p-6">
+                <div className="space-y-4 p-6 bg-card-bg relative z-[101]">
                   <div className="grid gap-2 text-[15px] leading-7 text-white/82">
                     {cert.issueDate && (
                       <p>

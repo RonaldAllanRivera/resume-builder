@@ -1,7 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/templates/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     extend: {
+      colors: {
+        'card-bg': '#11131a',
+      },
       typography: () => ({
         DEFAULT: {
           css: [

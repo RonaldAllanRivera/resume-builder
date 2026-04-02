@@ -17,7 +17,7 @@ export function EducationPage({ educations = [] }: EducationPageProps) {
         {educations.map((edu) => (
           <div
             key={edu.id}
-            className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur hover:border-white/20 transition-all duration-300"
+            className="p-6 rounded-2xl border border-white/10 bg-card-bg backdrop-blur hover:border-white/20 transition-all duration-300"
           >
             <h2 className="text-2xl font-semibold mb-2">{edu.degree}</h2>
             <p className="text-white/70 mb-2">{edu.school}</p>

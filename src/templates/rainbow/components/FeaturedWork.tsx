@@ -28,8 +28,8 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
   const remaining = projects.slice(2)
 
   return (
-    <section id="services" className="scroll-mt-24 py-16">
-      <div className="mx-auto w-[min(calc(100%-40px),1320px)]">
+    <section id="services" className="scroll-mt-24 py-16 relative z-[50]">
+      <div className="mx-auto w-[min(calc(100%-40px),1320px)] relative z-[60]">
         <div className="mb-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <h2 className="text-[clamp(2rem,4vw,3.4rem)] leading-none tracking-[-0.045em] text-white">
             Featured work
@@ -37,7 +37,7 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
         </div>
 
         {/* First Two Projects - Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 relative z-[70]">
           {firstTwo.map((project, index) => (
             <ProjectCard
               key={project.id}
@@ -49,7 +49,7 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
 
         {/* Remaining Projects - Grid */}
         {remaining.length > 0 && (
-          <div className="mt-6 grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
+          <div className="mt-6 grid gap-6 md:grid-cols-2 2xl:grid-cols-3 relative z-[70]">
             {remaining.map((project, index) => (
               <ProjectCard
                 key={project.id}

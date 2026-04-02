@@ -38,9 +38,19 @@ export function Hero({ profile, projects }: HeroProps) {
       .map(([tech]) => tech)
   }, [projects])
   return (
-    <section className="space-hero relative overflow-hidden min-h-screen">
-      {/* Hero overlay */}
-      <div className="hero-overlay absolute inset-0" />
+    <section className="space-hero relative overflow-hidden min-h-screen bg-transparent">
+      {/* CSS overrides to hide hero gradients and show starfield */}
+      <style jsx>{`
+        .space-hero {
+          background: transparent !important;
+        }
+        .space-hero::before {
+          display: none !important;
+        }
+        .space-hero::after {
+          display: none !important;
+        }
+      `}</style>
 
       {/* Main content */}
       <main className="relative z-10 flex min-h-[100vh] items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 sm:pt-32 lg:px-10">
@@ -48,7 +58,7 @@ export function Hero({ profile, projects }: HeroProps) {
           <div className="flex flex-col items-center">
             {/* Subtitle badge - From Resume Profile Headline */}
             {profile?.headline && (
-              <p className="mb-5 inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium tracking-[0.14em] text-white/80 uppercase backdrop-blur sm:text-sm">
+              <p className="mb-5 inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-medium tracking-[0.14em] text-white/80 uppercase backdrop-blur sm:text-sm">
                 {profile.headline}
               </p>
             )}
@@ -76,7 +86,7 @@ export function Hero({ profile, projects }: HeroProps) {
                 {uniqueTechStacks.map((tech) => (
                   <span
                     key={tech}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75"
+                    className="rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-white/75"
                   >
                     {tech}
                   </span>

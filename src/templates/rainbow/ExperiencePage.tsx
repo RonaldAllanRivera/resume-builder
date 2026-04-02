@@ -23,7 +23,7 @@ export function ExperiencePage({ experiences = [] }: ExperiencePageProps) {
         {experiences.map((exp) => (
           <div
             key={exp.id}
-            className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur hover:border-white/20 transition-all duration-300"
+            className="p-6 rounded-2xl border border-white/10 bg-card-bg backdrop-blur hover:border-white/20 transition-all duration-300"
           >
             <h2 className="text-2xl font-semibold mb-2">{exp.title}</h2>
             <p className="text-white/60 text-sm mb-3">

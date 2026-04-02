@@ -37,7 +37,7 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
   return (
     <article
       data-version="v2-unified"
-      className="overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#11131a] shadow-[0_18px_50px_rgba(0,0,0,0.32)]"
+      className="overflow-hidden rounded-[1.9rem] border border-white/10 bg-card-bg shadow-[0_18px_50px_rgba(0,0,0,0.32)] relative z-[100]"
     >
       {/* Project Image with Floating Tech Stack Icons */}
       <div className={`relative min-h-[320px] bg-gradient-to-br ${gradient}`}>
@@ -81,7 +81,7 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
       </div>
 
       {/* Project Content */}
-      <div className="space-y-4 p-6">
+      <div className="space-y-4 p-6 bg-card-bg relative z-[101]">
         <p className="text-[15px] leading-7 text-white/82">{project.summary}</p>
 
         {/* Tech Stack Badges */}
@@ -95,7 +95,7 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
               return (
                 <span
                   key={index}
-                  className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/90"
+                  className="inline-flex items-center rounded-full border border-white/10 bg-[#191a21]/90 px-3 py-1.5 text-xs font-medium text-white/90"
                 >
                   {techName}
                 </span>

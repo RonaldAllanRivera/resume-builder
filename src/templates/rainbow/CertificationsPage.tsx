@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Certification, SiteSetting } from '@/payload-types'
+import { Certifications } from './components/Certifications'
 
 interface CertificationsPageProps {
   certifications?: Certification[]
@@ -13,25 +14,7 @@ export function CertificationsPage({ certifications = [] }: CertificationsPagePr
         Certifications
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certifications.map((cert) => (
-          <div
-            key={cert.id}
-            className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur hover:border-white/20 transition-all duration-300"
-          >
-            <h2 className="text-xl font-semibold mb-2">{cert.title}</h2>
-            {cert.issuer && <p className="text-white/70 text-sm mb-2">{cert.issuer}</p>}
-            {cert.issueDate && (
-              <p className="text-white/60 text-xs">
-                {new Date(cert.issueDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                })}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
+      <Certifications certifications={certifications} />
     </div>
   )
 }

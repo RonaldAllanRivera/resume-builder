@@ -289,6 +289,16 @@ Status: Completed
   - Glass morphism title overlay ✅
   - Duration badge and total hours display ✅
   - Duration parsing for filtering logic ✅
+- **Tailwind CSS Best Practices Refactoring** (2026-04-02):
+  - Comprehensive audit and removal of all inline CSS styles ✅
+  - Replaced inline styles with Tailwind utility classes across all components ✅
+  - Created custom `bg-card-bg` utility class in globals.css ✅
+  - Added Tailwind v4 content paths configuration ✅
+  - Added @source inline declarations for arbitrary values ✅
+  - Fixed starfield transparency issues on certification cards ✅
+  - Components refactored: Certifications, Education, Experience, FeaturedWork, Hero, ExperiencePage, EducationPage ✅
+  - Performance improvements: Better CSS caching, smaller HTML payload ✅
+  - Maintainability: Single source of truth for styling ✅
 - **Code Cleanup - Deprecated Seed System Removed**:
   - Deleted legacy text-parsing seed approach (`seed-resume/index.ts`) ✅
   - Removed `/next/seed-resume` API route ✅

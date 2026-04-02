@@ -36,6 +36,8 @@
 @source inline("bg-success/30");
 @source inline("border-warning");
 @source inline("bg-warning/30");
+@source inline("bg-[#11131a]");
+@source inline("bg-[#191a21]/90");
 
 @theme {
   --breakpoint-sm: 40rem;
@@ -48,6 +50,10 @@
 }
 
 @layer utilities {
+  .bg-card-dark {
+    background-color: #11131a !important;
+  }
+  
   .container {
     width: 100%;
     margin-inline: auto;
