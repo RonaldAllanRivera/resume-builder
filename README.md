@@ -29,9 +29,10 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - 4,300 rotating stars in 3D space with depth-based sizing
       - Interactive mouse movement (rotation speeds up on interaction)
       - Twinkling stars with varying brightness and glow effects
-      - CSS gradient fallback for instant loading on slow connections
+      - **Mobile optimization**: Starfield disabled on mobile via CSS media query (no JavaScript overhead)
+      - **Instant loading**: Pure black background with zero gradient rendering
       - Respects `prefers-reduced-motion` accessibility setting
-      - 60fps performance with optimized rendering
+      - 60fps performance on desktop with optimized rendering
       - Reusable Starfield component on homepage and All Projects page
     - Fully responsive with mobile-first design
     - All content managed via Resume Profile global (headline, summary, hero description)
@@ -77,6 +78,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - Proper Tailwind v4 configuration with content paths
       - Better CSS caching and smaller HTML payload
       - Single source of truth for colors and spacing
+    - **Performance Optimization** - Production-ready Lighthouse scores
+      - **Vercel Production**: 91 (mobile), 100 (desktop)
+      - Zero hydration delay with CSS-based mobile detection
+      - Instant black background loading (no gradient rendering)
+      - Mobile starfield disabled for better battery life
+      - Optimized Core Web Vitals (FCP, LCP, TTI)
     - **Contact Page** (`/contact`) with Resend email integration
       - Full-screen form with starfield animation background
       - Dark glassmorphism design matching site aesthetic

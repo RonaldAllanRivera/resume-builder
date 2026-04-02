@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
         <link href="/site.webmanifest" rel="manifest" />
       </head>
-      <body className="relative">
+      <body className="relative bg-black">
         {/* Persistent Starfield background - covers entire viewport, continues across page navigation */}
         <StarfieldClient />
 

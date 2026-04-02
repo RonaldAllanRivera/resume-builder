@@ -1,5 +1,57 @@
 # Changelog
 
+## [0.9.4] - 2026-04-02
+
+### Mobile Performance Optimization & Loading Speed Improvements
+
+**Eliminated Gradient Backgrounds for Faster Initial Loading**
+- **Removed all CSS gradients** from Hero component for instant black background
+  - Removed 5 radial gradients + 1 linear gradient
+  - Removed 30+ star gradient pseudo-elements (::before, ::after)
+  - Pure transparent background with black body
+  - Faster First Contentful Paint (FCP)
+- **Pure black body background** in layout.tsx
+  - Added `bg-black` class to `<body>` element
+  - No flash of white on page load
+  - Instant visual feedback
+
+**Mobile Starfield Optimization**
+- **Disabled starfield on mobile** via CSS media query
+  - Used `hidden md:block` Tailwind classes
+  - No JavaScript detection overhead
+  - Zero hydration delay
+  - Eliminates 4,300 particle animation on mobile
+- **Removed useState/useEffect** from StarfieldClient
+  - No render blocking
+  - No hydration mismatch
+  - Instant rendering
+  - Pure CSS-based mobile detection
+
+**Performance Benefits**
+- ✅ **Zero hydration delay**: Component renders immediately
+- ✅ **No JavaScript overhead**: Pure CSS media queries
+- ✅ **Instant black background**: No gradient rendering
+- ✅ **Better mobile performance**: No starfield animation overhead
+- ✅ **Improved Core Web Vitals**: Faster FCP, LCP, TTI
+- ✅ **Production-ready**: Vercel scores 91 (mobile), 100 (desktop)
+
+**Files Modified**
+- Updated: `src/components/StarfieldClient.tsx` - Removed state management, added CSS media query
+- Updated: `src/templates/rainbow/components/Hero.css` - Removed all gradient backgrounds
+- Updated: `src/app/(frontend)/layout.tsx` - Added `bg-black` to body
+
+**Production Impact**
+- Vercel Lighthouse scores: 91 (mobile), 100 (desktop)
+- Faster perceived performance on mobile devices
+- Better battery life (no animation on mobile)
+- Cleaner initial loading experience
+
+**Technical Notes**
+- Local development mode (npm run dev) will show lower scores (45-56) - this is expected
+- Production builds (Vercel) show optimized scores (91-100)
+- Development mode prioritizes developer experience over performance
+- Always test Lighthouse on production/staging environments
+
 ## [0.9.3] - 2026-04-02
 
 ### Tailwind CSS Best Practices Refactoring

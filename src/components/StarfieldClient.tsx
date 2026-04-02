@@ -1,23 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Starfield } from '@/templates/rainbow/components/Starfield'
 
 export function StarfieldClient() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
-
+  // Pure black background always visible (no hydration delay)
+  // Starfield hidden on mobile via CSS media query (no JS detection needed)
   return (
     <>
-      <div className="fixed inset-0 bg-[#0a0a0f]" style={{ zIndex: -1 }} />
-      <Starfield />
+      <div className="fixed inset-0 bg-black" style={{ zIndex: -10 }} />
+      <div className="hidden md:block">
+        <Starfield />
+      </div>
     </>
   )
 }
