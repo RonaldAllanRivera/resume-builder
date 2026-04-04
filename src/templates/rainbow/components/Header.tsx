@@ -8,6 +8,10 @@ export function Header() {
   const [projectsDropdownOpen, setProjectsDropdownOpen] = useState(false)
   const [certificationsDropdownOpen, setCertificationsDropdownOpen] = useState(false)
 
+  // Mobile sub-menu states
+  const [mobileProjectsOpen, setMobileProjectsOpen] = useState(false)
+  const [mobileCertificationsOpen, setMobileCertificationsOpen] = useState(false)
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
@@ -241,41 +245,48 @@ export function Header() {
               >
                 Featured Work
               </Link>
-              <Link
-                href="/projects"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400"
+
+              {/* Collapsible Projects Category */}
+              <button
+                onClick={() => setMobileProjectsOpen(!mobileProjectsOpen)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400 flex items-center justify-between"
               >
-                All Projects
-              </Link>
-              <Link
-                href="/projects#full-stack"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400 pl-8"
-              >
-                → Full Stack
-              </Link>
-              <Link
-                href="/projects#wordpress"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400 pl-8"
-              >
-                → WordPress
-              </Link>
-              <Link
-                href="/projects#automation"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-300 hover:via-orange-300 hover:to-red-400 pl-8"
-              >
-                → Automation
-              </Link>
-              <Link
-                href="/projects#graphic-design"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 pl-8"
-              >
-                → Design
-              </Link>
+                <span>Projects</span>
+                <span className="text-white/60">{mobileProjectsOpen ? '−' : '+'}</span>
+              </button>
+              {mobileProjectsOpen && (
+                <div className="flex flex-col pl-4 space-y-1">
+                  <Link
+                    href="/projects#full-stack"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400"
+                  >
+                    → Full Stack
+                  </Link>
+                  <Link
+                    href="/projects#wordpress"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400"
+                  >
+                    → WordPress
+                  </Link>
+                  <Link
+                    href="/projects#automation"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-300 hover:via-orange-300 hover:to-red-400"
+                  >
+                    → Automation
+                  </Link>
+                  <Link
+                    href="/projects#graphic-design"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400"
+                  >
+                    → Design
+                  </Link>
+                </div>
+              )}
+
               <Link
                 href="/#experience"
                 onClick={() => setMobileMenuOpen(false)}
@@ -290,76 +301,83 @@ export function Header() {
               >
                 Education
               </Link>
-              <Link
-                href="/certifications"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-teal-300 hover:via-emerald-300 hover:to-green-400"
+
+              {/* Collapsible Certifications Category */}
+              <button
+                onClick={() => setMobileCertificationsOpen(!mobileCertificationsOpen)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-teal-300 hover:via-emerald-300 hover:to-green-400 flex items-center justify-between"
               >
-                All Certifications
-              </Link>
-              <Link
-                href="/certifications#frontend-javascript"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400 pl-8"
-              >
-                → Frontend & JavaScript
-              </Link>
-              <Link
-                href="/certifications#laravel-backend"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-orange-400 hover:via-red-400 hover:to-pink-400 pl-8"
-              >
-                → Laravel & Backend
-              </Link>
-              <Link
-                href="/certifications#python-django"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400 pl-8"
-              >
-                → Python & Django
-              </Link>
-              <Link
-                href="/certifications#wordpress"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400 pl-8"
-              >
-                → WordPress
-              </Link>
-              <Link
-                href="/certifications#ai-ml"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-fuchsia-400 hover:to-pink-400 pl-8"
-              >
-                → AI & Machine Learning
-              </Link>
-              <Link
-                href="/certifications#cloud-devops"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-400 hover:via-sky-400 hover:to-blue-400 pl-8"
-              >
-                → Cloud, DevOps & Architecture
-              </Link>
-              <Link
-                href="/certifications#git-collaboration"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-slate-400 hover:via-gray-400 hover:to-zinc-400 pl-8"
-              >
-                → Git & Collaboration
-              </Link>
-              <Link
-                href="/certifications#video-creative"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-rose-400 hover:via-pink-400 hover:to-fuchsia-400 pl-8"
-              >
-                → Video & Creative
-              </Link>
-              <Link
-                href="/certifications#general-dev"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-amber-400 hover:via-yellow-400 hover:to-lime-400 pl-8"
-              >
-                → General Development
-              </Link>
+                <span>Certifications</span>
+                <span className="text-white/60">{mobileCertificationsOpen ? '−' : '+'}</span>
+              </button>
+              {mobileCertificationsOpen && (
+                <div className="flex flex-col pl-4 space-y-1">
+                  <Link
+                    href="/certifications#frontend-javascript"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400"
+                  >
+                    → Frontend & JavaScript
+                  </Link>
+                  <Link
+                    href="/certifications#laravel-backend"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-orange-400 hover:via-red-400 hover:to-pink-400"
+                  >
+                    → Laravel & Backend
+                  </Link>
+                  <Link
+                    href="/certifications#python-django"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400"
+                  >
+                    → Python & Django
+                  </Link>
+                  <Link
+                    href="/certifications#wordpress"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400"
+                  >
+                    → WordPress
+                  </Link>
+                  <Link
+                    href="/certifications#ai-ml"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-fuchsia-400 hover:to-pink-400"
+                  >
+                    → AI & Machine Learning
+                  </Link>
+                  <Link
+                    href="/certifications#cloud-devops"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-400 hover:via-sky-400 hover:to-blue-400"
+                  >
+                    → Cloud, DevOps & Architecture
+                  </Link>
+                  <Link
+                    href="/certifications#git-collaboration"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-slate-400 hover:via-gray-400 hover:to-zinc-400"
+                  >
+                    → Git & Collaboration
+                  </Link>
+                  <Link
+                    href="/certifications#video-creative"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-rose-400 hover:via-pink-400 hover:to-fuchsia-400"
+                  >
+                    → Video & Creative
+                  </Link>
+                  <Link
+                    href="/certifications#general-dev"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-amber-400 hover:via-yellow-400 hover:to-lime-400"
+                  >
+                    → General Development
+                  </Link>
+                </div>
+              )}
+
               <Link
                 href="/contact"
                 onClick={() => setMobileMenuOpen(false)}

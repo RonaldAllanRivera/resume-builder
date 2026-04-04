@@ -10,8 +10,8 @@ interface CTAButtonsProps {
 
 export function CTAButtons({
   className = '',
-  chatHref = '/#contact',
-  bookHref = '/#contact',
+  chatHref = '/contact',
+  bookHref = '/contact',
 }: CTAButtonsProps) {
   return (
     <div className={`mt-8 flex flex-wrap gap-4 ${className}`}>
@@ -19,7 +19,7 @@ export function CTAButtons({
         href={chatHref}
         className="inline-flex min-h-[60px] items-center justify-center rounded-2xl bg-white px-7 text-base font-extrabold text-[#111111] shadow-nav transition hover:-translate-y-0.5"
       >
-        CHAT WITH AI
+        CONTACT ME
       </a>
       <a
         href={bookHref}
