@@ -2,7 +2,8 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend client only if API key is available
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 // Rate limiting store (in-memory, resets on deployment)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
@@ -130,6 +131,18 @@ export async function POST(request: Request) {
           message: 'Your message contains prohibited content.',
         },
         { status: 400 },
+      )
+    }
+
+    // Check if Resend is configured
+    if (!resend) {
+      console.error('[CONFIG ERROR] RESEND_API_KEY not set')
+      return NextResponse.json(
+        {
+          error: 'Configuration error',
+          message: 'Contact form is not properly configured.',
+        },
+        { status: 500 },
       )
     }
 

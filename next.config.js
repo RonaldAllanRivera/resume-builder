@@ -24,8 +24,7 @@ const nextConfig = {
   // Performance optimizations for mobile
   compress: true, // Enable gzip compression
   poweredByHeader: false, // Remove X-Powered-By header
-  optimizeFonts: true, // Optimize font loading
-  swcMinify: true, // Use SWC for faster minification
+  // optimizeFonts and swcMinify are now defaults in Next.js 15
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
