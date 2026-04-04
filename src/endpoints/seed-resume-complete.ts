@@ -297,6 +297,27 @@ export const seedResumeComplete = async ({
     const projects = [
       // FULL STACK DEVELOPMENT
       {
+        title: 'Resume + Portfolio CMS',
+        slug: 'resume-portfolio-cms',
+        summary:
+          'Engineered a production-ready, CMS-driven resume and portfolio platform using Next.js, Payload CMS, TypeScript, and PostgreSQL, combining frontend, backend, and admin panel in a single scalable application. Implemented Docker-based development, role-based access control, draft/publish workflows, and SEO-optimized rendering with ISR. Built AI-powered resume and cover letter generation using OpenAI with structured prompt versioning, integrated Google OAuth2 for document export, and developed a modular multi-template UI system with performance-optimized components. Established CI/CD pipelines with Vitest and Playwright, ensuring reliability, scalability, and production-grade performance.',
+        techStack: [
+          { name: 'Next.js' },
+          { name: 'React.js' },
+          { name: 'Payload CMS' },
+          { name: 'TypeScript' },
+          { name: 'PostgreSQL' },
+          { name: 'AI/ML' },
+          { name: 'Docker' },
+          { name: 'OpenAI API' },
+        ],
+        repoUrl: 'https://github.com/RonaldAllanRivera/auto-respond/',
+        category: 'full-stack' as const,
+        featured: true,
+        order: 1,
+        _status: 'published' as const,
+      },
+      {
         title: 'Meet Lessons',
         slug: 'meet-lessons',
         summary:
