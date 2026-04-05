@@ -1,4 +1,5 @@
 import type { Metadata } from 'next/types'
+import { Suspense } from 'react'
 import { SearchPage as RainbowSearchPage } from '@/templates/rainbow/SearchPage'
 
 export const metadata: Metadata = {
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 }
 
 export default function SearchPage() {
-  return <RainbowSearchPage />
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RainbowSearchPage />
+    </Suspense>
+  )
 }

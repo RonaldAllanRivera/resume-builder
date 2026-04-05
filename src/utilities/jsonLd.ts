@@ -6,7 +6,7 @@ import type { Project, Certification, ResumeProfile1, SiteSetting } from '@/payl
 export function generatePersonSchema(profile: ResumeProfile1 | null, settings: SiteSetting | null) {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
-  const schema: Record<string, any> = {
+  const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: profile?.fullName || settings?.siteName || '',
@@ -63,7 +63,7 @@ export function generateProjectSchema(project: Project) {
     project.category === 'wordpress' ||
     project.category === 'automation'
 
-  const schema: any = {
+  const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': isSoftware ? 'SoftwareApplication' : 'CreativeWork',
     name: project.title,
@@ -97,7 +97,7 @@ export function generateProjectSchema(project: Project) {
  * Generate EducationalOccupationalCredential schema for certifications
  */
 export function generateCertificationSchema(cert: Certification) {
-  const schema: any = {
+  const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'EducationalOccupationalCredential',
     name: cert.title,
@@ -141,6 +141,6 @@ export function generateBreadcrumbSchema(items: { name: string; url: string }[])
 /**
  * Serialize JSON-LD data for use in script tag
  */
-export function serializeJsonLd(data: any): string {
+export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data)
 }

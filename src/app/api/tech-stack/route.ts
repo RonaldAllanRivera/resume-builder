@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import type { Project } from '@/payload-types'
 
 export async function GET() {
   try {
@@ -18,9 +19,9 @@ export async function GET() {
     // Extract tech stack from projects (same logic as Hero component)
     const techStackCount = new Map<string, number>()
 
-    projectResults.docs.forEach((project: any) => {
+    projectResults.docs.forEach((project: Project) => {
       if (project.techStack && Array.isArray(project.techStack)) {
-        project.techStack.forEach((tech: any) => {
+        project.techStack.forEach((tech) => {
           if (tech && typeof tech === 'object' && tech.name && tech.name.trim()) {
             const techName = tech.name.trim()
             techStackCount.set(techName, (techStackCount.get(techName) || 0) + 1)

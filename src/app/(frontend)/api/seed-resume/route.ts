@@ -1,11 +1,12 @@
 import { getPayload } from 'payload'
+import type { PayloadRequest } from 'payload'
 import config from '@payload-config'
 import { NextResponse } from 'next/server'
 
 /**
  * Admin-only API endpoint for seeding resume data
  * Useful for one-time seeding on Vercel or other serverless platforms
- * 
+ *
  * Usage: POST /api/seed-resume with admin authentication
  */
 export async function POST(request: Request) {
@@ -57,7 +58,16 @@ export async function POST(request: Request) {
       user,
       payload,
       headers: request.headers,
-    } as any
+      context: {},
+      i18n: null,
+      payloadAPI: payload,
+      payloadDataLoader: undefined,
+      locale: 'en',
+      fallbackLocale: 'en',
+      t: (key: string) => key,
+      req: request,
+      res: null,
+    } as unknown as PayloadRequest
 
     await seedResumeComplete({
       payload,
@@ -70,12 +80,13 @@ export async function POST(request: Request) {
       message: 'Resume data seeded successfully',
       timestamp: new Date().toISOString(),
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Seed error:', error)
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
       {
         error: 'Seed failed',
-        message: error.message,
+        message,
       },
       { status: 500 },
     )
@@ -103,7 +114,8 @@ export async function GET() {
         educations: educations.totalDocs,
       },
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
