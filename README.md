@@ -48,6 +48,17 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
     - **All Projects page** (`/projects`) with complete portfolio showcase
       - Header dropdown navigation with category sub-menu (Full Stack, WordPress, Automation, Design)
       - Netflix-style hero section with project statistics
+    - **Comprehensive Search System** (`/search`) - Professional portfolio search
+      - Multi-collection search across experiences, projects, and certifications
+      - Context-aware action buttons (View Details, View Certificate, View Live Link, View Code)
+      - Dynamic tech stack suggestions from project database
+      - Interactive search tags with instant search triggering
+      - Whole word matching for precise keyword search
+      - Rate limiting (120 req/min) with exponential backoff retry
+      - Date sorting (latest to oldest) with user-friendly formatting
+      - Filter tabs: All, Projects, Certifications, Experience
+      - URL state management for bookmarkable searches
+      - Clean, professional UI with no admin branding
       - Category-organized sections with anchor link navigation
       - Reusable CTAButtons component (CHAT WITH AI, BOOK ME NOW)
       - Smart project ordering by priority with category-based grouping

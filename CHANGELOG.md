@@ -1,5 +1,106 @@
 # Changelog
 
+## [0.10.1] - 2026-04-05
+
+### Search System Enhancements & Admin Bar Removal
+
+**Search Result Card Improvements**
+- **Context-Aware Action Buttons**: Different buttons based on content type
+  - **Experience**: "View Details" only (links to detail page)
+  - **Certifications**: "View Certificate" (external credential link) or "View Details" fallback
+  - **Projects**: "View Live Link" and/or "View Code" buttons (both if available)
+  - Fallback to "View Details" when no external URLs available
+- **Updated SearchResult Interface**: Added specific URL fields
+  - `liveUrl`: Project live site URL
+  - `repoUrl`: Project repository URL
+  - `certificateUrl`: Certification credential URL
+- **Proper External Link Attributes**: All external links use `target="_blank" rel="nofollow noopener noreferrer"`
+- **Consistent Design**: Matches ProjectsPage button pattern and styling
+
+**Dynamic Tech Stack Suggestions**
+- **API-Driven Tech Stack**: Created `/api/tech-stack` endpoint
+  - Fetches all published projects from database
+  - Extracts unique tech stacks from project `techStack` field
+  - Sorts by usage frequency (most common first)
+  - Returns top 8 technologies
+- **SearchResults Integration**: "No results" state now shows dynamic suggestions
+  - Replaces hardcoded tech stack array
+  - Updates automatically when projects change
+  - Clickable tags trigger instant search
+- **Interactive Search Tags**: Click any tech stack tag to search
+  - Integrated with existing search functionality
+  - Updates URL with search query
+  - Maintains search state and navigation
+
+**Search Performance & Quality**
+- **Rate Limiting**: Increased to 120 requests/minute for better UX
+- **Exponential Backoff**: Automatic retry on rate limit errors
+- **Whole Word Matching**: Improved keyword precision
+  - "AI" only matches "AI", not "training" or "certification"
+  - Regex word boundary matching for accuracy
+  - Special handling for common abbreviations
+- **Date Sorting**: All results sorted by date (latest to oldest)
+- **Date Formatting**: User-friendly "Month Day, Year" format
+- **Full Title Display**: Removed title truncation in search cards
+
+**Payload Admin Bar Complete Removal**
+- **Component Deletion**: Removed entire AdminBar component directory
+  - Deleted `/src/components/AdminBar/index.tsx`
+  - Deleted `/src/components/AdminBar/index.scss`
+  - Removed all AdminBar references from layout
+- **Client-Side Removal Script**: Created PayloadAdminRemover component
+  - Actively removes admin bar elements from DOM
+  - Runs immediately on mount and periodically (100ms interval)
+  - Uses MutationObserver to catch dynamically injected elements
+  - Removes admin bar scripts, styles, and DOM elements
+  - Preserves rainbow-header elements
+- **CSS Cleanup**: Removed 100+ lines of admin bar hiding rules
+  - Simplified Layout.css to essential rainbow-header styles only
+  - No more complex CSS selectors trying to hide admin elements
+- **Production Ready**: Admin bar permanently removed from public pages
+  - No Payload branding visible to visitors
+  - Clean, professional appearance
+  - Better performance (no unnecessary components)
+
+**TypeScript & Code Quality**
+- **Fixed Type Errors**: Proper type conversions
+  - `exp.id` → `String(exp.id)`
+  - `project.id` → `String(project.id)`
+- **Removed `any` Types**: Replaced with proper SearchResult[] types
+  - `experiences: SearchResult[]`
+  - `projects: SearchResult[]`
+  - `certifications: SearchResult[]`
+- **Clean Imports**: Removed unused imports and variables
+  - No lint warnings
+  - Proper dependency management
+- **Config Fix**: Updated Payload config reference
+  - `getPayload({ config: configPromise })`
+
+**Files Created**
+- `src/app/api/tech-stack/route.ts` - Dynamic tech stack API endpoint
+- `src/components/PayloadAdminRemover.tsx` - Client-side admin bar removal
+
+**Files Modified**
+- `src/utilities/search.ts` - Added liveUrl, repoUrl, certificateUrl fields; fixed type errors
+- `src/templates/rainbow/components/search/SearchResultCard.tsx` - Context-aware action buttons
+- `src/templates/rainbow/components/search/SearchResults.tsx` - Dynamic tech stack integration
+- `src/templates/rainbow/SearchPage.tsx` - Added onSearch prop to SearchResults
+- `src/app/api/search/route.ts` - Fixed TypeScript types, removed any[]
+- `src/app/(frontend)/layout.tsx` - Added PayloadAdminRemover, removed AdminBar
+- `src/templates/rainbow/components/Layout.css` - Cleaned up CSS (removed 100+ lines)
+- `src/templates/rainbow/components/Header.tsx` - Updated search link text
+
+**Files Deleted**
+- `src/components/AdminBar/` - Entire directory removed (component + styles)
+
+**Production Impact**
+- Better search UX with context-appropriate actions
+- Dynamic tech stack stays current with portfolio
+- Interactive search suggestions improve discoverability
+- Clean professional appearance (no admin branding)
+- Improved TypeScript safety and code quality
+- Better performance (removed unnecessary components)
+
 ## [0.10.0] - 2026-04-05
 
 ### Comprehensive Search System Implementation

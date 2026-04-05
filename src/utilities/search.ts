@@ -14,6 +14,9 @@ export interface SearchResult {
   date?: string
   tags?: string[]
   url?: string
+  liveUrl?: string
+  repoUrl?: string
+  certificateUrl?: string
   relevanceScore: number
   matchedFields: string[]
 }
@@ -34,23 +37,62 @@ export interface SearchResponse {
 }
 
 /**
- * Extract keywords from search query
+ * Extract keywords from search query with common variations
  */
 export function extractKeywords(query: string): string[] {
-  return query
+  const keywords = query
     .toLowerCase()
     .trim()
     .split(/\s+/)
     .filter((word) => word.length > 0)
+
+  // Handle common variations for better matching
+  const expandedKeywords: string[] = []
+
+  keywords.forEach((keyword) => {
+    expandedKeywords.push(keyword)
+
+    // Add common variations for AI
+    if (keyword === 'ai') {
+      expandedKeywords.push('artificial intelligence')
+    }
+
+    // Add variations for ML
+    if (keyword === 'ml') {
+      expandedKeywords.push('machine learning')
+    }
+
+    // Handle hyphenated terms
+    if (keyword.includes('-')) {
+      const parts = keyword.split('-')
+      expandedKeywords.push(...parts)
+      expandedKeywords.push(parts.join(' '))
+    }
+  })
+
+  return [...new Set(expandedKeywords)] // Remove duplicates
 }
 
 /**
- * Check if text contains any of the keywords
+ * Check if text contains any of the keywords as whole words
  */
 export function containsKeywords(text: string, keywords: string[]): boolean {
   if (!text) return false
   const lowerText = text.toLowerCase()
-  return keywords.some((keyword) => lowerText.includes(keyword))
+
+  return keywords.some((keyword) => {
+    // Special handling for AI to avoid false positives
+    if (keyword === 'ai') {
+      // Only match "AI" as standalone word or in "Artificial Intelligence"
+      const aiRegex = /\bai\b/i
+      const artificialIntelligenceRegex = /artificial\s+intelligence/i
+      return aiRegex.test(lowerText) || artificialIntelligenceRegex.test(lowerText)
+    }
+
+    // For other keywords, use standard word boundary matching
+    const regex = new RegExp(`\\b${keyword}\\b`, 'i')
+    return regex.test(lowerText)
+  })
 }
 
 /**
@@ -121,16 +163,7 @@ export function highlightMatches(text: string, keywords: string[]): string {
  * Get popular search terms
  */
 export function getPopularSearches(): string[] {
-  return [
-    'React',
-    'Next.js',
-    'Laravel',
-    'WordPress',
-    'Python',
-    'AI',
-    'TypeScript',
-    'Certifications',
-  ]
+  return ['React', 'Next.js', 'Laravel', 'WordPress', 'Python', 'AI', 'TypeScript', 'Open AI']
 }
 
 /**
@@ -148,7 +181,7 @@ export function formatExperienceResult(exp: Experience, keywords: string[]): Sea
 
   return {
     type: 'experience',
-    id: exp.id.toString(),
+    id: String(exp.id),
     title: exp.title || '',
     subtitle: exp.company || '',
     description: highlightsText || '',
@@ -166,21 +199,21 @@ export function formatProjectResult(project: Project, keywords: string[]): Searc
   const relevanceScore = calculateRelevanceScore(project, keywords, 'project')
   const matchedFields: string[] = []
 
-  if (project.title && containsKeywords(project.title, keywords)) matchedFields.push('title')
-
-  const techStackText = project.techStack?.map((t) => t.name).join(' ') || ''
-  if (techStackText && containsKeywords(techStackText, keywords)) matchedFields.push('techStack')
-  if (project.summary && containsKeywords(project.summary, keywords)) matchedFields.push('summary')
+  if (containsKeywords(project.title || '', keywords)) matchedFields.push('title')
+  if (containsKeywords(project.summary || '', keywords)) matchedFields.push('summary')
+  if (containsKeywords(project.category || '', keywords)) matchedFields.push('category')
 
   return {
     type: 'project',
-    id: project.id.toString(),
-    title: project.title || '',
-    subtitle: project.category || '',
+    id: String(project.id),
+    title: project.title || 'Untitled Project',
+    subtitle: project.category || 'Project',
     description: project.summary || '',
     date: project.publishedAt || '',
     tags: project.techStack?.map((t) => t.name) || [],
     url: project.liveUrl || project.repoUrl || undefined,
+    liveUrl: project.liveUrl || undefined,
+    repoUrl: project.repoUrl || undefined,
     relevanceScore,
     matchedFields,
   }
@@ -206,6 +239,7 @@ export function formatCertificationResult(cert: Certification, keywords: string[
     date: cert.issueDate || '',
     tags: cert.category ? [cert.category] : [],
     url: cert.credentialUrl || undefined,
+    certificateUrl: cert.credentialUrl || undefined,
     relevanceScore,
     matchedFields,
   }

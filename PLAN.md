@@ -808,6 +808,90 @@ Status: Planned
 
 **Status**: ✅ COMPLETED
 
+### Phase 4D.4 — Search Enhancements & Polish (April 5, 2026)
+
+**Status**: ✅ COMPLETED
+
+**Implementation:**
+
+1. **Context-Aware Action Buttons**
+   - Different button configurations based on content type:
+     - **Experience**: Single "View Details" button linking to detail page
+     - **Certifications**: "View Certificate" button (external credential link) with "View Details" fallback
+     - **Projects**: "View Live Link" and/or "View Code" buttons (shows both if available)
+   - Updated SearchResult interface with specific URL fields:
+     - `liveUrl`: Project live site URL
+     - `repoUrl`: Project repository URL  
+     - `certificateUrl`: Certification credential URL
+   - All external links use proper attributes: `target="_blank" rel="nofollow noopener noreferrer"`
+   - Consistent design matching ProjectsPage button pattern
+
+2. **Dynamic Tech Stack Suggestions**
+   - Created `/api/tech-stack` endpoint:
+     - Fetches all published projects from database
+     - Extracts unique tech stacks from project `techStack` field
+     - Sorts by usage frequency (most common first)
+     - Returns top 8 technologies
+   - SearchResults "No results" state shows dynamic suggestions:
+     - Replaces hardcoded tech stack array
+     - Updates automatically when projects change
+     - Clickable tags trigger instant search
+   - Interactive search tags integrated with existing search functionality
+
+3. **Search Performance & Quality Improvements**
+   - Rate limiting increased to 120 requests/minute
+   - Exponential backoff for automatic retry on rate limit errors
+   - Whole word matching for improved precision:
+     - "AI" only matches "AI", not "training" or "certification"
+     - Regex word boundary matching
+     - Special handling for common abbreviations
+   - All results sorted by date (latest to oldest)
+   - Date formatting: User-friendly "Month Day, Year" format
+   - Full title display (removed truncation in search cards)
+
+4. **Payload Admin Bar Complete Removal**
+   - Deleted entire AdminBar component directory
+   - Created PayloadAdminRemover component:
+     - Actively removes admin bar elements from DOM
+     - Runs immediately on mount and periodically (100ms interval)
+     - Uses MutationObserver to catch dynamically injected elements
+     - Removes admin bar scripts, styles, and DOM elements
+     - Preserves rainbow-header elements
+   - CSS cleanup: Removed 100+ lines of admin bar hiding rules
+   - Production ready: No Payload branding visible to visitors
+
+5. **TypeScript & Code Quality**
+   - Fixed type errors: Proper type conversions (`String(exp.id)`, `String(project.id)`)
+   - Removed `any` types: Replaced with proper `SearchResult[]` types
+   - Clean imports: Removed unused imports and variables
+   - Config fix: Updated Payload config reference
+   - Zero lint warnings
+
+**Files Created:**
+- `src/app/api/tech-stack/route.ts` - Dynamic tech stack API endpoint
+- `src/components/PayloadAdminRemover.tsx` - Client-side admin bar removal
+
+**Files Modified:**
+- `src/utilities/search.ts` - Added URL fields, fixed type errors
+- `src/templates/rainbow/components/search/SearchResultCard.tsx` - Context-aware buttons
+- `src/templates/rainbow/components/search/SearchResults.tsx` - Dynamic tech stack
+- `src/templates/rainbow/SearchPage.tsx` - Added onSearch prop
+- `src/app/api/search/route.ts` - Fixed TypeScript types
+- `src/app/(frontend)/layout.tsx` - Added PayloadAdminRemover
+- `src/templates/rainbow/components/Layout.css` - CSS cleanup
+- `src/templates/rainbow/components/Header.tsx` - Updated search link text
+
+**Files Deleted:**
+- `src/components/AdminBar/` - Entire directory removed
+
+**Production Impact:**
+- Better search UX with context-appropriate actions
+- Dynamic tech stack stays current with portfolio
+- Interactive search suggestions improve discoverability
+- Clean professional appearance (no admin branding)
+- Improved TypeScript safety and code quality
+- Better performance (removed unnecessary components)
+
 **Implementation:**
 
 1. **Result Cards Design**

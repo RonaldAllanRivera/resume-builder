@@ -1,16 +1,55 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import { SearchResultCard } from './SearchResultCard'
 import type { SearchResponse } from '@/utilities/search'
+import { useRouter } from 'next/navigation'
 
 interface SearchResultsProps {
   results: SearchResponse | null
   isLoading: boolean
   error: string | null
   activeFilter: 'all' | 'projects' | 'certifications' | 'experience'
+  onSearch?: (query: string) => void
 }
 
-export function SearchResults({ results, isLoading, error, activeFilter }: SearchResultsProps) {
+export function SearchResults({
+  results,
+  isLoading,
+  error,
+  activeFilter,
+  onSearch,
+}: SearchResultsProps) {
+  const [techStacks, setTechStacks] = useState<string[]>([])
+  const router = useRouter()
+
+  // Handle tech stack click
+  const handleTechStackClick = (tech: string) => {
+    if (onSearch) {
+      onSearch(tech)
+    } else {
+      // Fallback: update URL directly
+      router.push(`/search?q=${encodeURIComponent(tech)}`, { scroll: false })
+    }
+  }
+
+  // Fetch tech stacks from API
+  useEffect(() => {
+    async function fetchTechStacks() {
+      try {
+        const response = await fetch('/api/tech-stack')
+        const data = await response.json()
+        setTechStacks(data.techStacks || [])
+      } catch (error) {
+        console.error('Error fetching tech stacks:', error)
+        // Fallback to basic tech stack
+        setTechStacks(['React', 'Next.js', 'Laravel', 'WordPress', 'Python', 'AI'])
+      }
+    }
+
+    fetchTechStacks()
+  }, [])
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -56,13 +95,15 @@ export function SearchResults({ results, isLoading, error, activeFilter }: Searc
         <h3 className="mb-2 text-xl font-bold text-white">No results found</h3>
         <p className="mb-4 text-white/60">Try searching for:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {['React', 'Next.js', 'Laravel', 'WordPress', 'Python', 'AI', 'Certifications'].map(
-            (term) => (
-              <span key={term} className="rounded-full bg-white/5 px-3 py-1 text-sm text-white/80">
-                {term}
-              </span>
-            ),
-          )}
+          {techStacks.map((tech) => (
+            <button
+              key={tech}
+              onClick={() => handleTechStackClick(tech)}
+              className="rounded-full bg-white/5 px-3 py-1 text-sm text-white/80 transition-all duration-200 hover:bg-white/10 hover:text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20"
+            >
+              {tech}
+            </button>
+          ))}
         </div>
       </div>
     )

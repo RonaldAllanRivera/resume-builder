@@ -6,6 +6,25 @@ interface SearchResultCardProps {
   gradientIndex: number
 }
 
+// Format date to "September 13, 2025" format
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString)
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return dateString
+    }
+
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  } catch (_error) {
+    return dateString
+  }
+}
+
 const gradients = [
   'from-cyan-400 via-blue-500 to-indigo-600',
   'from-rose-400 via-pink-500 to-orange-500',
@@ -50,7 +69,7 @@ export function SearchResultCard({ result, gradientIndex }: SearchResultCardProp
 
         {/* Glass Morphism Title Overlay */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 backdrop-blur-sm">
-          <h3 className="text-lg font-bold text-white line-clamp-1">{result.title}</h3>
+          <h3 className="text-lg font-bold text-white">{result.title}</h3>
         </div>
       </div>
 
@@ -62,7 +81,7 @@ export function SearchResultCard({ result, gradientIndex }: SearchResultCardProp
           {result.date && (
             <>
               <span>•</span>
-              <span>{result.date}</span>
+              <span>{formatDate(result.date)}</span>
             </>
           )}
         </div>
@@ -88,41 +107,77 @@ export function SearchResultCard({ result, gradientIndex }: SearchResultCardProp
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Link
-            href={getLink()}
-            className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
-          >
-            View Details
-          </Link>
-          {result.url && (
-            <a
-              href={result.url}
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
+          {/* Experience: View Details only */}
+          {result.type === 'experience' && (
+            <Link
+              href={getLink()}
+              className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
-            </a>
+              View Details
+            </Link>
+          )}
+
+          {/* Certification: View Certificate */}
+          {result.type === 'certification' && (
+            <>
+              {result.certificateUrl ? (
+                <a
+                  href={result.certificateUrl}
+                  target="_blank"
+                  rel="nofollow noopener noreferrer"
+                  className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
+                >
+                  View Certificate
+                </a>
+              ) : (
+                <Link
+                  href={getLink()}
+                  className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
+                >
+                  View Details
+                </Link>
+              )}
+            </>
+          )}
+
+          {/* Project: View Live Link and/or View Code */}
+          {result.type === 'project' && (
+            <>
+              {result.liveUrl && (
+                <a
+                  href={result.liveUrl}
+                  target="_blank"
+                  rel="nofollow noopener noreferrer"
+                  className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
+                >
+                  View Live Link
+                </a>
+              )}
+              {result.repoUrl && (
+                <a
+                  href={result.repoUrl}
+                  target="_blank"
+                  rel="nofollow noopener noreferrer"
+                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center text-sm font-bold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
+                >
+                  View Code
+                </a>
+              )}
+              {!result.liveUrl && !result.repoUrl && (
+                <Link
+                  href={getLink()}
+                  className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
+                >
+                  View Details
+                </Link>
+              )}
+            </>
           )}
         </div>
 
         {/* Relevance Score (for debugging - can be removed) */}
         {result.relevanceScore > 0 && (
-          <div className="mt-3 text-xs text-white/40">
-            Relevance: {result.relevanceScore}
-          </div>
+          <div className="mt-3 text-xs text-white/40">Relevance: {result.relevanceScore}</div>
         )}
       </div>
     </div>

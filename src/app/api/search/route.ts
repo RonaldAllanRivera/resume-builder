@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import config from '@payload-config'
+import configPromise from '@payload-config'
 import {
   extractKeywords,
+  SearchFilters,
   formatExperienceResult,
   formatProjectResult,
   formatCertificationResult,
   type SearchResponse,
-  type SearchFilters,
 } from '@/utilities/search'
 
 // Rate limiting store (in-memory)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT_MAX = 10 // Max requests per window
+const RATE_LIMIT_MAX = 120 // Max requests per window (2 per second average)
 const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
 
 function checkRateLimit(ip: string): boolean {
@@ -63,10 +63,10 @@ export async function GET(request: NextRequest) {
     const keywords = extractKeywords(query)
 
     // Initialize Payload
-    const payload = await getPayload({ config })
+    const payload = await getPayload({ config: configPromise })
 
     // Search experiences
-    let experiences: any[] = []
+    let experiences: import('@/utilities/search').SearchResult[] = []
     if (type === 'all' || type === 'experience') {
       const expResults = await payload.find({
         collection: 'experiences',
@@ -80,7 +80,12 @@ export async function GET(request: NextRequest) {
       experiences = expResults.docs
         .map((exp) => formatExperienceResult(exp, keywords))
         .filter((result) => result.relevanceScore > 0)
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        // Sort by date (latest to oldest)
+        .sort((a, b) => {
+          const dateA = a.date ? new Date(a.date).getTime() : 0
+          const dateB = b.date ? new Date(b.date).getTime() : 0
+          return dateB - dateA
+        })
         // Remove duplicates based on title + subtitle + date
         .filter(
           (result, index, self) =>
@@ -96,7 +101,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Search projects
-    let projects: any[] = []
+    let projects: import('@/utilities/search').SearchResult[] = []
     if (type === 'all' || type === 'projects') {
       const projResults = await payload.find({
         collection: 'projects',
@@ -110,7 +115,12 @@ export async function GET(request: NextRequest) {
       projects = projResults.docs
         .map((proj) => formatProjectResult(proj, keywords))
         .filter((result) => result.relevanceScore > 0)
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        // Sort by date (latest to oldest)
+        .sort((a, b) => {
+          const dateA = a.date ? new Date(a.date).getTime() : 0
+          const dateB = b.date ? new Date(b.date).getTime() : 0
+          return dateB - dateA
+        })
         // Remove duplicates based on title + subtitle
         .filter(
           (result, index, self) =>
@@ -121,7 +131,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Search certifications
-    let certifications: any[] = []
+    let certifications: import('@/utilities/search').SearchResult[] = []
     if (type === 'all' || type === 'certifications') {
       const certResults = await payload.find({
         collection: 'certifications',
@@ -135,7 +145,12 @@ export async function GET(request: NextRequest) {
       certifications = certResults.docs
         .map((cert) => formatCertificationResult(cert, keywords))
         .filter((result) => result.relevanceScore > 0)
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        // Sort by date (latest to oldest)
+        .sort((a, b) => {
+          const dateA = a.date ? new Date(a.date).getTime() : 0
+          const dateB = b.date ? new Date(b.date).getTime() : 0
+          return dateB - dateA
+        })
         // Remove duplicates based on title + subtitle + date
         .filter(
           (result, index, self) =>

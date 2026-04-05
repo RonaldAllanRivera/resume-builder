@@ -21,7 +21,7 @@ export function SearchPage() {
   >('all')
 
   const performSearch = useCallback(
-    async (query: string) => {
+    async (query: string, retryCount = 0) => {
       if (!query.trim()) {
         setResults(null)
         // Clear URL when search is empty
@@ -36,17 +36,57 @@ export function SearchPage() {
       setError(null)
 
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
 
         if (!response.ok) {
-          throw new Error('Search failed')
+          const errorText = await response.text()
+
+          if (response.status === 429) {
+            // Don't log rate limit errors - they'll be retried automatically
+            throw new Error('RATE_LIMIT')
+          }
+
+          console.error('API Error:', response.status, response.statusText, errorText)
+          throw new Error(`Server error: ${response.status}`)
         }
 
         const data: SearchResponse = await response.json()
         setResults(data)
       } catch (err) {
-        setError('Failed to search. Please try again.')
+        let errorMessage = 'Failed to search. Please try again.'
+
+        if (err instanceof Error) {
+          if (err.message === 'RATE_LIMIT') {
+            errorMessage = 'Too many requests. Please wait a moment and try again.'
+            // Retry with exponential backoff for rate limit
+            if (retryCount < 3) {
+              const delay = Math.pow(2, retryCount) * 1000 // 1s, 2s, 4s
+              console.log(`Rate limited. Retrying in ${delay / 1000}s...`)
+              setTimeout(() => performSearch(query, retryCount + 1), delay)
+              return
+            }
+          } else if (
+            err.message.includes('Failed to fetch') ||
+            err.message.includes('NetworkError')
+          ) {
+            errorMessage = 'Network error. Please check your connection and try again.'
+            // Retry once for network errors
+            if (retryCount === 0) {
+              console.log('Retrying search due to network error...')
+              setTimeout(() => performSearch(query, 1), 1000)
+              return
+            }
+          } else if (err.message.includes('Server error')) {
+            errorMessage = 'Server error. Please try again in a moment.'
+          }
+        }
+
         console.error('Search error:', err)
+        setError(errorMessage)
       } finally {
         setIsLoading(false)
       }
@@ -138,6 +178,7 @@ export function SearchPage() {
               isLoading={isLoading}
               error={error}
               activeFilter={activeFilter}
+              onSearch={performSearch}
             />
           </div>
         </section>
