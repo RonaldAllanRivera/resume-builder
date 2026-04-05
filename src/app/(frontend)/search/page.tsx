@@ -1,9 +1,10 @@
 import type { Metadata } from 'next/types'
+import { Suspense } from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getTemplate } from '@/templates/registry'
 
-export default async function SearchPage() {
+async function SearchPageContent() {
   const payload = await getPayload({ config: configPromise })
 
   const siteSettings = await payload.findGlobal({
@@ -24,6 +25,14 @@ export default async function SearchPage() {
   }
 
   return <TemplateSearchPage />
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#050608]" />}>
+      <SearchPageContent />
+    </Suspense>
+  )
 }
 
 export async function generateMetadata(): Promise<Metadata> {
