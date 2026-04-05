@@ -95,6 +95,19 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - Beautiful HTML email templates with gradient styling
       - Rate limiting: 3 submissions per IP per hour
       - Professional email formatting with metadata (IP, timestamp)
+    - **Comprehensive Search System** (`/search`) for portfolio content discovery
+      - Multi-collection search across experiences, projects, and certifications
+      - Intelligent relevance scoring with keyword matching
+      - Search fields: titles, companies, summaries, tech stacks, highlights, categories
+      - Filter tabs: All, Projects, Certifications, Experience
+      - Beautiful result cards with gradient headers matching site design
+      - Bookmarkable URLs (`/search?q=React`) for sharing with employers
+      - URL state management with browser back/forward support
+      - Deduplication logic to prevent duplicate results
+      - Empty state with popular search suggestions
+      - Header navigation integration on all pages
+      - Optimized PostgreSQL queries for fast performance
+      - Responsive grid layout with mobile-first design
   - **Default Theme**: Clean, professional layout
   - **Modern Theme**: Contemporary design with smooth animations
   - **Minimal Theme**: Simple, focused presentation

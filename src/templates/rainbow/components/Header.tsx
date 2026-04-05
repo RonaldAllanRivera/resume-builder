@@ -181,6 +181,12 @@ export function Header() {
               >
                 Contact
               </Link>
+              <Link
+                href="/search"
+                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+              >
+                Search
+              </Link>
             </nav>
           </div>
 
@@ -384,6 +390,14 @@ export function Header() {
                 className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400"
               >
                 Contact
+              </Link>
+
+              <Link
+                href="/search"
+                onClick={() => setMobileMenuOpen(false)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 flex items-center gap-2"
+              >
+                Search Resume
               </Link>
             </nav>
           </div>

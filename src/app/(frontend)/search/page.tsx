@@ -1,88 +1,40 @@
 import type { Metadata } from 'next/types'
-
-import { CollectionArchive } from '@/components/CollectionArchive'
-import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import React from 'react'
-import { Search } from '@/search/Component'
-import PageClient from './page.client'
-import { CardPostData } from '@/components/Card'
+import configPromise from '@payload-config'
+import { getTemplate } from '@/templates/registry'
 
-type Args = {
-  searchParams: Promise<{
-    q: string
-  }>
-}
-export default async function Page({ searchParams: searchParamsPromise }: Args) {
-  const { q: query } = await searchParamsPromise
+export default async function SearchPage() {
   const payload = await getPayload({ config: configPromise })
 
-  const posts = await payload.find({
-    collection: 'search',
-    depth: 1,
-    limit: 12,
-    select: {
-      title: true,
-      slug: true,
-      categories: true,
-      meta: true,
-    },
-    // pagination: false reduces overhead if you don't need totalDocs
-    pagination: false,
-    ...(query
-      ? {
-          where: {
-            or: [
-              {
-                title: {
-                  like: query,
-                },
-              },
-              {
-                'meta.description': {
-                  like: query,
-                },
-              },
-              {
-                'meta.title': {
-                  like: query,
-                },
-              },
-              {
-                slug: {
-                  like: query,
-                },
-              },
-            ],
-          },
-        }
-      : {}),
+  const siteSettings = await payload.findGlobal({
+    slug: 'siteSettings',
+    depth: 0,
   })
 
-  return (
-    <div className="pt-24 pb-24">
-      <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none text-center">
-          <h1 className="mb-8 lg:mb-16">Search</h1>
+  const template = siteSettings?.publicTemplate || 'rainbow'
+  const templateComponents = getTemplate(template)
+  const TemplateSearchPage = templateComponents.SearchPage
 
-          <div className="max-w-[50rem] mx-auto">
-            <Search />
-          </div>
-        </div>
+  if (!TemplateSearchPage) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-white">Search page not available for this template</p>
       </div>
+    )
+  }
 
-      {posts.totalDocs > 0 ? (
-        <CollectionArchive posts={posts.docs as CardPostData[]} />
-      ) : (
-        <div className="container">No results found.</div>
-      )}
-    </div>
-  )
+  return <TemplateSearchPage />
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: `Payload Website Template Search`,
+    title: 'Search Portfolio | Allan Rivera',
+    description:
+      'Search projects, experience, and certifications. Find React, Next.js, Laravel, WordPress, Python, and AI work.',
+    openGraph: {
+      title: 'Search Portfolio | Allan Rivera',
+      description: 'Search projects, experience, and certifications across my portfolio.',
+      type: 'website',
+    },
   }
 }

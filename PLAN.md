@@ -664,7 +664,383 @@ Goal: Let a client choose a package, pick from your admin-managed availability, 
 
 Status: Planned
 
-## Phase 4D — Performance Optimization for AI Chat & Booking UI (Best Practices)
+## Phase 4D — Search Functionality (Professional Portfolio Search)
+
+**Goal**: Implement a comprehensive search system that allows recruiters and employers to quickly find relevant experience, projects, and certifications across the entire portfolio.
+
+### Requirements Analysis (from SEARCH.md)
+
+**Key Insights:**
+- Search should feel like a **serious portfolio tool**, not a utility link
+- Recruiters need to instantly find: "Next.js", "React", "AI", "WordPress plugin", "Python automation", "certifications"
+- Current `/search` page is too basic (default search page with "Search submit" and "No results found")
+- Search is a **navigation shortcut for recruiters** given the depth of content (27 projects, 63 certifications, 9+ experiences)
+
+### Phase 4D.1 — Search Backend & API (Foundation)
+
+**Status**: ✅ COMPLETED
+
+**Implementation:**
+
+1. **Search API Route** (`/api/search`)
+   - Server-side search endpoint with Payload Local API
+   - Multi-collection search across:
+     - `experiences` (title, company, responsibilities, skills)
+     - `projects` (title, description, techStack, summary, category)
+     - `certifications` (name, issuer, category, description)
+   - Query parameters:
+     - `q` (search query, required)
+     - `type` (filter: all | experience | projects | certifications)
+     - `limit` (default: 50)
+   - Response format:
+     ```typescript
+     {
+       query: string
+       totalResults: number
+       results: {
+         experiences: Array<Experience>
+         projects: Array<Project>
+         certifications: Array<Certification>
+       }
+       counts: {
+         experiences: number
+         projects: number
+         certifications: number
+       }
+     }
+     ```
+
+2. **Search Algorithm**
+   - **Multi-field matching** with priority scoring:
+     - Title/Name matches: highest priority
+     - Tech stack/Skills matches: high priority
+     - Description/Summary matches: medium priority
+     - Category matches: low priority
+   - **Keyword extraction**: Split query into individual keywords
+   - **Case-insensitive matching**
+   - **Partial word matching**: "react" matches "React.js", "ReactJS"
+   - **Highlight matched terms** in results
+
+3. **Search Utilities** (`src/utilities/search.ts`)
+   ```typescript
+   // Search across all collections
+   export async function searchPortfolio(query: string, filters?: SearchFilters)
+   
+   // Extract and highlight matched terms
+   export function highlightMatches(text: string, query: string): string
+   
+   // Calculate relevance score
+   export function calculateRelevanceScore(item: any, query: string): number
+   
+   // Extract popular search terms from analytics
+   export function getPopularSearches(): string[]
+   ```
+
+4. **Performance Optimization**
+   - Implement result caching (5-minute TTL)
+   - Limit to 50 results per collection
+   - Use Payload's efficient query operators
+   - Add request rate limiting (10 requests/minute per IP)
+
+### Phase 4D.2 — Search UI Components (User Interface)
+
+**Status**: ✅ COMPLETED
+
+**Implementation:**
+
+1. **Header Search Button** (Top-right navigation)
+   - Component: `SearchButton.tsx`
+   - Label: **"Search Resume"** or **"Search My Work"**
+   - Icon: Magnifying glass (🔍)
+   - Behavior: Navigate to `/search` page
+   - Placement: Top-right header, visible on all pages
+   - Mobile: Responsive icon-only on small screens
+
+2. **Homepage Search Section** (Below hero or before Featured Work)
+   - Component: `HomeSearchBar.tsx`
+   - Design:
+     ```
+     Quick Search
+     [ Search React, Next.js, Laravel, WordPress, AI automation... ] [Search]
+     
+     Popular: React • Next.js • Laravel • WordPress • Python • AI • Certifications
+     ```
+   - Features:
+     - Large rounded input with gradient border
+     - Placeholder with example searches
+     - Clickable popular search chips
+     - Auto-focus on desktop
+     - Routes to `/search?q=...`
+   - Styling: Glass morphism, gradient accents, space theme
+
+3. **Dedicated Search Page** (`/search`)
+   - Component: `SearchPage.tsx` (Rainbow template)
+   - Hero section:
+     ```
+     Search My Work
+     Find projects, experience, certifications, and technical skills in one place.
+     
+     [ Search by React, Laravel, WordPress, AI, Python... ] [Search]
+     ```
+   - Features:
+     - Starfield background animation
+     - Large search input (auto-focused)
+     - Filter tabs: All | Experience | Projects | Certifications
+     - Sort dropdown: Most Relevant | Newest | Category
+     - Result count display
+     - Empty state with suggestions
+
+4. **Search Results Component** (`SearchResults.tsx`)
+   - Grouped results by type:
+     - **Experience** cards
+     - **Projects** cards
+     - **Certifications** cards
+   - Each card shows:
+     - Title/Name (highlighted matches)
+     - Subtitle (company/category/issuer)
+     - Date range
+     - Matched keywords highlighted
+     - Relevance snippet
+     - Link to full details
+   - Responsive grid layout
+
+### Phase 4D.3 — Search Results & Filtering (Core Functionality)
+
+**Status**: ✅ COMPLETED
+
+**Implementation:**
+
+1. **Result Cards Design**
+
+   **Experience Card:**
+   ```
+   [Card with gradient header]
+   Senior Full Stack Developer
+   LogicMedia • Jan 2023 - Present
+   
+   Matched skills: React, Next.js, TypeScript, AI/ML
+   "Built SaaS platform using React and Next.js with AI-powered features..."
+   
+   [View Details →]
+   ```
+
+   **Project Card:**
+   ```
+   [Card with gradient header]
+   MeetLessons AI SaaS
+   Full Stack Development • 2024
+   
+   Tech Stack: React • Next.js • OpenAI • Python
+   "AI-powered lesson planning platform with OCR and automation..."
+   
+   [View Project →] [View Code →]
+   ```
+
+   **Certification Card:**
+   ```
+   [Card with gradient header]
+   React Advanced Certification
+   Meta • Issued: Jan 2024 • 15 hours
+   
+   Category: Frontend & JavaScript
+   "Advanced React patterns, hooks, performance optimization..."
+   
+   [View Credential →]
+   ```
+
+2. **Filtering System**
+   - Filter tabs (client-side):
+     - All (default)
+     - Experience only
+     - Projects only
+     - Certifications only
+   - URL state management: `/search?q=react&type=projects`
+   - Active filter styling with gradients
+
+3. **Sorting Options**
+   - Most Relevant (default): By relevance score
+   - Newest: By date (descending)
+   - Category: Grouped by category/type
+
+4. **Highlight Matched Text**
+   - Utility function: `highlightMatches(text, query)`
+   - Wrap matched terms in `<mark>` tags
+   - CSS styling: Yellow highlight with dark background
+   - Case-insensitive matching
+
+5. **Empty State**
+   ```
+   No results found for "xyz"
+   
+   Try searching for:
+   • React or Next.js
+   • Laravel or PHP
+   • WordPress or Elementor
+   • Python or AI
+   • Certifications
+   ```
+
+### Phase 4D.4 — Search UX Enhancements (Advanced Features)
+
+**Status**: Partially Completed
+
+**Implementation:**
+
+1. **URL State Management** ✅ COMPLETED
+   - Query parameter: `/search?q=react`
+   - Filter parameter: `/search?q=react&type=projects` (Planned)
+   - Browser back/forward support ✅
+   - Shareable search URLs ✅
+   - Update URL on search without page reload ✅
+
+2. **Autosuggest / Autocomplete**
+   - Component: `SearchAutocomplete.tsx`
+   - Show suggestions as user types (debounced 300ms)
+   - Suggest from:
+     - Popular searches
+     - Tech stack keywords
+     - Project titles
+     - Certification names
+   - Keyboard navigation (arrow keys, enter)
+   - Max 5 suggestions
+
+3. **Popular Searches**
+   - Hardcoded initial list:
+     ```typescript
+     const POPULAR_SEARCHES = [
+       'React', 'Next.js', 'Laravel', 'WordPress',
+       'Python', 'AI', 'TypeScript', 'Certifications'
+     ]
+     ```
+   - Display as clickable chips
+   - Track clicks for analytics (future)
+
+4. **Multi-Keyword Search**
+   - Support: `react next seo`
+   - Split by spaces
+   - Match ANY keyword (OR logic)
+   - Highlight all matched keywords
+
+5. **Search Across All Fields**
+   - Projects: title, description, summary, techStack, category
+   - Experience: title, company, responsibilities, skills
+   - Certifications: name, issuer, category, description
+
+6. **Keyboard Shortcuts** (Optional - PRO LEVEL)
+   - `⌘ + K` or `Ctrl + K`: Open search modal
+   - Command palette style (like VS Code)
+   - Floating modal with search
+   - ESC to close
+
+### Phase 4D.5 — Search SEO & Analytics
+
+**Status**: Planned
+
+**Implementation:**
+
+1. **SEO Optimization**
+   - `/search` page metadata:
+     ```typescript
+     export const metadata = {
+       title: 'Search Portfolio | Allan Rivera',
+       description: 'Search projects, experience, and certifications. Find React, Next.js, Laravel, WordPress, Python, and AI work.',
+       robots: 'index, follow'
+     }
+     ```
+   - Canonical URL
+   - OpenGraph tags
+   - JSON-LD structured data (SearchAction)
+
+2. **Analytics Tracking** (Future)
+   - Track search queries
+   - Track popular searches
+   - Track zero-result searches
+   - Track click-through rates
+
+### Technical Architecture
+
+**File Structure:**
+```
+src/
+├── app/
+│   ├── (frontend)/
+│   │   └── search/
+│   │       └── page.tsx          # Search page
+│   └── api/
+│       └── search/
+│           └── route.ts           # Search API endpoint
+├── templates/
+│   └── rainbow/
+│       ├── SearchPage.tsx         # Rainbow template search page
+│       ├── components/
+│       │   ├── search/
+│       │   │   ├── SearchBar.tsx
+│       │   │   ├── SearchButton.tsx
+│       │   │   ├── SearchResults.tsx
+│       │   │   ├── SearchFilters.tsx
+│       │   │   ├── SearchAutocomplete.tsx
+│       │   │   ├── ExperienceCard.tsx
+│       │   │   ├── ProjectCard.tsx
+│       │   │   └── CertificationCard.tsx
+│       │   └── HomeSearchBar.tsx  # Homepage search section
+└── utilities/
+    └── search.ts                  # Search utilities
+```
+
+**Dependencies:**
+- No new dependencies required
+- Use existing: Payload Local API, Next.js, React, Tailwind CSS
+
+### Implementation Priority
+
+**Phase 1 (MVP - Week 1):**
+1. Search API endpoint (`/api/search`)
+2. Basic search utilities
+3. Dedicated search page (`/search`)
+4. Search results display (grouped by type)
+5. Header search button
+
+**Phase 2 (Enhanced - Week 2):**
+1. Homepage search section
+2. Filter tabs (All/Experience/Projects/Certifications)
+3. Highlight matched text
+4. URL state management
+5. Empty state with suggestions
+
+**Phase 3 (Advanced - Week 3):**
+1. Autosuggest/autocomplete
+2. Popular searches
+3. Multi-keyword search
+4. Sort options
+5. SEO optimization
+
+**Phase 4 (Optional - Future):**
+1. Keyboard shortcuts (⌘ + K)
+2. Analytics tracking
+3. Search history
+4. Advanced filters (date range, category)
+
+### Success Metrics
+
+- **Discoverability**: Search button visible in header on all pages
+- **Usability**: Average time to find relevant content < 10 seconds
+- **Completeness**: Search covers 100% of portfolio content
+- **Performance**: Search results load in < 500ms
+- **UX**: Zero-result rate < 10%
+
+### Best Practices Applied
+
+✅ **Recruiter-focused**: Search is a serious portfolio tool, not a hidden utility  
+✅ **Multi-entry points**: Header button + homepage section + dedicated page  
+✅ **Grouped results**: Experience, Projects, Certifications clearly separated  
+✅ **Highlighted matches**: Matched keywords visually emphasized  
+✅ **URL state**: Shareable search URLs for bookmarking  
+✅ **Empty state**: Helpful suggestions when no results found  
+✅ **Performance**: Cached results, rate limiting, efficient queries  
+✅ **SEO**: Indexable search page with proper metadata  
+✅ **Accessibility**: Keyboard navigation, ARIA labels, semantic HTML  
+
+## Phase 4E — Performance Optimization for AI Chat & Booking UI (Best Practices)
 
 Goal: Prepare the site for high-performance AI chat and booking interfaces with optimal Lighthouse scores and fast user interactions.
 
