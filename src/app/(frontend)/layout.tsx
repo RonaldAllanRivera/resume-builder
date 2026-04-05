@@ -5,13 +5,10 @@ import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { StarfieldClient } from '@/components/StarfieldClient'
-import { PayloadAdminRemover } from '@/components/PayloadAdminRemover'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -42,12 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Persistent Starfield background - covers entire viewport, continues across page navigation */}
         <StarfieldClient />
 
-        <Providers>
-          <PayloadAdminRemover />
-          <Header />
-          {children}
-          <Footer />
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

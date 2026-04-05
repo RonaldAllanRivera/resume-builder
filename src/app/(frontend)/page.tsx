@@ -34,7 +34,7 @@ export default async function HomePage({
   const settings = await getSiteSettings()
   const profile = await getResumeProfile()
   const featuredProjects = await getFeaturedProjects()
-  const allProjects = await getAllProjects()
+  const _allProjects = await getAllProjects() // Fetched for cache warming, not used in HomePage
   const experiences = await getAllExperiences()
   const educations = await getAllEducations()
   const certifications = await getAllCertifications()
@@ -52,7 +52,6 @@ export default async function HomePage({
         <HomePageComponent
           profile={profile}
           featuredProjects={featuredProjects}
-          allProjects={allProjects}
           experiences={experiences}
           educations={educations}
           certifications={certifications}

@@ -1,42 +1,16 @@
 'use client'
 
-import React, { useMemo } from 'react'
-import type { ResumeProfile1, Project } from '@/payload-types'
+import React from 'react'
+import type { ResumeProfile1 } from '@/payload-types'
 import { CTAButtons } from './CTAButtons'
+import { SearchBar } from './search/SearchBar'
 import './Hero.css'
 
 interface HeroProps {
   profile?: ResumeProfile1 | null
-  projects?: Project[]
 }
 
-export function Hero({ profile, projects }: HeroProps) {
-  // Extract unique tech stacks from all projects, sorted by usage count
-  const uniqueTechStacks = useMemo(() => {
-    if (!projects || projects.length === 0) return []
-
-    const techStackCount = new Map<string, number>()
-
-    projects.forEach((project) => {
-      if (project.techStack && Array.isArray(project.techStack)) {
-        project.techStack.forEach((tech) => {
-          if (tech && typeof tech === 'object' && tech.name && tech.name.trim()) {
-            const techName = tech.name.trim()
-            techStackCount.set(techName, (techStackCount.get(techName) || 0) + 1)
-          }
-        })
-      }
-    })
-
-    // Sort by count (descending), then alphabetically for ties, limit to top 5
-    return Array.from(techStackCount.entries())
-      .sort((a, b) => {
-        if (b[1] !== a[1]) return b[1] - a[1] // Sort by count descending
-        return a[0].localeCompare(b[0]) // Sort alphabetically for same count
-      })
-      .slice(0, 8) // Limit to top 8 most used tech stacks
-      .map(([tech]) => tech)
-  }, [projects])
+export function Hero({ profile }: HeroProps) {
   return (
     <section className="space-hero relative overflow-hidden min-h-screen bg-transparent">
       {/* CSS overrides to hide hero gradients and show starfield */}
@@ -53,7 +27,7 @@ export function Hero({ profile, projects }: HeroProps) {
       `}</style>
 
       {/* Main content */}
-      <main className="relative z-10 flex min-h-[100vh] items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 sm:pt-32 lg:px-10">
+      <main className="relative z-10 flex min-h-[100vh] items-center justify-center px-4 pb-24 pt-30 text-center sm:px-6 sm:pt-22 lg:px-10">
         <div className="mx-auto w-full max-w-5xl">
           <div className="flex flex-col items-center">
             {/* Subtitle badge - From Resume Profile Headline */}
@@ -80,19 +54,10 @@ export function Hero({ profile, projects }: HeroProps) {
             {/* CTA Buttons */}
             <CTAButtons className="justify-center" />
 
-            {/* Tech stack tags - Dynamic from projects */}
-            {uniqueTechStacks.length > 0 && (
-              <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm">
-                {uniqueTechStacks.map((tech) => (
-                  <span
-                    key={tech}
-                    className="rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-white/75"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* Search Bar - Interactive search with popular tags */}
+            <div className="mt-10 flex justify-center">
+              <SearchBar placeholder="Search React, Next.js, Laravel, WordPress, AI automation..." />
+            </div>
           </div>
         </div>
       </main>

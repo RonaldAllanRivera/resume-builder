@@ -16,7 +16,6 @@ import { Certifications } from './components/Certifications'
 interface HomePageProps {
   profile?: ResumeProfile1 | null
   featuredProjects?: Project[]
-  allProjects?: Project[]
   experiences?: Experience[]
   educations?: Education[]
   certifications?: Certification[]
@@ -26,7 +25,6 @@ interface HomePageProps {
 export function HomePage({
   profile,
   featuredProjects,
-  allProjects,
   experiences,
   educations,
   certifications,
@@ -34,7 +32,7 @@ export function HomePage({
   return (
     <div>
       {/* Hero Section with space background */}
-      <Hero profile={profile} projects={allProjects} />
+      <Hero profile={profile} />
 
       {/* Featured Work Section */}
       {featuredProjects && featuredProjects.length > 0 && (
