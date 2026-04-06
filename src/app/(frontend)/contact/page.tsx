@@ -30,7 +30,8 @@ export default async function ContactRoute() {
   })
 
   // Get the template component
-  const { ContactPage } = await getTemplate(settings.publicTemplate || 'rainbow')
+  const template = await getTemplate(settings.publicTemplate || 'rainbow')
+  const { Layout, ContactPage } = template
 
   if (!ContactPage) {
     return (
@@ -40,5 +41,9 @@ export default async function ContactRoute() {
     )
   }
 
-  return <ContactPage settings={settings} />
+  return (
+    <Layout>
+      <ContactPage settings={settings} />
+    </Layout>
+  )
 }

@@ -158,7 +158,7 @@ export function SearchResultCard({ result, gradientIndex }: SearchResultCardProp
                   href={result.repoUrl}
                   target="_blank"
                   rel="nofollow noopener noreferrer"
-                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center text-sm font-bold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
+                  className={`flex-1 rounded-xl bg-gradient-to-r ${gradient} px-4 py-2.5 text-center text-sm font-bold text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20`}
                 >
                   View Code
                 </a>

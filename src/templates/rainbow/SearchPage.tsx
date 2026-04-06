@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { SearchBar } from './components/search/SearchBar'
 import { SearchResults } from './components/search/SearchResults'
 import { StarfieldClient } from '@/components/StarfieldClient'
-import { Header } from './components/Header'
 import type { SearchResponse } from '@/utilities/search'
 
 export function SearchPage() {
@@ -112,12 +111,9 @@ export function SearchPage() {
   ]
 
   return (
-    <div className="relative min-h-screen bg-[#050608]">
+    <div className="relative min-h-screen">
       {/* Starfield Background */}
       <StarfieldClient />
-
-      {/* Header Navigation */}
-      <Header />
 
       {/* Content */}
       <div className="relative z-10">

@@ -2,16 +2,13 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import type { SiteSetting } from '@/payload-types'
-import { X } from 'lucide-react'
 
 interface ContactPageProps {
   settings?: SiteSetting | null
 }
 
 export function ContactPage({ settings: _settings }: ContactPageProps) {
-  const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -71,17 +68,8 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Close Button */}
-      <button
-        onClick={() => router.back()}
-        className="fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-[#191a21]/90 text-white/70 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-[#191a21]/95 hover:text-white"
-        aria-label="Close and go back"
-      >
-        <X className="h-5 w-5" />
-      </button>
-
       {/* Content */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-16">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-24 pb-16">
         <div className="w-full max-w-2xl">
           {/* Header */}
           <div className="mb-12 text-center">
