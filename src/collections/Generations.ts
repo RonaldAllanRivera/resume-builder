@@ -27,8 +27,9 @@ export const Generations: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['jobAd', 'company', 'resumeProfile', 'status', 'updatedAt'],
+    group: 'AI',
     useAsTitle: 'jobAd',
+    defaultColumns: ['jobAd', 'company', 'resumeProfile', 'status', 'updatedAt'],
     listSearchableFields: ['jobAd.title'],
     components: {
       edit: {

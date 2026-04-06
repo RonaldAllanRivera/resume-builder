@@ -20,7 +20,8 @@ export const Projects: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['title', 'category', 'featured', 'updatedAt'],
+    defaultColumns: ['title', 'category', 'startDate', 'endDate', 'order'],
+    group: 'Resume',
     useAsTitle: 'title',
     components: {
       edit: {

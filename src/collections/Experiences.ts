@@ -12,8 +12,9 @@ export const Experiences: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['title', 'company', 'startDate', 'endDate', 'updatedAt'],
     useAsTitle: 'title',
+    defaultColumns: ['title', 'company', 'startDate', 'endDate', 'current', 'order'],
+    group: 'Resume',
     components: {
       edit: {
         editMenuItems: ['@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem'],

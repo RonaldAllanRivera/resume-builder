@@ -12,6 +12,7 @@ import type {
   Education,
   SiteSetting,
   ResumeProfile1,
+  Package,
 } from '@/payload-types'
 
 export interface TemplateComponents {
@@ -52,6 +53,9 @@ export interface TemplateComponents {
     settings?: SiteSetting | null
   }>
   SearchPage?: ComponentType
+  PricingPage?: ComponentType<{
+    packages: Package[]
+  }>
 }
 
 export type TemplateKey = 'default' | 'modern' | 'minimal' | 'rainbow'
@@ -69,6 +73,7 @@ import { CertificationsPage as DefaultCertificationsPage } from './default/Certi
 import { ContactPage as RainbowContactPage } from './rainbow/ContactPage'
 import { SearchPage as RainbowSearchPage } from './rainbow/SearchPage'
 import { Layout as RainbowLayout } from './rainbow/components/Layout'
+import { PricingPage as RainbowPricingPage } from './rainbow/components/PricingPage'
 import { HomePage as RainbowHomePage } from './rainbow/HomePage'
 import { ExperiencePage as RainbowExperiencePage } from './rainbow/ExperiencePage'
 import { EducationPage as RainbowEducationPage } from './rainbow/EducationPage'
@@ -85,6 +90,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     ProjectsPage: DefaultProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage,
     CertificationsPage: DefaultCertificationsPage,
+    PricingPage: RainbowPricingPage, // Reuse rainbow pricing for all templates
   },
   // Placeholder for future templates
   modern: {
@@ -95,6 +101,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     ProjectsPage: DefaultProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage,
     CertificationsPage: DefaultCertificationsPage,
+    PricingPage: RainbowPricingPage, // Reuse rainbow pricing for all templates
   },
   minimal: {
     Layout: DefaultLayout,
@@ -104,6 +111,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     ProjectsPage: DefaultProjectsPage,
     ProjectCategoryPage: DefaultProjectCategoryPage,
     CertificationsPage: DefaultCertificationsPage,
+    PricingPage: RainbowPricingPage, // Reuse rainbow pricing for all templates
   },
   rainbow: {
     Layout: RainbowLayout,
@@ -115,6 +123,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     CertificationsPage: RainbowCertificationsPage,
     ContactPage: RainbowContactPage,
     SearchPage: RainbowSearchPage,
+    PricingPage: RainbowPricingPage,
   },
 }
 

@@ -134,6 +134,12 @@ export function Header() {
                 )}
               </div>
               <Link
+                href="/pricing"
+                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-amber-300 hover:via-orange-400 hover:to-red-400 hover:shadow-[0_0_20px_rgba(255,180,100,0.3)]"
+              >
+                Pricing
+              </Link>
+              <Link
                 href="/search"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]"
               >
@@ -306,6 +312,14 @@ export function Header() {
                   </Link>
                 </div>
               )}
+
+              <Link
+                href="/pricing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-amber-300 hover:via-orange-400 hover:to-red-400"
+              >
+                Pricing
+              </Link>
 
               <Link
                 href="/search"

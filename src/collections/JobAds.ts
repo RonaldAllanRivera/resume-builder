@@ -33,8 +33,9 @@ export const JobAds: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['displayTitle', 'company', 'posterName', 'status', 'updatedAt'],
-    useAsTitle: 'displayTitle',
+    group: 'Resume',
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'company', 'source', 'createdAt', 'status', 'updatedAt'],
   },
   defaultSort: '-createdAt',
   forceSelect: {

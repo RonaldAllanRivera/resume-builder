@@ -14,6 +14,7 @@ export const Educations: CollectionConfig = {
   admin: {
     defaultColumns: ['school', 'degree', 'startDate', 'endDate', 'updatedAt'],
     useAsTitle: 'school',
+    group: 'Resume',
     components: {
       edit: {
         editMenuItems: ['@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem'],

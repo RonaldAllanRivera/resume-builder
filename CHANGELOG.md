@@ -1,5 +1,118 @@
 # Changelog
 
+## [0.11.0] - 2026-04-06
+
+### Custom Booking System Implementation (Phase 4C)
+
+**Core Booking Features**
+- **Service Packages**: Created 4 pricing tiers
+  - 30-Minute Consultation ($50)
+  - Day Rate ($400)
+  - Week Rate ($1,800)
+  - Monthly Retainer ($6,000)
+- **Availability Management**: Timezone-aware scheduling
+  - Weekday evenings (Mon-Fri 6pm-10pm PHT)
+  - Weekend full day (Sat-Sun 9am-6pm PHT)
+  - 30-minute slots with 15-minute buffers
+  - 7-day advance notice, 60-day max booking window
+  - 24-hour confirmation window
+- **Stripe Integration**: Payment processing ready
+  - Checkout session creation
+  - Webhook handler for payment confirmation
+  - Pay-after-completion workflow support
+
+**Admin Dashboard Enhancements**
+- **Database Management Panel**: Separate controls for Resume and Booking data
+  - Seed Booking Data: Creates 4 packages + 2 availability rules
+  - Reset Booking Data: Deletes all booking-related data
+  - Admin-only access with confirmation dialogs
+- **Collection Organization**: Grouped all collections for better navigation
+  - **Booking**: Packages, Customers, Availability Rules, Bookings
+  - **Content**: Pages, Posts, Media, Categories
+  - **Resume**: Experiences, Educations, Projects, Certifications, Resume Profiles, Companies, Job Ads
+  - **AI**: Generations
+  - **System**: Users
+
+**Public Pages**
+- **Pricing Page** (`/pricing`): Professional package display with Rainbow theme
+- **Booking Flow** (`/book/[packageSlug]`): Multi-step booking process
+- **Success/Cancel Pages**: Post-payment confirmation pages
+- **Header Navigation**: Added "Pricing" link to all pages
+
+**API Endpoints**
+- `POST /api/seed-booking` - Seed sample packages and availability rules
+- `POST /api/reset-booking` - Delete all booking data
+- `GET /api/availability/slots` - Fetch available time slots
+- `POST /api/bookings` - Create booking request
+- `POST /api/bookings/checkout` - Create Stripe checkout session
+- `POST /api/webhooks/stripe` - Handle Stripe payment webhooks
+
+**Files Created**
+- `src/collections/Packages.ts` - Service packages collection
+- `src/collections/Customers.ts` - Customer management collection
+- `src/collections/AvailabilityRules.ts` - Scheduling rules collection
+- `src/collections/Bookings.ts` - Booking records collection
+- `src/lib/stripe.ts` - Stripe SDK integration
+- `src/endpoints/seed-booking.ts` - Seed data function
+- `src/app/api/seed-booking/route.ts` - Seed API endpoint
+- `src/app/api/reset-booking/route.ts` - Reset API endpoint
+- `src/app/api/availability/slots/route.ts` - Time slots API
+- `src/app/api/bookings/route.ts` - Bookings API
+- `src/app/api/bookings/checkout/route.ts` - Stripe checkout API
+- `src/app/api/webhooks/stripe/route.ts` - Stripe webhook handler
+- `src/templates/rainbow/components/PricingPage.tsx` - Pricing display
+- `src/templates/rainbow/components/BookingFlow.tsx` - Booking UI
+- `src/app/(frontend)/pricing/page.tsx` - Pricing route
+- `src/app/(frontend)/book/[packageSlug]/page.tsx` - Booking route
+- `src/app/(frontend)/book/success/page.tsx` - Success page
+- `src/app/(frontend)/book/cancel/page.tsx` - Cancel page
+- `src/components/BeforeDashboard/BookingSeedButton/index.tsx` - Dashboard seed button
+- `src/components/BeforeDashboard/BookingSeedButton/index.scss` - Button styles
+
+**Files Modified**
+- `src/components/DatabaseManager.tsx` - Added booking data controls
+- `src/components/BeforeDashboard/index.tsx` - Added BookingSeedButton
+- `src/templates/rainbow/components/Header.tsx` - Added Pricing navigation link
+- `src/templates/registry.ts` - Registered PricingPage component
+- `src/collections/Packages.ts` - Added Booking group
+- `src/collections/Customers.ts` - Added Booking group
+- `src/collections/AvailabilityRules.ts` - Added Booking group and new fields
+- `src/collections/Bookings.ts` - Added Booking group and payment workflow fields
+- `src/collections/Pages/index.ts` - Added Content group
+- `src/collections/Posts/index.ts` - Added Content group
+- `src/collections/Media.ts` - Added Content group
+- `src/collections/Categories.ts` - Added Content group
+- `src/collections/Experiences.ts` - Added Resume group
+- `src/collections/Educations.ts` - Added Resume group
+- `src/collections/Projects.ts` - Added Resume group
+- `src/collections/Certifications.ts` - Added Resume group
+- `src/collections/ResumeProfiles.ts` - Added Resume group, fixed useAsTitle
+- `src/collections/Companies.ts` - Added Resume group
+- `src/collections/JobAds.ts` - Added Resume group, fixed useAsTitle
+- `src/collections/Generations.ts` - Added AI group
+- `src/collections/Users/index.ts` - Added System group
+- `.env.example` - Added Stripe and booking configuration variables
+- `docs/BOOKING_SYSTEM.md` - Comprehensive booking system documentation
+
+**Bug Fixes**
+- Fixed `ResumeProfiles` useAsTitle from non-existent `fullName` to `name`
+- Fixed `JobAds` useAsTitle from non-existent `jobTitle` to `title`
+- Fixed `Media` collection admin config placement
+- Fixed Stripe API version to match installed package (`2026-03-25.dahlia`)
+- Fixed Stripe checkout `expires_after` to `expires_at` with unix timestamp
+
+**Documentation**
+- Updated README.md with booking system features
+- Updated PLAN.md with Phase 4C completion status
+- Created comprehensive booking system guide in docs/BOOKING_SYSTEM.md
+
+**Remaining Tasks**
+- Email notifications (planned)
+- Rate limiting implementation (pending)
+- Mobile optimization (pending)
+- Customer portal (`/portal`) (planned)
+- Stripe test mode verification (requires setup)
+
 ## [0.10.1] - 2026-04-05
 
 ### Search System Enhancements & Admin Bar Removal

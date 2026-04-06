@@ -13,6 +13,7 @@ export const ResumeProfiles: CollectionConfig = {
   admin: {
     defaultColumns: ['name', 'updatedAt'],
     useAsTitle: 'name',
+    group: 'Resume',
   },
   defaultSort: '-createdAt',
   fields: [

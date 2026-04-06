@@ -80,6 +80,10 @@ export interface Config {
     jobAds: JobAd;
     generations: Generation;
     users: User;
+    packages: Package;
+    customers: Customer;
+    availabilityRules: AvailabilityRule;
+    bookings: Booking;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -110,6 +114,10 @@ export interface Config {
     jobAds: JobAdsSelect<false> | JobAdsSelect<true>;
     generations: GenerationsSelect<false> | GenerationsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    packages: PackagesSelect<false> | PackagesSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
+    availabilityRules: AvailabilityRulesSelect<false> | AvailabilityRulesSelect<true>;
+    bookings: BookingsSelect<false> | BookingsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1035,6 +1043,288 @@ export interface Generation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "packages".
+ */
+export interface Package {
+  id: number;
+  name: string;
+  /**
+   * Unique identifier for URLs (e.g., "30min-consultation")
+   */
+  slug: string;
+  /**
+   * 1-2 sentence summary for pricing cards
+   */
+  shortDescription: string;
+  /**
+   * Detailed description of what's included
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Price in cents (e.g., 5000 for $50.00)
+   */
+  price: number;
+  /**
+   * 3-letter currency code (USD, EUR, etc.)
+   */
+  currency: string;
+  durationType: 'call' | 'day' | 'week' | 'month' | 'custom';
+  /**
+   * Duration in minutes for consultation calls
+   */
+  durationMinutes?: number | null;
+  /**
+   * List of deliverables included in this package
+   */
+  deliverables?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Package limits (e.g., revisions, response time, meetings)
+   */
+  limits?:
+    | {
+        type: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  requiresScheduling?: boolean | null;
+  /**
+   * Show this package on the pricing page
+   */
+  active?: boolean | null;
+  /**
+   * Order for displaying packages (lower numbers first)
+   */
+  sortOrder?: number | null;
+  /**
+   * Stripe Price ID for direct payment processing
+   */
+  stripePriceId?: string | null;
+  /**
+   * Stripe Product ID for catalog management
+   */
+  stripeProductId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  email: string;
+  name: string;
+  /**
+   * Phone number with country code
+   */
+  phone?: string | null;
+  /**
+   * Customer timezone for scheduling
+   */
+  timezone?: string | null;
+  /**
+   * Company or organization
+   */
+  company?: string | null;
+  /**
+   * Customer consented to marketing communications
+   */
+  marketingConsent?: boolean | null;
+  /**
+   * OAuth providers linked to this customer
+   */
+  providers?:
+    | {
+        provider?: ('google' | 'github' | 'linkedin') | null;
+        /**
+         * Account ID from the provider
+         */
+        providerAccountId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Internal notes about this customer
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availabilityRules".
+ */
+export interface AvailabilityRule {
+  id: number;
+  /**
+   * Internal name for this availability rule
+   */
+  name: string;
+  /**
+   * IANA timezone identifier (e.g., Asia/Manila, America/New_York)
+   */
+  timezone: string;
+  daysOfWeek: ('1' | '2' | '3' | '4' | '5' | '6' | '7')[];
+  /**
+   * Start time in HH:MM format (24-hour)
+   */
+  startTime: string;
+  /**
+   * End time in HH:MM format (24-hour)
+   */
+  endTime: string;
+  /**
+   * Duration of each booking slot in minutes
+   */
+  slotDurationMinutes: number;
+  /**
+   * Buffer time between bookings in minutes
+   */
+  bufferMinutes: number;
+  /**
+   * Minimum days in advance a booking can be made (e.g., 7 = clients must book at least 1 week ahead)
+   */
+  advanceNoticeDays: number;
+  /**
+   * Maximum days in advance a booking can be made
+   */
+  maxAdvanceDays: number;
+  /**
+   * Hours you have to confirm/review a booking before it auto-expires
+   */
+  confirmationWindowHours: number;
+  /**
+   * Maximum number of bookings allowed per day
+   */
+  maxBookingsPerDay?: number | null;
+  /**
+   * Enable this availability rule
+   */
+  active?: boolean | null;
+  /**
+   * Specific dates to block (holidays, personal time, etc.)
+   */
+  blockedDates?:
+    | {
+        date: string;
+        /**
+         * Reason for blocking this date
+         */
+        reason?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings".
+ */
+export interface Booking {
+  id: number;
+  /**
+   * Customer who made the booking
+   */
+  customer: number | Customer;
+  /**
+   * Package that was booked
+   */
+  package: number | Package;
+  /**
+   * Booking lifecycle: pending_review → accepted → pending_payment → paid → in_progress → work_completed → payment_released
+   */
+  status:
+    | 'pending_review'
+    | 'accepted'
+    | 'pending_payment'
+    | 'paid'
+    | 'in_progress'
+    | 'work_completed'
+    | 'payment_released'
+    | 'cancelled'
+    | 'expired'
+    | 'refunded'
+    | 'disputed';
+  /**
+   * How payment is handled for this booking
+   */
+  paymentMode?: ('pay_after_completion' | 'pay_upfront' | 'deposit_final') | null;
+  /**
+   * Deposit amount in cents (for deposit + final payment mode)
+   */
+  depositAmount?: number | null;
+  /**
+   * Booking start time in UTC
+   */
+  startAt: string;
+  /**
+   * Booking end time in UTC
+   */
+  endAt: string;
+  /**
+   * Customer timezone at time of booking
+   */
+  timezoneAtBooking: string;
+  /**
+   * Customer notes or special requirements
+   */
+  notes?: string | null;
+  termsAcceptedAt?: string | null;
+  /**
+   * Stripe Checkout Session ID
+   */
+  stripeCheckoutSessionId?: string | null;
+  /**
+   * Stripe Payment Intent ID
+   */
+  stripePaymentIntentId?: string | null;
+  paidAt?: string | null;
+  /**
+   * Amount paid in cents
+   */
+  amount?: number | null;
+  /**
+   * Currency code (USD, EUR, etc.)
+   */
+  currency?: string | null;
+  /**
+   * Refund amount in cents (if applicable)
+   */
+  refundAmount?: number | null;
+  /**
+   * Reason for refund
+   */
+  refundReason?: string | null;
+  /**
+   * Internal notes for admin use only
+   */
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1274,6 +1564,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'packages';
+        value: number | Package;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
+        relationTo: 'availabilityRules';
+        value: number | AvailabilityRule;
+      } | null)
+    | ({
+        relationTo: 'bookings';
+        value: number | Booking;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1798,6 +2104,115 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "packages_select".
+ */
+export interface PackagesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  shortDescription?: T;
+  description?: T;
+  price?: T;
+  currency?: T;
+  durationType?: T;
+  durationMinutes?: T;
+  deliverables?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  limits?:
+    | T
+    | {
+        type?: T;
+        value?: T;
+        id?: T;
+      };
+  requiresScheduling?: T;
+  active?: T;
+  sortOrder?: T;
+  stripePriceId?: T;
+  stripeProductId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  email?: T;
+  name?: T;
+  phone?: T;
+  timezone?: T;
+  company?: T;
+  marketingConsent?: T;
+  providers?:
+    | T
+    | {
+        provider?: T;
+        providerAccountId?: T;
+        id?: T;
+      };
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availabilityRules_select".
+ */
+export interface AvailabilityRulesSelect<T extends boolean = true> {
+  name?: T;
+  timezone?: T;
+  daysOfWeek?: T;
+  startTime?: T;
+  endTime?: T;
+  slotDurationMinutes?: T;
+  bufferMinutes?: T;
+  advanceNoticeDays?: T;
+  maxAdvanceDays?: T;
+  confirmationWindowHours?: T;
+  maxBookingsPerDay?: T;
+  active?: T;
+  blockedDates?:
+    | T
+    | {
+        date?: T;
+        reason?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings_select".
+ */
+export interface BookingsSelect<T extends boolean = true> {
+  customer?: T;
+  package?: T;
+  status?: T;
+  paymentMode?: T;
+  depositAmount?: T;
+  startAt?: T;
+  endAt?: T;
+  timezoneAtBooking?: T;
+  notes?: T;
+  termsAcceptedAt?: T;
+  stripeCheckoutSessionId?: T;
+  stripePaymentIntentId?: T;
+  paidAt?: T;
+  amount?: T;
+  currency?: T;
+  refundAmount?: T;
+  refundReason?: T;
+  adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

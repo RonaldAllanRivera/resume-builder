@@ -13,6 +13,7 @@ export const Companies: CollectionConfig = {
   admin: {
     defaultColumns: ['name', 'website', 'updatedAt'],
     useAsTitle: 'name',
+    group: 'Resume',
   },
   fields: [
     {

@@ -19,7 +19,8 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 
 - **Docker-First Development**: Consistent environment, zero local setup
 - **Testing Infrastructure**: Vitest (integration) + Playwright (E2E) + GitHub Actions CI/CD
-- **Database Management UI**: Admin dashboard with reset/seed buttons (100 resume items with categorized certifications)
+- **Database Management UI**: Admin dashboard with reset/seed buttons for resume data (101 items) and booking data
+- **Custom Booking System**: Stripe-integrated scheduling with packages, availability rules, and customer management
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
 - **Google Docs Export**: OAuth2 authentication with personal Drive quota
 - **Multiple Template System**: Switchable public templates via admin panel
@@ -167,6 +168,12 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - Draft/publish workflow for content
 - Minimal RBAC (`admin`, `editor`) for the CMS
 - Private-by-default personal fields with explicit publish toggles
+- **Custom Booking System** with Stripe integration:
+  - Service packages (consultation, day/week/month rates)
+  - Availability rules with timezone support
+  - Customer management
+  - Booking workflow with payment processing
+  - Admin-organized collections (Booking, Content, Resume, AI, System groups)
 
 ## Tech stack
 
@@ -224,7 +231,9 @@ docker compose up
 
 1. Visit http://localhost:3000/admin
 2. Create your first admin user
-3. Use the **Database Management** panel on the dashboard to seed resume data (101 items)
+3. Use the **Database Management** panel on the dashboard to seed data:
+   - **Resume Data**: Seed 101 items (experiences, projects, certifications, etc.)
+   - **Booking Data**: Seed 4 sample packages and 2 availability rules
 
 ### Daily Development
 
@@ -280,9 +289,15 @@ See [TESTING.md](TESTING.md) for complete testing documentation.
 1. Login to http://localhost:3000/admin
 2. Go to **Dashboard**
 3. Use the **Database Management** panel:
-   - **Reset & Seed Database** - One-click complete refresh
-   - **Reset Database** - Clear all resume data
-   - **Seed Database** - Populate with resume data
+   
+   **Resume Data:**
+   - **Reset & Seed Resume** - One-click complete refresh
+   - **Reset Resume** - Clear all resume data
+   - **Seed Resume** - Populate with resume data
+   
+   **Booking Data:**
+   - **Seed Booking Data** - Create sample packages and availability rules
+   - **Reset Booking Data** - Delete all booking-related data
 
 ### Command Line (Alternative)
 
@@ -300,6 +315,7 @@ docker compose up
 
 ### What Gets Seeded
 
+**Resume Data:**
 - **Site Settings** (1 global) - Social links (Portfolio, Email, LinkedIn, GitHub)
 - **Resume Profile** (1 global) - Full contact info + summary
 - **Experiences** (9 items) - Work history
@@ -308,6 +324,12 @@ docker compose up
 - **Certifications** (65 items) - LinkedIn Learning courses
 
 **Total: 101 resume items**
+
+**Booking Data:**
+- **Packages** (4 items) - 30-min consultation, day rate, week rate, monthly retainer
+- **Availability Rules** (2 items) - Weekday evenings, weekend full day
+
+**Total: 6 booking items**
 
 ## Routes
 

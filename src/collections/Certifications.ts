@@ -12,8 +12,9 @@ export const Certifications: CollectionConfig = {
     update: adminOrEditor,
   },
   admin: {
-    defaultColumns: ['title', 'issuer', 'issueDate', 'updatedAt'],
     useAsTitle: 'title',
+    defaultColumns: ['title', 'issuer', 'issueDate', 'category', 'order'],
+    group: 'Resume',
     components: {
       edit: {
         editMenuItems: ['@/components/DeleteVersionsMenuItem#DeleteVersionsMenuItem'],

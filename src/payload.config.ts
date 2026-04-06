@@ -4,14 +4,18 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { AvailabilityRules } from './collections/AvailabilityRules'
+import { Bookings } from './collections/Bookings'
 import { Categories } from './collections/Categories'
 import { Certifications } from './collections/Certifications'
 import { Companies } from './collections/Companies'
+import { Customers } from './collections/Customers'
 import { Educations } from './collections/Educations'
 import { Experiences } from './collections/Experiences'
 import { Generations } from './collections/Generations'
 import { JobAds } from './collections/JobAds'
 import { Media } from './collections/Media'
+import { Packages } from './collections/Packages'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
@@ -88,6 +92,11 @@ export default buildConfig({
     JobAds,
     Generations,
     Users,
+    // Booking system collections
+    Packages,
+    Customers,
+    AvailabilityRules,
+    Bookings,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteSettings, ResumeProfile, CoverLetterSettings, AIGenerationSettings],

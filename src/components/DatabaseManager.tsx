@@ -5,6 +5,8 @@ import React, { useState } from 'react'
 const DatabaseManager: React.FC = () => {
   const [isResetting, setIsResetting] = useState(false)
   const [isSeeding, setIsSeeding] = useState(false)
+  const [isBookingResetting, setIsBookingResetting] = useState(false)
+  const [isBookingSeeding, setIsBookingSeeding] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const handleReset = async () => {
@@ -130,6 +132,73 @@ const DatabaseManager: React.FC = () => {
     }
   }
 
+  const handleBookingSeed = async () => {
+    if (!confirm('This will seed booking packages and availability rules. Continue?')) {
+      return
+    }
+
+    setIsBookingSeeding(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/seed-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setMessage({
+          type: 'success',
+          text: data.message || 'Booking data seeded successfully!',
+        })
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to seed booking data' })
+      }
+    } catch (_error) {
+      setMessage({ type: 'error', text: 'Network error: Failed to seed booking data' })
+    } finally {
+      setIsBookingSeeding(false)
+    }
+  }
+
+  const handleBookingReset = async () => {
+    if (
+      !confirm(
+        '⚠️ This will DELETE ALL booking data (packages, customers, availability rules, bookings). Are you sure?',
+      )
+    ) {
+      return
+    }
+
+    setIsBookingResetting(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/reset-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: data.message || 'Booking data reset successfully!' })
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to reset booking data' })
+      }
+    } catch (_error) {
+      setMessage({ type: 'error', text: 'Network error: Failed to reset booking data' })
+    } finally {
+      setIsBookingResetting(false)
+    }
+  }
+
   return (
     <div style={{ padding: '20px', maxWidth: '800px' }}>
       <h2 style={{ marginBottom: '20px', fontSize: '24px', fontWeight: 'bold' }}>
@@ -145,18 +214,17 @@ const DatabaseManager: React.FC = () => {
         }}
       >
         <p style={{ marginBottom: '12px', fontSize: '14px', color: '#374151' }}>
-          <strong>Admin-only tools</strong> for managing resume data in the database.
+          <strong>Admin-only tools</strong> for managing database content.
         </p>
         <ul style={{ marginLeft: '20px', fontSize: '14px', color: '#6b7280' }}>
           <li>
-            Reset: Clears Resume Profile and deletes all experiences, projects, education, and
-            certifications
+            <strong>Resume Data:</strong> Reset clears Resume Profile and deletes all experiences,
+            projects, education, and certifications. Seed populates complete resume data.
           </li>
           <li>
-            Seed: Populates database with your complete resume data (Site Settings + Resume Profile
-            + all collections)
+            <strong>Booking Data:</strong> Reset deletes all packages, customers, availability
+            rules, and bookings. Seed creates sample packages and availability rules.
           </li>
-          <li>Reset & Seed: One-click to clear and repopulate everything</li>
         </ul>
       </div>
 
@@ -175,60 +243,108 @@ const DatabaseManager: React.FC = () => {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-        <button
-          onClick={handleResetAndSeed}
-          disabled={isResetting || isSeeding}
-          style={{
-            padding: '10px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            borderRadius: '6px',
-            border: 'none',
-            cursor: isResetting || isSeeding ? 'not-allowed' : 'pointer',
-            backgroundColor: isResetting || isSeeding ? '#9ca3af' : '#3b82f6',
-            color: 'white',
-            opacity: isResetting || isSeeding ? 0.6 : 1,
-          }}
-        >
-          {isResetting || isSeeding ? '⏳ Processing...' : '🔄 Reset & Seed Database'}
-        </button>
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: '#111827' }}>
+          Resume Data
+        </h3>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <button
+            onClick={handleResetAndSeed}
+            disabled={isResetting || isSeeding}
+            style={{
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '6px',
+              border: 'none',
+              cursor: isResetting || isSeeding ? 'not-allowed' : 'pointer',
+              backgroundColor: isResetting || isSeeding ? '#9ca3af' : '#3b82f6',
+              color: 'white',
+              opacity: isResetting || isSeeding ? 0.6 : 1,
+            }}
+          >
+            {isResetting || isSeeding ? '⏳ Processing...' : '🔄 Reset & Seed Resume'}
+          </button>
 
-        <button
-          onClick={handleReset}
-          disabled={isResetting || isSeeding}
-          style={{
-            padding: '10px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            borderRadius: '6px',
-            border: '1px solid #d1d5db',
-            cursor: isResetting || isSeeding ? 'not-allowed' : 'pointer',
-            backgroundColor: isResetting || isSeeding ? '#f3f4f6' : 'white',
-            color: isResetting || isSeeding ? '#9ca3af' : '#374151',
-            opacity: isResetting || isSeeding ? 0.6 : 1,
-          }}
-        >
-          {isResetting ? '⏳ Resetting...' : '🗑️ Reset Database'}
-        </button>
+          <button
+            onClick={handleReset}
+            disabled={isResetting || isSeeding}
+            style={{
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '6px',
+              border: '1px solid #d1d5db',
+              cursor: isResetting || isSeeding ? 'not-allowed' : 'pointer',
+              backgroundColor: isResetting || isSeeding ? '#f3f4f6' : 'white',
+              color: isResetting || isSeeding ? '#9ca3af' : '#374151',
+              opacity: isResetting || isSeeding ? 0.6 : 1,
+            }}
+          >
+            {isResetting ? '⏳ Resetting...' : '🗑️ Reset Resume'}
+          </button>
 
-        <button
-          onClick={handleSeed}
-          disabled={isResetting || isSeeding}
-          style={{
-            padding: '10px 20px',
-            fontSize: '14px',
-            fontWeight: '600',
-            borderRadius: '6px',
-            border: '1px solid #d1d5db',
-            cursor: isResetting || isSeeding ? 'not-allowed' : 'pointer',
-            backgroundColor: isResetting || isSeeding ? '#f3f4f6' : 'white',
-            color: isResetting || isSeeding ? '#9ca3af' : '#374151',
-            opacity: isResetting || isSeeding ? 0.6 : 1,
-          }}
-        >
-          {isSeeding ? '⏳ Seeding...' : '🌱 Seed Database'}
-        </button>
+          <button
+            onClick={handleSeed}
+            disabled={isResetting || isSeeding}
+            style={{
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '6px',
+              border: '1px solid #d1d5db',
+              cursor: isResetting || isSeeding ? 'not-allowed' : 'pointer',
+              backgroundColor: isResetting || isSeeding ? '#f3f4f6' : 'white',
+              color: isResetting || isSeeding ? '#9ca3af' : '#374151',
+              opacity: isResetting || isSeeding ? 0.6 : 1,
+            }}
+          >
+            {isSeeding ? '⏳ Seeding...' : '🌱 Seed Resume'}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: '#111827' }}>
+          Booking Data
+        </h3>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <button
+            onClick={handleBookingSeed}
+            disabled={isBookingSeeding || isBookingResetting}
+            style={{
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '6px',
+              border: 'none',
+              cursor: isBookingSeeding || isBookingResetting ? 'not-allowed' : 'pointer',
+              backgroundColor: isBookingSeeding || isBookingResetting ? '#9ca3af' : '#10b981',
+              color: 'white',
+              opacity: isBookingSeeding || isBookingResetting ? 0.6 : 1,
+            }}
+          >
+            {isBookingSeeding ? '⏳ Seeding...' : '🌱 Seed Booking Data'}
+          </button>
+
+          <button
+            onClick={handleBookingReset}
+            disabled={isBookingSeeding || isBookingResetting}
+            style={{
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '6px',
+              border: '1px solid #d1d5db',
+              cursor: isBookingSeeding || isBookingResetting ? 'not-allowed' : 'pointer',
+              backgroundColor: isBookingSeeding || isBookingResetting ? '#f3f4f6' : 'white',
+              color: isBookingSeeding || isBookingResetting ? '#9ca3af' : '#374151',
+              opacity: isBookingSeeding || isBookingResetting ? 0.6 : 1,
+            }}
+          >
+            {isBookingResetting ? '⏳ Resetting...' : '🗑️ Reset Booking Data'}
+          </button>
+        </div>
       </div>
 
       <div

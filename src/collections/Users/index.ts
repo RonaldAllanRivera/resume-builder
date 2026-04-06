@@ -26,8 +26,9 @@ export const Users: CollectionConfig = {
     update: adminOrSelf,
   },
   admin: {
-    defaultColumns: ['name', 'email'],
     useAsTitle: 'name',
+    defaultColumns: ['name', 'email'],
+    group: 'System',
     hidden: ({ user }) => {
       return !isAdmin(user)
     },

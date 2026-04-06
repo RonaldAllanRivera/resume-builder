@@ -76,6 +76,16 @@ Status: Completed
     - `GOOGLE_CLIENT_SECRET`
     - `GOOGLE_REDIRECT_URI`
     - `GOOGLE_DRIVE_FOLDER_ID`
+  - Booking system (Phase 4C):
+    - `STRIPE_PUBLISHABLE_KEY`
+    - `STRIPE_SECRET_KEY`
+    - `STRIPE_WEBHOOK_SECRET`
+    - `NEXT_PUBLIC_BOOKING_ENABLED`
+    - `BOOKING_TIMEZONE`
+    - `BOOKING_BUFFER_MINUTES`
+    - `BOOKING_CONFIRMATION_HOURS`
+    - `BOOKING_ADVANCE_NOTICE_DAYS`
+    - `BOOKING_PAYOUT_MODE`
 
 Status: Completed
 
@@ -664,200 +674,451 @@ Goal: Let a client choose a package, pick from your admin-managed availability, 
 
 Status: Planned
 
-## Phase 4C — Simplified Booking System (Calendly Integration)
+---
 
-**Goal**: Enable easy interview/project scheduling without complex payment infrastructure. Focus on conversion and user experience for portfolio visitors.
+## Phase 4C — Enhanced Custom Booking System
 
-### **Why Calendly + No Payments (Best Practice for Portfolios)**
+**Goal**: Professional freelance booking platform with package pricing, availability management, and Stripe payments that integrates seamlessly with your portfolio.
+
+### **Why Custom Over Calendly (Best Practice for Freelancers)**
 
 **Benefits:**
-- ⚡ **Quick Setup**: 30 minutes vs. weeks of custom development
-- 🔄 **Automatic Features**: Timezone handling, reminders, calendar sync
-- 📱 **Professional UI**: Mobile-optimized scheduling experience
-- 💰 **Cost Effective**: Free tier handles most portfolio needs
-- 🎯 **Focus**: Your time on portfolio content, not booking infrastructure
+- 💰 **Revenue Generation**: Direct payment processing vs. just scheduling
+- 🎨 **Full Brand Control**: Perfect integration with Rainbow theme
+- 📦 **Package Pricing**: Display Day/Week/Month rates transparently
+- � **Portfolio Context**: Link bookings to specific projects
+- � **Conversion Optimization**: Full control over user journey
+- 🚀 **Scalability**: Build once, scale infinitely without monthly fees
 
-**Portfolio Context:**
-- Primary goal: Get hired/showcase work
-- Recruiters want simple scheduling, not payment flows
-- Complex booking system creates unnecessary friction
-- Manual coordination works better for custom project quotes
+**Freelance Context:**
+- Primary goal: Convert portfolio visitors into paying clients
+- Clients want transparent pricing and easy booking
+- Custom system shows professionalism and technical capability
+- Direct payments reduce friction and increase conversion rates
 
 ---
 
-### **Phase 4C.1 — Calendly Setup & Integration (Priority: High)**
+### Phase 4C.1 — Package System & Pricing Display (Priority: High)
 
-**Status**: Planned
+**Status**: Implemented
 
 **Implementation:**
 
-1. **Calendly Account Setup**
-   - Create free Calendly account
-   - Configure event types:
-     - "30 Minute Interview" (default)
-     - "60 Minute Project Discussion" (optional)
-     - "Quick 15min Chat" (optional)
-   - Set availability windows
-   - Configure buffer times between meetings
-   - Add custom branding (logo, colors)
+1. **Package Collection Setup**
+   ```typescript
+   // Collection: packages
+   {
+     name: "30 Minute Consultation",
+     slug: "30min-consultation",
+     shortDescription: "Initial project discussion and requirements gathering",
+     description: "Perfect for exploring project feasibility, discussing technical approach, and determining if we're a good fit for your needs.",
+     price: 5000, // $50.00 in cents
+     currency: "USD",
+     durationType: "call",
+     durationMinutes: 30,
+     deliverables: [
+       "Project requirements analysis",
+       "Technical recommendations",
+       "Timeline estimation",
+       "Next steps roadmap"
+     ],
+     requiresScheduling: true,
+     active: true,
+     sortOrder: 1
+   }
+   ```
 
-2. **Portfolio Integration**
-   - Update CTAButtons component:
-     ```typescript
-     // Replace "BOOK ME NOW" with Calendly integration
-     const buttons = [
-       { href: "/chat", label: "CHAT WITH AI" },
-       { 
-         href: "https://calendly.com/your-username/30min",
-         label: "SCHEDULE INTERVIEW",
-         external: true,
-         target: "_blank",
-         rel: "noopener noreferrer"
+2. **Pricing Page Component**
+   ```typescript
+   // src/app/(frontend)/pricing/page.tsx
+   export default function PricingPage() {
+     return (
+       <Layout>
+         <PricingPage />
+       </Layout>
+     )
+   }
+   ```
+
+3. **Package Card Component**
+   ```typescript
+   // src/templates/rainbow/components/PackageCard.tsx
+   interface PackageCardProps {
+     package: Package
+     available: boolean
+     onBook: (packageId: string) => void
+   }
+   ```
+
+---
+
+### Phase 4C.2 — Environment Variables & Configuration (Priority: High)
+
+**Status**: Implemented
+
+**Environment Variables (.env.local):**
+```bash
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Booking Configuration
+NEXT_PUBLIC_BOOKING_ENABLED=true
+BOOKING_TIMEZONE=Asia/Manila
+BOOKING_BUFFER_MINUTES=15
+BOOKING_HOLD_MINUTES=20
+
+# Rate Limiting
+BOOKING_RATE_LIMIT=3 per hour per IP
+```
+
+**Vercel Environment Variables:**
+- Add same variables to Vercel project settings
+- Use different values for Preview/Production
+- Mark webhook secrets as sensitive
+
+---
+
+### Phase 4C.3 — Availability Management System (Priority: High)
+
+**Status**: Implemented
+
+**Implementation:**
+
+1. **Availability Rules Collection**
+   ```typescript
+   // Collection: availabilityRules
+   {
+     timezone: "Asia/Manila",
+     daysOfWeek: [1, 2, 3, 4, 5], // Mon-Fri
+     startTime: "09:00",
+     endTime: "17:00",
+     slotDurationMinutes: 30,
+     bufferMinutes: 15,
+     active: true
+   }
+   ```
+
+2. **Time Slot Generation**
+   - API endpoint: `/api/availability/slots`
+   - Generate available slots based on rules
+   - Exclude existing bookings
+   - Handle timezone conversions
+
+3. **Slot Hold System**
+   - Create `pending_payment` booking when slot selected
+   - Hold slot for 20 minutes during payment
+   - Auto-release if payment not completed
+   - Prevent double booking
+
+---
+
+### Phase 4C.4 — Stripe Payment Integration (Priority: High)
+
+**Status**: Implemented
+
+**Implementation:**
+
+1. **Stripe Checkout Integration**
+   ```typescript
+   // src/lib/stripe.ts
+   export async function createCheckoutSession(bookingId: string) {
+     const booking = await payload.findByID({
+       collection: 'bookings',
+       id: bookingId
+     })
+     
+     const session = await stripe.checkout.sessions.create({
+       payment_method_types: ['card'],
+       line_items: [{
+         price_data: {
+           currency: booking.package.currency.toLowerCase(),
+           unit_amount: booking.package.price,
+           product_data: {
+             name: booking.package.name,
+             description: booking.package.shortDescription
+           }
+         },
+         quantity: 1
+       }],
+       mode: 'payment',
+       success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/book/success?session_id={CHECKOUT_SESSION_ID}`,
+       cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/book/cancel`,
+       metadata: {
+         bookingId: bookingId
        }
-     ]
-     ```
-   - Add external link attributes for security
-   - Update button text to reflect interview scheduling
+     })
+     
+     return session
+   }
+   ```
 
-3. **Contact Section Enhancement**
-   - Create ContactSection component:
-     ```typescript
-     <ContactSection 
-       email="hello@yourdomain.com"
-       calendly="https://calendly.com/your-username/30min"
-       linkedin="https://linkedin.com/in/yourprofile"
-       github="https://github.com/yourusername"
-     />
-     ```
-   - Multiple contact methods for different user preferences
-   - Consistent with Rainbow theme design
+2. **Webhook Handler**
+   ```typescript
+   // src/app/api/webhooks/stripe/route.ts
+   export async function POST(request: Request) {
+     const signature = request.headers.get('stripe-signature')
+     const body = await request.text()
+     
+     let event: Stripe.Event
+     
+     try {
+       event = stripe.webhooks.constructEvent(
+         body,
+         signature!,
+         process.env.STRIPE_WEBHOOK_SECRET!
+       )
+     } catch (err) {
+       return new Response(`Webhook signature verification failed`, { status: 400 })
+     }
+     
+     if (event.type === 'checkout.session.completed') {
+       const session = event.data.object as Stripe.Checkout.Session
+       await confirmBooking(session.metadata?.bookingId)
+     }
+     
+     return new Response(null, { status: 200 })
+   }
+   ```
 
 ---
 
-### **Phase 4C.2 — User Experience Optimizations (Priority: Medium)**
+### Phase 4C.5 — Booking Flow & UI Components (Priority: High)
+
+**Status**: Implemented
+
+**Component Architecture:**
+
+1. **PricingPage** (`/pricing`)
+   - Display all active packages
+   - Show availability status
+   - Professional pricing presentation
+
+2. **BookingPage** (`/book/[packageId]`)
+   - Package details and benefits
+   - Time slot selection
+   - Customer information form
+   - Payment processing
+
+3. **BookingSuccessPage** (`/book/success`)
+   - Booking confirmation
+   - Calendar integration
+   - Next steps
+
+4. **CustomerPortal** (`/portal`)
+   - Manage existing bookings
+   - Reschedule or cancel
+   - View booking history
+
+---
+
+### Phase 4C.6 — Customer Management (Priority: Medium)
 
 **Status**: Planned
 
 **Implementation:**
 
-1. **CTA Placement Strategy**
-   - Hero section: Primary "SCHEDULE INTERVIEW" button
-   - Header: Persistent navigation link
-   - Contact page: Multiple scheduling options
-   - Project pages: "Discuss This Project" links
+1. **Customer Collection**
+   ```typescript
+   // Collection: customers
+   {
+     email: "customer@example.com",
+     name: "John Doe",
+     phone: "+1234567890",
+     timezone: "America/New_York",
+     company: "Acme Corp",
+     marketingConsent: true,
+     providers: [{
+       provider: "google",
+       providerAccountId: "123456789"
+     }]
+   }
+   ```
 
-2. **Contextual Scheduling**
-   - Different Calendly event types for different contexts:
-     - Portfolio review → "30 Minute Interview"
-     - Project inquiry → "60 Minute Project Discussion"
-     - Quick question → "15min Chat"
-
-3. **Mobile Optimization**
-   - Ensure Calendly embed works well on mobile
-   - Large touch targets for scheduling buttons
-   - Fast loading for mobile users
+2. **OAuth Integration (Optional)**
+   - Google OAuth for quick sign-in
+   - Auto-fill customer information
+   - Account linking for returning customers
 
 ---
 
-### **Phase 4C.3 — Analytics & Conversion Tracking (Priority: Low)**
+### Phase 4C.7 — Notifications & Automation (Priority: Medium)
 
 **Status**: Planned
+
+**Email Notifications:**
+- Booking confirmation (customer)
+- Booking confirmation (you)
+- Payment receipt (Stripe)
+- 24-hour reminder
+- 1-hour reminder
+- Follow-up after booking
+
+**Automation:**
+- Calendar invites (Google Calendar)
+- Project onboarding emails
+- Feedback requests
+- Review requests
+
+---
+
+### Phase 4C.8 — Security & Abuse Prevention (Priority: High)
+
+**Status**: Partially Implemented (access control done, rate limiting pending)
+
+**Security Measures:**
+- Rate limiting: 3 bookings per hour per IP
+- CAPTCHA on booking form
+- Webhook signature validation
+- Input sanitization and validation
+- HTTPS enforcement
+- PCI compliance via Stripe
+
+**Access Control:**
+- Public can only read active packages
+- Booking creation requires valid payment
+- Admin-only booking management
+- Customer data protection
+
+---
+
+### Phase 4C.9 — Analytics & Optimization (Priority: Low)
+
+**Status**: Planned
+
+**Tracking:**
+- Package conversion rates
+- Payment success rates
+- Booking completion rates
+- Mobile vs desktop usage
+- Time to complete booking
+
+**Optimization:**
+- A/B test package pricing
+- Test different package descriptions
+- Optimize booking flow
+- Reduce cart abandonment
+
+---
+
+### Phase 4C.10 — Implementation Timeline
+
+**Week 1: Foundation**
+- [x] Set up Stripe account and test keys
+- [x] Create packages collection and seed data
+- [x] Build PackageCard component
+- [x] Create basic pricing page
+
+**Week 2: Booking System**
+- [x] Implement availability rules
+- [x] Build time slot generation
+- [x] Create booking collection
+- [ ] Implement slot hold system (pending - basic structure in place)
+
+**Week 3: Payments**
+- [x] Integrate Stripe Checkout
+- [x] Build webhook handler
+- [x] Create booking flow UI
+- [ ] Test payment process (requires Stripe test mode verification)
+
+**Week 4: Polish & Launch**
+- [ ] Add email notifications (planned)
+- [x] Implement security measures (access control implemented, rate limiting pending)
+- [ ] Mobile optimization (pending)
+- [x] Documentation and testing (basic documentation complete)
+
+---
+
+### Phase 4C.11 — Admin UI & Collection Organization (Priority: High)
+
+**Status**: Implemented
 
 **Implementation:**
 
-1. **Basic Tracking**
-   - Google Analytics event tracking for Calendly clicks
-   - UTM parameters in Calendly links
-   - Conversion funnel monitoring
+1. **Database Management Panel**
+   - Added booking data seed/reset buttons to admin dashboard
+   - Separate controls for Resume Data and Booking Data
+   - Admin-only access with confirmation dialogs
 
-2. **Calendly Analytics**
-   - Monitor meeting types booked
-   - Track no-show rates
-   - Analyze peak scheduling times
+2. **Collection Grouping**
+   - **Booking**: Packages, Customers, Availability Rules, Bookings
+   - **Content**: Pages, Posts, Media, Categories
+   - **Resume**: Experiences, Educations, Projects, Certifications, Resume Profiles, Companies, Job Ads
+   - **AI**: Generations
+   - **System**: Users
 
----
-
-### **Phase 4C.4 — Future Enhancements (Optional)**
-
-**Status**: Planned
-
-**Potential Upgrades (Only if needed):**
-
-1. **Custom Contact Form**
-   - Simple form for project inquiries
-   - Email notification to admin
-   - No payment required
-
-2. **Advanced Calendly Features**
-   - Paid Calendly tier for more features
-   - Team scheduling (if working with others)
-   - Custom workflows and integrations
-
-3. **Full Booking System**
-   - Only implement if getting 10+ bookings/month
-   - Consider Phase 4D (full system) at that point
+3. **Seed Data API**
+   - `/api/seed-booking` - Creates 4 sample packages and 2 availability rules
+   - `/api/reset-booking` - Deletes all booking-related data
+   - Admin authentication required
 
 ---
 
-### **Phase 4C.5 — Implementation Timeline**
-
-**Week 1: Setup & Integration**
-- [ ] Create Calendly account and configure event types
-- [ ] Update CTAButtons component with Calendly links
-- [ ] Test scheduling flow on desktop and mobile
-- [ ] Update all "BOOK ME NOW" references
-
-**Week 2: UX Enhancements**
-- [ ] Create ContactSection component
-- [ ] Add contextual scheduling links
-- [ ] Implement analytics tracking
-- [ ] Test complete user journey
-
-**Week 3: Polish & Documentation**
-- [ ] Update documentation (README.md, contact info)
-- [ ] Test with multiple users/devices
-- [ ] Monitor initial conversion data
-- [ ] Refine based on feedback
-
----
-
-### **Files to Create/Modify**
+### Files to Create/Modify
 
 **New Files:**
-- `src/components/ContactSection.tsx` - Multi-method contact component
-- `src/templates/rainbow/components/ContactSection.tsx` - Rainbow-themed version
+- `src/app/(frontend)/pricing/page.tsx` - Pricing page ✅
+- `src/app/(frontend)/book/[packageId]/page.tsx` - Booking flow ✅
+- `src/app/(frontend)/book/success/page.tsx` - Success page ✅
+- `src/app/(frontend)/book/cancel/page.tsx` - Cancel page ✅
+- `src/app/(frontend)/portal/page.tsx` - Customer portal (planned)
+- `src/templates/rainbow/components/PricingPage.tsx` - Rainbow pricing ✅
+- `src/templates/rainbow/components/PackageCard.tsx` - Package display ✅
+- `src/templates/rainbow/components/BookingFlow.tsx` - Booking process ✅
+- `src/lib/stripe.ts` - Stripe integration ✅
+- `src/app/api/webhooks/stripe/route.ts` - Webhook handler ✅
+- `src/app/api/availability/slots/route.ts` - Time slots API ✅
+- `src/app/api/bookings/route.ts` - Bookings API ✅
+- `src/app/api/bookings/checkout/route.ts` - Stripe checkout API ✅
+- `src/app/api/seed-booking/route.ts` - Seed booking data ✅
+- `src/app/api/reset-booking/route.ts` - Reset booking data ✅
+- `src/endpoints/seed-booking.ts` - Seed data function ✅
+- `src/components/DatabaseManager.tsx` - Updated with booking controls ✅
 
 **Modified Files:**
-- `src/components/CTAButtons.tsx` - Update booking button to Calendly
-- `src/templates/rainbow/components/CTAButtons.tsx` - Rainbow theme version
-- `README.md` - Update contact information
-- Any pages with "BOOK ME NOW" text
+- `src/components/CTAButtons.tsx` - Update to pricing page ✅
+- `src/templates/rainbow/components/CTAButtons.tsx` - Rainbow version ✅
+- `src/templates/rainbow/components/Header.tsx` - Added Pricing link ✅
+- `src/collections/Packages.ts` - Added Booking group ✅
+- `src/collections/Customers.ts` - Added Booking group ✅
+- `src/collections/AvailabilityRules.ts` - Added Booking group ✅
+- `src/collections/Bookings.ts` - Added Booking group ✅
+- All other collections - Added appropriate groups (Content, Resume, AI, System) ✅
+- `src/payload.config.ts` - Configure collections ✅
+- `.env.example` - Add new environment variables ✅
 
 ---
 
-### **Success Metrics**
+### Success Metrics
 
 **Primary Metrics:**
-- Number of interviews scheduled per month
-- Conversion rate from portfolio visit to scheduling
-- User feedback on scheduling experience
+- Booking conversion rate (visitors → paid bookings)
+- Revenue per month from freelance work
+- Customer satisfaction scores
+- Payment success rate
 
 **Secondary Metrics:**
-- Time spent on scheduling page
-- Mobile vs. desktop scheduling preferences
-- Most popular event types
+- Time to complete booking
+- Mobile vs desktop conversion
+- Most popular packages
+- Booking completion by time of day
 
 ---
 
-### **When to Upgrade to Full System**
+### When to Scale Further
 
-**Consider Phase 4D (Full Booking System) only if:**
-- Getting 10+ paid bookings per month consistently
-- Need automated payment processing
-- Want to scale freelance operations significantly
-- Current manual process becomes bottleneck
+**Consider advanced features when:**
+- Consistently getting 20+ bookings per month
+- Need team scheduling capabilities
+- Want advanced analytics and reporting
+- Require automated workflows
 
-**For most portfolios:** Calendly + manual coordination is sufficient and professional.
+**Potential Upgrades:**
+- Team member booking
+- Advanced analytics dashboard
+- Automated project onboarding
+- Integration with project management tools
 
 Status: Planned
 
