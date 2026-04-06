@@ -664,6 +664,203 @@ Goal: Let a client choose a package, pick from your admin-managed availability, 
 
 Status: Planned
 
+## Phase 4C — Simplified Booking System (Calendly Integration)
+
+**Goal**: Enable easy interview/project scheduling without complex payment infrastructure. Focus on conversion and user experience for portfolio visitors.
+
+### **Why Calendly + No Payments (Best Practice for Portfolios)**
+
+**Benefits:**
+- ⚡ **Quick Setup**: 30 minutes vs. weeks of custom development
+- 🔄 **Automatic Features**: Timezone handling, reminders, calendar sync
+- 📱 **Professional UI**: Mobile-optimized scheduling experience
+- 💰 **Cost Effective**: Free tier handles most portfolio needs
+- 🎯 **Focus**: Your time on portfolio content, not booking infrastructure
+
+**Portfolio Context:**
+- Primary goal: Get hired/showcase work
+- Recruiters want simple scheduling, not payment flows
+- Complex booking system creates unnecessary friction
+- Manual coordination works better for custom project quotes
+
+---
+
+### **Phase 4C.1 — Calendly Setup & Integration (Priority: High)**
+
+**Status**: Planned
+
+**Implementation:**
+
+1. **Calendly Account Setup**
+   - Create free Calendly account
+   - Configure event types:
+     - "30 Minute Interview" (default)
+     - "60 Minute Project Discussion" (optional)
+     - "Quick 15min Chat" (optional)
+   - Set availability windows
+   - Configure buffer times between meetings
+   - Add custom branding (logo, colors)
+
+2. **Portfolio Integration**
+   - Update CTAButtons component:
+     ```typescript
+     // Replace "BOOK ME NOW" with Calendly integration
+     const buttons = [
+       { href: "/chat", label: "CHAT WITH AI" },
+       { 
+         href: "https://calendly.com/your-username/30min",
+         label: "SCHEDULE INTERVIEW",
+         external: true,
+         target: "_blank",
+         rel: "noopener noreferrer"
+       }
+     ]
+     ```
+   - Add external link attributes for security
+   - Update button text to reflect interview scheduling
+
+3. **Contact Section Enhancement**
+   - Create ContactSection component:
+     ```typescript
+     <ContactSection 
+       email="hello@yourdomain.com"
+       calendly="https://calendly.com/your-username/30min"
+       linkedin="https://linkedin.com/in/yourprofile"
+       github="https://github.com/yourusername"
+     />
+     ```
+   - Multiple contact methods for different user preferences
+   - Consistent with Rainbow theme design
+
+---
+
+### **Phase 4C.2 — User Experience Optimizations (Priority: Medium)**
+
+**Status**: Planned
+
+**Implementation:**
+
+1. **CTA Placement Strategy**
+   - Hero section: Primary "SCHEDULE INTERVIEW" button
+   - Header: Persistent navigation link
+   - Contact page: Multiple scheduling options
+   - Project pages: "Discuss This Project" links
+
+2. **Contextual Scheduling**
+   - Different Calendly event types for different contexts:
+     - Portfolio review → "30 Minute Interview"
+     - Project inquiry → "60 Minute Project Discussion"
+     - Quick question → "15min Chat"
+
+3. **Mobile Optimization**
+   - Ensure Calendly embed works well on mobile
+   - Large touch targets for scheduling buttons
+   - Fast loading for mobile users
+
+---
+
+### **Phase 4C.3 — Analytics & Conversion Tracking (Priority: Low)**
+
+**Status**: Planned
+
+**Implementation:**
+
+1. **Basic Tracking**
+   - Google Analytics event tracking for Calendly clicks
+   - UTM parameters in Calendly links
+   - Conversion funnel monitoring
+
+2. **Calendly Analytics**
+   - Monitor meeting types booked
+   - Track no-show rates
+   - Analyze peak scheduling times
+
+---
+
+### **Phase 4C.4 — Future Enhancements (Optional)**
+
+**Status**: Planned
+
+**Potential Upgrades (Only if needed):**
+
+1. **Custom Contact Form**
+   - Simple form for project inquiries
+   - Email notification to admin
+   - No payment required
+
+2. **Advanced Calendly Features**
+   - Paid Calendly tier for more features
+   - Team scheduling (if working with others)
+   - Custom workflows and integrations
+
+3. **Full Booking System**
+   - Only implement if getting 10+ bookings/month
+   - Consider Phase 4D (full system) at that point
+
+---
+
+### **Phase 4C.5 — Implementation Timeline**
+
+**Week 1: Setup & Integration**
+- [ ] Create Calendly account and configure event types
+- [ ] Update CTAButtons component with Calendly links
+- [ ] Test scheduling flow on desktop and mobile
+- [ ] Update all "BOOK ME NOW" references
+
+**Week 2: UX Enhancements**
+- [ ] Create ContactSection component
+- [ ] Add contextual scheduling links
+- [ ] Implement analytics tracking
+- [ ] Test complete user journey
+
+**Week 3: Polish & Documentation**
+- [ ] Update documentation (README.md, contact info)
+- [ ] Test with multiple users/devices
+- [ ] Monitor initial conversion data
+- [ ] Refine based on feedback
+
+---
+
+### **Files to Create/Modify**
+
+**New Files:**
+- `src/components/ContactSection.tsx` - Multi-method contact component
+- `src/templates/rainbow/components/ContactSection.tsx` - Rainbow-themed version
+
+**Modified Files:**
+- `src/components/CTAButtons.tsx` - Update booking button to Calendly
+- `src/templates/rainbow/components/CTAButtons.tsx` - Rainbow theme version
+- `README.md` - Update contact information
+- Any pages with "BOOK ME NOW" text
+
+---
+
+### **Success Metrics**
+
+**Primary Metrics:**
+- Number of interviews scheduled per month
+- Conversion rate from portfolio visit to scheduling
+- User feedback on scheduling experience
+
+**Secondary Metrics:**
+- Time spent on scheduling page
+- Mobile vs. desktop scheduling preferences
+- Most popular event types
+
+---
+
+### **When to Upgrade to Full System**
+
+**Consider Phase 4D (Full Booking System) only if:**
+- Getting 10+ paid bookings per month consistently
+- Need automated payment processing
+- Want to scale freelance operations significantly
+- Current manual process becomes bottleneck
+
+**For most portfolios:** Calendly + manual coordination is sufficient and professional.
+
+Status: Planned
+
 ## Phase 4D — Search Functionality (Professional Portfolio Search)
 
 **Goal**: Implement a comprehensive search system that allows recruiters and employers to quickly find relevant experience, projects, and certifications across the entire portfolio.
