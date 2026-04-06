@@ -35,12 +35,6 @@ export function Header() {
               >
                 Home
               </Link>
-              <Link
-                href="/#services"
-                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-400 hover:via-orange-400 hover:to-pink-400 hover:shadow-[0_0_20px_rgba(255,180,100,0.3)]"
-              >
-                Featured Work
-              </Link>
               <div
                 className="nav-dropdown relative"
                 onMouseEnter={() => setProjectsDropdownOpen(true)}
@@ -93,12 +87,6 @@ export function Header() {
               >
                 Experience
               </Link>
-              <Link
-                href="/#education"
-                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400 hover:shadow-[0_0_20px_rgba(150,150,255,0.3)]"
-              >
-                Education
-              </Link>
               <div
                 className="nav-dropdown relative"
                 onMouseEnter={() => setCertificationsDropdownOpen(true)}
@@ -125,67 +113,37 @@ export function Header() {
                       Frontend & JavaScript
                     </Link>
                     <Link
+                      href="/certifications#python-django"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400 hover:text-black"
+                    >
+                      Python & AI/ML
+                    </Link>
+                    <Link
                       href="/certifications#laravel-backend"
                       className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-orange-400 hover:via-red-400 hover:to-pink-400 hover:text-black"
                     >
                       Laravel & Backend
                     </Link>
                     <Link
-                      href="/certifications#python-django"
-                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400 hover:text-black"
-                    >
-                      Python & Django
-                    </Link>
-                    <Link
-                      href="/certifications#wordpress"
-                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400 hover:text-black"
-                    >
-                      WordPress
-                    </Link>
-                    <Link
-                      href="/certifications#ai-ml"
-                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-purple-400 hover:via-fuchsia-400 hover:to-pink-400 hover:text-black"
-                    >
-                      AI & Machine Learning
-                    </Link>
-                    <Link
                       href="/certifications#cloud-devops"
                       className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:via-sky-400 hover:to-blue-400 hover:text-black"
                     >
-                      Cloud, DevOps & Architecture
-                    </Link>
-                    <Link
-                      href="/certifications#git-collaboration"
-                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-slate-400 hover:via-gray-400 hover:to-zinc-400 hover:text-black"
-                    >
-                      Git & Collaboration
-                    </Link>
-                    <Link
-                      href="/certifications#video-creative"
-                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-rose-400 hover:via-pink-400 hover:to-fuchsia-400 hover:text-black"
-                    >
-                      Video & Creative
-                    </Link>
-                    <Link
-                      href="/certifications#general-dev"
-                      className="block rounded-lg px-4 py-2.5 text-sm font-semibold text-white/90 transition-all duration-200 hover:bg-gradient-to-r hover:from-amber-400 hover:via-yellow-400 hover:to-lime-400 hover:text-black"
-                    >
-                      General Development
+                      Cloud & DevOps
                     </Link>
                   </div>
                 )}
               </div>
               <Link
-                href="/contact"
-                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400 hover:shadow-[0_0_20px_rgba(100,200,255,0.3)]"
-              >
-                Contact
-              </Link>
-              <Link
                 href="/search"
                 className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]"
               >
-                Search My Work
+                Search
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_20px_rgba(100,180,255,0.3)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(100,180,255,0.5)] hover:scale-105"
+              >
+                Contact
               </Link>
             </nav>
           </div>
@@ -244,13 +202,6 @@ export function Header() {
               >
                 Home
               </Link>
-              <Link
-                href="/#services"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-yellow-400 hover:via-orange-400 hover:to-pink-400"
-              >
-                Featured Work
-              </Link>
 
               {/* Collapsible Projects Category */}
               <button
@@ -262,6 +213,13 @@ export function Header() {
               </button>
               {mobileProjectsOpen && (
                 <div className="flex flex-col pl-4 space-y-1">
+                  <Link
+                    href="/projects"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-pink-400 hover:to-red-400"
+                  >
+                    → All Projects
+                  </Link>
                   <Link
                     href="/projects#full-stack"
                     onClick={() => setMobileMenuOpen(false)}
@@ -300,13 +258,6 @@ export function Header() {
               >
                 Experience
               </Link>
-              <Link
-                href="/#education"
-                onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400"
-              >
-                Education
-              </Link>
 
               {/* Collapsible Certifications Category */}
               <button
@@ -319,11 +270,25 @@ export function Header() {
               {mobileCertificationsOpen && (
                 <div className="flex flex-col pl-4 space-y-1">
                   <Link
+                    href="/certifications"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-teal-300 hover:via-emerald-300 hover:to-green-400"
+                  >
+                    → All Certifications
+                  </Link>
+                  <Link
                     href="/certifications#frontend-javascript"
                     onClick={() => setMobileMenuOpen(false)}
                     className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-pink-400 hover:via-yellow-300 hover:to-purple-400"
                   >
                     → Frontend & JavaScript
+                  </Link>
+                  <Link
+                    href="/certifications#python-django"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400"
+                  >
+                    → Python & AI/ML
                   </Link>
                   <Link
                     href="/certifications#laravel-backend"
@@ -333,71 +298,29 @@ export function Header() {
                     → Laravel & Backend
                   </Link>
                   <Link
-                    href="/certifications#python-django"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-purple-400"
-                  >
-                    → Python & Django
-                  </Link>
-                  <Link
-                    href="/certifications#wordpress"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-green-300 hover:via-cyan-300 hover:to-blue-400"
-                  >
-                    → WordPress
-                  </Link>
-                  <Link
-                    href="/certifications#ai-ml"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-400 hover:via-fuchsia-400 hover:to-pink-400"
-                  >
-                    → AI & Machine Learning
-                  </Link>
-                  <Link
                     href="/certifications#cloud-devops"
                     onClick={() => setMobileMenuOpen(false)}
                     className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-400 hover:via-sky-400 hover:to-blue-400"
                   >
-                    → Cloud, DevOps & Architecture
-                  </Link>
-                  <Link
-                    href="/certifications#git-collaboration"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-slate-400 hover:via-gray-400 hover:to-zinc-400"
-                  >
-                    → Git & Collaboration
-                  </Link>
-                  <Link
-                    href="/certifications#video-creative"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-rose-400 hover:via-pink-400 hover:to-fuchsia-400"
-                  >
-                    → Video & Creative
-                  </Link>
-                  <Link
-                    href="/certifications#general-dev"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="nav-link rounded-xl px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-amber-400 hover:via-yellow-400 hover:to-lime-400"
-                  >
-                    → General Development
+                    → Cloud & DevOps
                   </Link>
                 </div>
               )}
 
               <Link
-                href="/contact"
+                href="/search"
                 onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-300 hover:via-sky-300 hover:to-blue-400"
+                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400"
               >
-                Contact
+                Search
               </Link>
 
               <Link
-                href="/search"
+                href="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="nav-link rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-purple-300 hover:via-pink-300 hover:to-indigo-400 flex items-center gap-2"
+                className="mt-1 rounded-xl px-4 py-3 text-sm font-semibold text-center text-white bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_15px_rgba(100,180,255,0.2)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(100,180,255,0.4)]"
               >
-                Search My Work
+                Contact
               </Link>
             </nav>
           </div>
