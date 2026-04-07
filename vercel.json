@@ -1,28 +1,9 @@
 {
-  "buildCommand": "pnpm run build",
-  "outputDirectory": ".next",
-  "installCommand": "pnpm install",
+  "buildCommand": "chmod +x scripts/vercel-build.sh && bash scripts/vercel-build.sh",
   "framework": "nextjs",
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
-  "build": {
-    "env": {
-      "NEXT_BUILD": "1"
-    }
-  },
-  "crons": [
-    {
-      "path": "/api/init-booking-system",
-      "schedule": "0 2 * * *"
-    }
-  ],
+  "installCommand": "pnpm install",
   "env": {
-    "NEXT_PUBLIC_SERVER_URL": "@server_url",
-    "DATABASE_URL": "@database_url",
-    "PAYLOAD_SECRET": "@payload_secret",
-    "NEXT_PUBLIC_CMS_URL": "@next_public_cms_url"
+    "NEXT_PUBLIC_SERVER_URL": "https://www.allanai.dev",
+    "NEXT_PUBLIC_CMS_URL": "https://www.allanai.dev"
   }
 }

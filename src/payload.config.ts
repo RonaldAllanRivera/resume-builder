@@ -76,6 +76,8 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
+      // Enable SSL for production
+      ssl: process.env.NODE_ENV === 'production',
     },
   }),
   collections: [
