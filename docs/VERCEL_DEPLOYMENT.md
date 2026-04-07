@@ -9,6 +9,55 @@ Complete guide for deploying this Next.js + Payload CMS application to Vercel.
 - PostgreSQL database (Neon, Vercel Postgres, or any PostgreSQL provider)
 - Vercel Blob storage account (for media uploads)
 
+## Booking System Deployment
+
+The booking system requires additional setup after deployment to initialize the database collections.
+
+### Step 1: Deploy to Vercel
+
+Follow the standard Vercel deployment process through their dashboard or GitHub integration.
+
+### Step 2: Initialize Booking System
+
+**Vercel Serverless Environment Only** - The npm script won't work on Vercel. Use one of these methods:
+
+#### Method 1: API Endpoint (Recommended)
+Call the API endpoint once after deployment:
+
+```bash
+curl -X POST https://your-domain.vercel.app/api/init-booking-system \
+  -H "Content-Type: application/json"
+```
+
+#### Method 2: Vercel Cron Job (Automatic)
+The `vercel.json` includes a cron job that runs daily at 2 AM. It will automatically initialize the booking system on first run.
+
+#### Method 3: Manual Trigger in Vercel Dashboard
+1. Go to Vercel Dashboard
+2. Select your project
+3. Go to "Functions" tab
+4. Find `/api/init-booking-system`
+5. Click "Invoke" or test the function
+
+### Step 3: Verify Booking System
+
+After initialization:
+1. Check admin panel: `https://your-domain.vercel.app/admin`
+2. Verify "Booking" group appears in admin menu
+3. Check pricing page: `https://your-domain.vercel.app/pricing`
+
+### Common Issues
+
+**Error: "relation packages does not exist"**
+- Solution: Run the initialization script as described above
+
+**Error: "column packages_id does not exist"**  
+- Solution: This is fixed by running the initialization script
+
+**Admin panel shows 500 error**
+- Check that booking collections were created
+- Verify database connection in Vercel logs
+
 ## Key Differences from Render
 
 | Feature | Render | Vercel |
