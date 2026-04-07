@@ -4,6 +4,8 @@ import config from '@payload-config'
 import { getTemplate } from '@/utilities/getTemplate'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Payment Cancelled',
   description: 'Your payment was cancelled. You can try again or choose a different package.',
@@ -48,8 +50,8 @@ export default async function BookingCancelPage() {
 
           <div className="bg-white/5 backdrop-blur rounded-xl p-6 mb-8">
             <p className="text-white/70 text-sm">
-              Your booking request is still on hold. You can return to the pricing page
-              to try again or contact me if you have any questions.
+              Your booking request is still on hold. You can return to the pricing page to try again
+              or contact me if you have any questions.
             </p>
           </div>
 

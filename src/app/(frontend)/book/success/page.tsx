@@ -4,6 +4,8 @@ import config from '@payload-config'
 import { getTemplate } from '@/utilities/getTemplate'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Booking Confirmed - Thank You',
   description: 'Your booking has been confirmed and payment received.',
@@ -36,9 +38,7 @@ export default async function BookingSuccessPage({
       })
       if (booking) {
         const pkg =
-          typeof booking.package === 'object' && booking.package !== null
-            ? booking.package
-            : null
+          typeof booking.package === 'object' && booking.package !== null ? booking.package : null
         bookingInfo = {
           packageName: pkg?.name || 'Your Package',
           startAt: booking.startAt,

@@ -9,6 +9,8 @@ type Args = {
   params: Promise<{ packageSlug: string }>
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { packageSlug } = await params
   const payload = await getPayload({ config })
