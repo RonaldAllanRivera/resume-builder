@@ -126,6 +126,39 @@ If you still see database errors after deployment:
    ```
    Then in the build logs, check the migration output.
 
+### Manual Database Initialization
+
+If automatic migrations fail during build, you can manually initialize the database:
+
+**Option 1: Use the API endpoint (after deployment)**
+```bash
+curl -X POST https://www.allanai.dev/api/init-db \
+  -H "Authorization: Bearer YOUR_CRON_SECRET_OR_PAYLOAD_SECRET"
+```
+
+**Option 2: Run locally with production database**
+```bash
+# Set your production DATABASE_URL locally
+export DATABASE_URL="your-production-database-url"
+export PAYLOAD_SECRET="your-secret"
+
+# Run initialization
+pnpm init:db
+
+# Or run migrations
+pnpm migrate
+```
+
+**Option 3: Use Vercel CLI to run commands**
+```bash
+# Connect to your project
+vercel --prod
+
+# Run the init command
+vercel env add DATABASE_URL  # if not set
+vercel run pnpm init:db
+```
+
 ## Related Files
 
 - Build script: `scripts/vercel-build.sh`
