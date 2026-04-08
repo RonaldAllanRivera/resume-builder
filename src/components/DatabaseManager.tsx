@@ -244,7 +244,7 @@ const DatabaseManager: React.FC = () => {
       )}
 
       <div style={{ marginBottom: '24px' }}>
-        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: '#111827' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: 'white' }}>
           Resume Data
         </h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -305,7 +305,7 @@ const DatabaseManager: React.FC = () => {
       </div>
 
       <div>
-        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: '#111827' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: 'white' }}>
           Booking Data
         </h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>

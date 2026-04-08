@@ -10,14 +10,14 @@ interface PricingPageProps {
 
 export function PricingPage({ packages }: PricingPageProps) {
   return (
-    <div className="min-h-screen bg-[#050608] text-white py-20 px-4">
+    <div className="min-h-screen bg-[#050608] text-white py-20 pt-24 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="mb-4 text-[clamp(2.5rem,5vw,4rem)] font-black leading-none tracking-[-0.045em] text-white">
             Hire Me
           </h1>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+          <p className="text-lg text-white/60">
             Professional freelance services with transparent pricing. Choose the perfect package for
             your project needs.
           </p>

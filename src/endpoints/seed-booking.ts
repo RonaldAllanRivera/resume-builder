@@ -30,7 +30,7 @@ export const seedBookingData = async ({
         name: '30-Minute Consultation',
         slug: '30min-consultation',
         shortDescription: 'Initial project discussion and requirements gathering',
-        price: 5000,
+        price: 2500,
         currency: 'USD',
         durationType: 'call' as const,
         durationMinutes: 30,
@@ -40,9 +40,7 @@ export const seedBookingData = async ({
           { item: 'Timeline estimation' },
           { item: 'Next steps roadmap' },
         ],
-        limits: [
-          { type: 'Follow-up', value: '1 email within 48 hours' },
-        ],
+        limits: [{ type: 'Follow-up', value: '1 email within 48 hours' }],
         requiresScheduling: true,
         active: true,
         sortOrder: 1,
@@ -51,7 +49,7 @@ export const seedBookingData = async ({
         name: 'Day Rate',
         slug: 'day-rate',
         shortDescription: 'Full day of focused development work on your project',
-        price: 40000,
+        price: 20000,
         currency: 'USD',
         durationType: 'day' as const,
         deliverables: [
@@ -73,7 +71,7 @@ export const seedBookingData = async ({
         name: 'Week Rate',
         slug: 'week-rate',
         shortDescription: 'One week of dedicated development for medium-sized features',
-        price: 180000,
+        price: 100000,
         currency: 'USD',
         durationType: 'week' as const,
         deliverables: [
@@ -96,7 +94,7 @@ export const seedBookingData = async ({
         name: 'Monthly Retainer',
         slug: 'monthly-retainer',
         shortDescription: 'Ongoing development partnership for large-scale projects',
-        price: 600000,
+        price: 400000,
         currency: 'USD',
         durationType: 'month' as const,
         deliverables: [
