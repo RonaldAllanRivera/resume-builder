@@ -4,6 +4,7 @@
   "installCommand": "pnpm install",
   "env": {
     "NEXT_PUBLIC_SERVER_URL": "https://www.allanai.dev",
-    "NEXT_PUBLIC_CMS_URL": "https://www.allanai.dev"
+    "NEXT_PUBLIC_CMS_URL": "https://www.allanai.dev",
+    "DATABASE_SSL": "true"
   }
 }

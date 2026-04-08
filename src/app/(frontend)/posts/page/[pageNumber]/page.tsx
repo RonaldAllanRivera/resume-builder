@@ -11,6 +11,9 @@ import { notFound } from 'next/navigation'
 
 export const revalidate = 600
 
+// Force dynamic to prevent database queries during build
+export const dynamic = 'force-dynamic'
+
 type Args = {
   params: Promise<{
     pageNumber: string

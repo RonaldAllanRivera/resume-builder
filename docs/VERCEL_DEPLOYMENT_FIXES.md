@@ -23,19 +23,24 @@ This document summarizes the fixes applied to resolve Vercel deployment issues.
 - `package.json` - Added migrate scripts
 - `vercel.json` - Updated build command
 
-### 2. PostgreSQL SSL Warnings
+### 2. PostgreSQL SSL Configuration
 
-**Problem**: SSL mode warnings appearing in logs:
-```
-SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'
-```
+**Problem**: 
+- SSL mode warnings in production logs
+- GitHub Actions CI builds failing because test database doesn't support SSL
+- Need SSL for Vercel Postgres but not for local/CI environments
 
 **Solution**:
-- Enabled SSL explicitly for production connections in `src/payload.config.ts`
-- Database pool configuration now sets `ssl: true` in production
+- Implemented smart SSL detection in `src/payload.config.ts`:
+  - SSL enabled if `DATABASE_URL` contains `.vercel-storage.com`
+  - SSL enabled if `DATABASE_URL` contains `sslmode=require`
+  - SSL enabled if `DATABASE_SSL=true` environment variable is set
+  - SSL disabled for localhost/CI environments (default)
+- Added `DATABASE_SSL=true` to `vercel.json` for production deployments
 
 **Files Changed**:
-- `src/payload.config.ts` - Added SSL configuration to database pool
+- `src/payload.config.ts` - Smart SSL configuration
+- `vercel.json` - Added `DATABASE_SSL: "true"` environment variable
 
 ### 3. Missing Storage Adapter (Non-Critical)
 
@@ -78,6 +83,7 @@ Make sure these are set in Vercel:
 ```env
 # Database
 DATABASE_URL=postgresql://...
+DATABASE_SSL=true  # Set automatically in vercel.json
 
 # Payload
 PAYLOAD_SECRET=your-secret
@@ -90,6 +96,8 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 NEXT_PUBLIC_SERVER_URL=https://www.allanai.dev
 NEXT_PUBLIC_CMS_URL=https://www.allanai.dev
 ```
+
+**Note**: `DATABASE_SSL` is automatically set to `true` in `vercel.json`. Only add it manually to Vercel environment variables if you need to override this for specific environments.
 
 ## Build Process
 

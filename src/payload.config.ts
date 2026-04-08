@@ -76,8 +76,13 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
-      // Enable SSL for production
-      ssl: process.env.NODE_ENV === 'production',
+      // Enable SSL only for remote databases (not localhost/CI environments)
+      // Production databases like Vercel Postgres require SSL
+      ssl:
+        process.env.DATABASE_URL?.includes('.vercel-storage.com') ||
+        process.env.DATABASE_URL?.includes('sslmode=require') ||
+        process.env.DATABASE_SSL === 'true' ||
+        false,
     },
   }),
   collections: [
