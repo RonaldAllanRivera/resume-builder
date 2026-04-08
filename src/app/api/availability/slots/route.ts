@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextRequest, NextResponse } from 'next/server'
+import { TZDate } from '@date-fns/tz'
 
 interface TimeSlot {
   start: string
@@ -66,8 +67,17 @@ export async function GET(request: NextRequest) {
     const now = new Date()
     const dayOfWeek = requestedDate.getDay() === 0 ? 7 : requestedDate.getDay() // ISO: Mon=1, Sun=7
 
-    // Check advance notice
-    const rule = rules[0] // Use first active rule
+    // Find a rule that matches the requested day of week
+    const matchingRule = rules.find((rule) => {
+      const daysOfWeek = (rule.daysOfWeek as string[]) || []
+      return daysOfWeek.includes(String(dayOfWeek))
+    })
+
+    if (!matchingRule) {
+      return NextResponse.json({ slots: [], message: 'Not available on this day' })
+    }
+
+    const rule = matchingRule
     const advanceNoticeDays = rule.advanceNoticeDays ?? 7
     const maxAdvanceDays = rule.maxAdvanceDays ?? 60
 
@@ -93,12 +103,6 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Check if the day is available
-    const daysOfWeek = (rule.daysOfWeek as string[]) || []
-    if (!daysOfWeek.includes(String(dayOfWeek))) {
-      return NextResponse.json({ slots: [], message: 'Not available on this day' })
-    }
-
     // Check blocked dates
     const blockedDates = (rule.blockedDates as Array<{ date: string; reason?: string }>) || []
     const isBlocked = blockedDates.some((blocked) => {
@@ -115,15 +119,16 @@ export async function GET(request: NextRequest) {
     const endTime = rule.endTime || '17:00'
     const slotDuration = pkg.durationMinutes || rule.slotDurationMinutes || 30
     const bufferMinutes = rule.bufferMinutes || 15
+    const ruleTimezone = rule.timezone || 'Asia/Manila'
 
     const [startHour, startMin] = startTime.split(':').map(Number)
     const [endHour, endMin] = endTime.split(':').map(Number)
 
-    const dayStart = new Date(date + 'T00:00:00')
-    dayStart.setHours(startHour, startMin, 0, 0)
-
-    const dayEnd = new Date(date + 'T00:00:00')
-    dayEnd.setHours(endHour, endMin, 0, 0)
+    // Create dates in the rule's timezone, then convert to UTC
+    // This ensures 18:00 in Manila becomes the correct UTC timestamp
+    const [year, month, day] = date.split('-').map(Number)
+    const dayStart = new TZDate(year, month - 1, day, startHour, startMin, 0, 0, ruleTimezone)
+    const dayEnd = new TZDate(year, month - 1, day, endHour, endMin, 0, 0, ruleTimezone)
 
     // Fetch existing bookings for this date to exclude
     const dateStart = new Date(date + 'T00:00:00.000Z')

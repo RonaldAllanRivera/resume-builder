@@ -39,7 +39,14 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
   const [customerCompany, setCustomerCompany] = useState('')
   const [notes, setNotes] = useState('')
 
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  // Use state for timezone to avoid hydration mismatch
+  // Server renders with default, client updates after mount
+  const [timezone, setTimezone] = useState('Asia/Manila')
+
+  useEffect(() => {
+    // Only run on client after hydration
+    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  }, [])
 
   // Generate available dates (7 days to 60 days from now)
   const getAvailableDates = () => {
@@ -87,12 +94,14 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
     }
   }, [selectedDate, fetchSlots])
 
-  const formatTime = (iso: string) => {
+  const PROVIDER_TIMEZONE = 'Asia/Manila'
+
+  const formatTime = (iso: string, targetTimezone?: string) => {
     return new Date(iso).toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
-      timeZone: timezone,
+      timeZone: targetTimezone || timezone,
     })
   }
 
@@ -280,8 +289,9 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
       {step === 'time' && (
         <div>
           <h3 className="text-lg font-semibold mb-2">Select a Time</h3>
-          <p className="text-white/60 text-sm mb-6">
-            {formatDate(selectedDate)} &middot; {timezone}
+          <p className="text-white/60 text-sm mb-2">{formatDate(selectedDate)}</p>
+          <p className="text-white/40 text-xs mb-6">
+            Times shown in your timezone ({timezone}). Provider is in {PROVIDER_TIMEZONE}.
           </p>
 
           {slotsLoading ? (
@@ -315,7 +325,12 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
                         : 'bg-white/5 text-white/80 hover:bg-white/10'
                     }`}
                   >
-                    {formatTime(slot.start)}
+                    <div>{formatTime(slot.start)}</div>
+                    {timezone !== PROVIDER_TIMEZONE && (
+                      <div className="text-xs text-white/50">
+                        {formatTime(slot.start, PROVIDER_TIMEZONE)} your time
+                      </div>
+                    )}
                   </button>
                 ))}
             </div>
@@ -443,14 +458,22 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
               <span className="text-white/60">Date</span>
               <span className="font-semibold">{formatDate(selectedDate)}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-start">
               <span className="text-white/60">Time</span>
-              <span className="font-semibold">
-                {formatTime(selectedSlot.start)} - {formatTime(selectedSlot.end)}
-              </span>
+              <div className="text-right">
+                <div className="font-semibold">
+                  {formatTime(selectedSlot.start)} - {formatTime(selectedSlot.end)}
+                </div>
+                {timezone !== PROVIDER_TIMEZONE && (
+                  <div className="text-sm text-white/50">
+                    {formatTime(selectedSlot.start, PROVIDER_TIMEZONE)} -{' '}
+                    {formatTime(selectedSlot.end, PROVIDER_TIMEZONE)} your time
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/60">Timezone</span>
+              <span className="text-white/60">Your Timezone</span>
               <span className="font-semibold">{timezone}</span>
             </div>
             <div className="border-t border-white/10 pt-4">
