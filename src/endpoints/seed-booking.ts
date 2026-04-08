@@ -112,7 +112,7 @@ export const seedBookingData = async ({
           { type: 'Meetings', value: 'Weekly 30-min sync + ad-hoc' },
         ],
         requiresScheduling: true,
-        active: true,
+        active: false,
         sortOrder: 4,
       },
     ]
