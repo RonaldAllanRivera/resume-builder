@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@date-fns/tz':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@payloadcms/admin-bar':
         specifier: 3.74.0
         version: 3.74.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
