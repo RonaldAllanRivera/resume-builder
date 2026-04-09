@@ -1110,7 +1110,7 @@ export function StarfieldClient() {
 - **Anchor Link Navigation**: Hash-based navigation to category sections with scroll-margin optimization
 - **Scroll Position Fix**: Added `scroll-mt-24` to sections for proper spacing below fixed header
 - **Reusable CTAButtons Component**: Extracted CHAT WITH AI and BOOK ME NOW buttons for reuse across pages
-  - Configurable `className`, `chatHref`, and `bookHref` props
+  - Configurable `className`, `consultHref`, and `bookHref` props
   - Default navigation to homepage contact section (`/#contact`)
   - Used in both Hero and AllProjectsPage components
 - **Absolute Path Navigation**: Fixed all header links to use absolute paths (`/#section`) for proper navigation from internal pages

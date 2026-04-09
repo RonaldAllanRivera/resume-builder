@@ -147,7 +147,7 @@ export function Header() {
               </Link>
               <Link
                 href="/contact"
-                className="rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_20px_rgba(100,180,255,0.3)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(100,180,255,0.5)] hover:scale-105"
+                className="nav-link rounded-[0.9rem] mx-[2px] px-5 py-3 text-[1.05rem] font-semibold text-white/90 transition-all duration-300 hover:text-black hover:bg-gradient-to-r hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 hover:shadow-[0_0_20px_rgba(100,180,255,0.3)]"
               >
                 Contact
               </Link>
