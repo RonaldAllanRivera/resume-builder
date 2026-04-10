@@ -42,10 +42,21 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
   // Use state for timezone to avoid hydration mismatch
   // Server renders with default, client updates after mount
   const [timezone, setTimezone] = useState('Asia/Manila')
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    // Static date to ensure consistent SSR
+    return new Date('2026-04-15T12:00:00Z')
+  })
+  // Track if component has mounted to avoid hydration mismatch
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     // Only run on client after hydration
+    setMounted(true)
     setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+    // Set initial month to first available booking month (7 days from now)
+    const firstAvailable = new Date()
+    firstAvailable.setDate(firstAvailable.getDate() + 7)
+    setCurrentMonth(firstAvailable)
   }, [])
 
   // Generate available dates (7 days to 60 days from now)
@@ -61,6 +72,70 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
   }
 
   const availableDates = getAvailableDates()
+
+  // Get calendar days for a specific month (show only dates in the month, pad with null)
+  const getCalendarDays = (monthOffset: number = 0) => {
+    const targetMonth = new Date(currentMonth)
+    targetMonth.setMonth(targetMonth.getMonth() + monthOffset)
+
+    const year = targetMonth.getFullYear()
+    const month = targetMonth.getMonth()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(year, month + 1, 0)
+    const startingDayOfWeek = firstDay.getDay()
+    const daysInMonth = lastDay.getDate()
+
+    const days: (string | null)[] = []
+
+    // Add empty cells for days before month starts (padding from previous month)
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null)
+    }
+
+    // Add all days in month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day)
+      days.push(date.toISOString().split('T')[0])
+    }
+
+    // Pad with empty cells to complete the grid (but don't add actual dates from next month)
+    const remainingCells = (7 - (days.length % 7)) % 7
+    for (let i = 0; i < remainingCells; i++) {
+      days.push(null)
+    }
+
+    return days
+  }
+
+  const getMonthName = (monthOffset: number = 0) => {
+    const targetMonth = new Date(currentMonth)
+    targetMonth.setMonth(targetMonth.getMonth() + monthOffset)
+    return targetMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  }
+
+  const currentMonthDays = getCalendarDays(0)
+  const nextMonthDays = getCalendarDays(1)
+  const today = new Date().toISOString().split('T')[0]
+
+  const isDateAvailable = (dateStr: string | null) => {
+    if (!dateStr) return false
+    return availableDates.includes(dateStr)
+  }
+
+  const isToday = (dateStr: string | null) => {
+    if (!dateStr) return false
+    return dateStr === today
+  }
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newMonth = new Date(currentMonth)
+    if (direction === 'prev') {
+      newMonth.setMonth(newMonth.getMonth() - 1)
+    } else {
+      newMonth.setMonth(newMonth.getMonth() + 1)
+    }
+    setCurrentMonth(newMonth)
+  }
 
   const fetchSlots = useCallback(
     async (date: string) => {
@@ -251,37 +326,186 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
 
       {/* Step 1: Date Selection */}
       {step === 'date' && (
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Select a Date</h3>
-          <p className="text-white/60 text-sm mb-6">
+        <div className="w-full max-w-5xl mx-auto">
+          <h3 className="text-lg font-semibold mb-2 text-center">Select a Date</h3>
+          <p className="text-white/60 text-sm mb-6 text-center">
             Bookings require at least 7 days advance notice. Your timezone: {timezone}
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto pr-2">
-            {availableDates.slice(0, 28).map((date) => (
-              <button
-                key={date}
-                onClick={() => {
-                  setSelectedDate(date)
-                  setStep('time')
-                }}
-                className={`p-3 rounded-xl text-sm font-medium transition-all ${
-                  selectedDate === date
-                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white'
-                    : 'bg-white/5 text-white/80 hover:bg-white/10'
-                }`}
-              >
-                <div className="text-xs text-white/50">
-                  {new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' })}
+          {!mounted ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <>
+              {/* Navigation Header */}
+              <div className="flex items-center justify-between mb-4 px-4">
+                <button
+                  onClick={() => navigateMonth('prev')}
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  aria-label="Previous months"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <div className="text-base font-semibold text-white">
+                  {getMonthName(0)} - {getMonthName(1)}
                 </div>
-                <div>
-                  {new Date(date + 'T12:00:00').toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
+                <button
+                  onClick={() => navigateMonth('next')}
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  aria-label="Next months"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Two-Month Calendar Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Current Month */}
+                <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10">
+                  <div className="text-center text-sm font-semibold text-white mb-4">
+                    {getMonthName(0)}
+                  </div>
+
+                  {/* Day Headers */}
+                  <div className="grid grid-cols-7 gap-2 mb-2">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                      <div
+                        key={day}
+                        className="text-center text-xs font-semibold text-cyan-400 py-1"
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar Days */}
+                  <div className="grid grid-cols-7 gap-2">
+                    {currentMonthDays.map((date, index) => {
+                      const available = isDateAvailable(date)
+                      const todayDate = isToday(date)
+                      const selected = date === selectedDate
+
+                      if (!date) {
+                        return <div key={`current-empty-${index}`} className="aspect-square" />
+                      }
+
+                      return (
+                        <button
+                          key={date}
+                          onClick={() => {
+                            if (available) {
+                              setSelectedDate(date)
+                              setStep('time')
+                            }
+                          }}
+                          disabled={!available}
+                          className={`aspect-square rounded-lg text-sm font-medium transition-all relative ${
+                            selected
+                              ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-lg scale-105'
+                              : available
+                                ? 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'
+                                : 'bg-transparent text-white/20 cursor-not-allowed'
+                          }`}
+                        >
+                          {new Date(date + 'T12:00:00').getDate()}
+                          {todayDate && available && (
+                            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-cyan-400" />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
-              </button>
-            ))}
-          </div>
+
+                {/* Next Month */}
+                <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10">
+                  <div className="text-center text-sm font-semibold text-white mb-4">
+                    {getMonthName(1)}
+                  </div>
+
+                  {/* Day Headers */}
+                  <div className="grid grid-cols-7 gap-2 mb-2">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                      <div
+                        key={day}
+                        className="text-center text-xs font-semibold text-cyan-400 py-1"
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar Days */}
+                  <div className="grid grid-cols-7 gap-2">
+                    {nextMonthDays.map((date, index) => {
+                      const available = isDateAvailable(date)
+                      const todayDate = isToday(date)
+                      const selected = date === selectedDate
+
+                      if (!date) {
+                        return <div key={`next-empty-${index}`} className="aspect-square" />
+                      }
+
+                      return (
+                        <button
+                          key={date}
+                          onClick={() => {
+                            if (available) {
+                              setSelectedDate(date)
+                              setStep('time')
+                            }
+                          }}
+                          disabled={!available}
+                          className={`aspect-square rounded-lg text-sm font-medium transition-all relative ${
+                            selected
+                              ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-lg scale-105'
+                              : available
+                                ? 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'
+                                : 'bg-transparent text-white/20 cursor-not-allowed'
+                          }`}
+                        >
+                          {new Date(date + 'T12:00:00').getDate()}
+                          {todayDate && available && (
+                            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-cyan-400" />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Legend */}
+              <div className="mt-6 flex items-center justify-center gap-6 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-gradient-to-r from-cyan-400 to-blue-500" />
+                  <span className="text-white/60">Selected</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-white/10" />
+                  <span className="text-white/60">Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded border border-white/20" />
+                  <span className="text-white/60">Unavailable</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 

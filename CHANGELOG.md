@@ -1,5 +1,59 @@
 # Changelog
 
+## [0.11.1] - 2026-04-10
+
+### Booking System UI/UX Enhancements
+
+**Enhanced Calendar Design**
+- **Two-Month Side-by-Side View**: Displays current and next month simultaneously
+  - Responsive layout: Horizontal on desktop, stacked on mobile
+  - Full 6-week grid (42 cells) for consistent layout height
+  - Month/year navigation with prev/next arrows
+  - Shows "Month Year - Month Year" header (e.g., "April 2026 - May 2026")
+  - Individual month titles on each calendar card
+- **MUI-Inspired Design**: Modern calendar aesthetic without dependencies
+  - Glassmorphic card containers with backdrop blur
+  - Cyan-colored day headers (Sun-Sat)
+  - Grid-based day layout with proper spacing
+  - Legend showing Selected/Available/Unavailable states
+- **Hydration-Safe Rendering**: Fixed SSR/client mismatch errors
+  - Uses `mounted` state pattern to prevent hydration errors
+  - Shows loading spinner during SSR, full calendar after client mount
+  - Consistent static initial date for server rendering
+
+**Dual Timezone Display**
+- **Visitor + Provider Timezones**: Shows times in both user's local time and provider's timezone (Asia/Manila)
+  - Time slot buttons: Show local time with provider time as subtitle (when different)
+  - Confirmation page: Shows both timezones clearly labeled
+  - Header note: "Times shown in your timezone (America/New_York). Provider is in Asia/Manila."
+  - Your Timezone label in confirmation for clarity
+
+**Bug Fixes**
+- **Timezone Bug Fixed**: API now correctly converts rule times from Manila timezone to UTC
+  - Uses `@date-fns/tz` TZDate for proper timezone conversion
+  - Fixed issue where 6 PM Manila was showing as 2 AM
+  - Added `@date-fns/tz` package to dependencies
+- **Hydration Mismatch Fixed**: Calendar now renders consistently between SSR and client
+  - Added `mounted` state to control client-only rendering
+  - Prevents "Hydration failed because the server rendered text didn't match the client" error
+
+**UI Improvements**
+- **CTAButtons Component**: Enhanced with gradient backgrounds
+  - BOOK A PAID CONSULTATION: Cyan → Blue → Purple gradient with glow
+  - SEE PRICING PLANS: Amber → Orange → Red gradient with glow
+  - Added helper text: "Start with pricing. Book a consultation if it fits your needs."
+- **Header Navigation**: Consistent menu styling across all nav items
+  - Contact menu now matches Pricing/Search with hover gradient effects
+
+**Files Modified**
+- `src/templates/rainbow/components/BookingFlow.tsx` - Enhanced calendar with two-month view, dual timezone display, hydration fixes
+- `src/app/api/availability/slots/route.ts` - Fixed timezone conversion using @date-fns/tz
+- `src/templates/rainbow/components/CTAButtons.tsx` - Added gradients and helper text
+- `src/templates/rainbow/components/Header.tsx` - Consistent menu styling
+- `package.json` - Added @date-fns/tz dependency
+
+---
+
 ## [0.11.0] - 2026-04-06
 
 ### Custom Booking System Implementation (Phase 4C)

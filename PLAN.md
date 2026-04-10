@@ -667,16 +667,11 @@ Goal: Let a client choose a package, pick from your admin-managed availability, 
 - **Security + abuse prevention**
   - Rate limit booking endpoints.
   - CAPTCHA on anonymous flows (optional).
-  - Store all timestamps in UTC; display using customer timezone.
-  - Access control:
-    - public can only read `packages` where `active=true`
-    - never expose internal schedule rules if you don’t want competitors scraping; expose only available slots.
-
-Status: Planned
-
 ---
 
 ## Phase 4C — Enhanced Custom Booking System
+
+**Status**: ✅ **Fully Implemented** (Last updated: 2026-04-10)
 
 **Goal**: Professional freelance booking platform with package pricing, availability management, and Stripe payments that integrates seamlessly with your portfolio.
 
@@ -686,8 +681,8 @@ Status: Planned
 - 💰 **Revenue Generation**: Direct payment processing vs. just scheduling
 - 🎨 **Full Brand Control**: Perfect integration with Rainbow theme
 - 📦 **Package Pricing**: Display Day/Week/Month rates transparently
-- � **Portfolio Context**: Link bookings to specific projects
-- � **Conversion Optimization**: Full control over user journey
+- 🎯 **Portfolio Context**: Link bookings to specific projects
+- 📈 **Conversion Optimization**: Full control over user journey
 - 🚀 **Scalability**: Build once, scale infinitely without monthly fees
 
 **Freelance Context:**
@@ -695,6 +690,28 @@ Status: Planned
 - Clients want transparent pricing and easy booking
 - Custom system shows professionalism and technical capability
 - Direct payments reduce friction and increase conversion rates
+
+### Recent Enhancements (v0.11.1)
+
+**Enhanced Calendar UI**
+- **Two-Month Side-by-Side View**: Current + next month displayed simultaneously
+  - Responsive: Horizontal on desktop, stacked on mobile
+  - Full 6-week grid (42 cells) for consistent layout height
+  - Month/year navigation with prev/next arrows
+- **MUI-Inspired Design**: Modern aesthetic without external dependencies
+- **Hydration-Safe Rendering**: Fixed SSR/client mismatch using `mounted` state pattern
+
+**Dual Timezone Support**
+- Shows both visitor's local time and provider's timezone (Asia/Manila)
+- Time slot buttons display both timezones when different
+- Clear timezone labeling throughout booking flow
+- Proper timezone conversion using `@date-fns/tz` TZDate
+
+**Bug Fixes & Improvements**
+- Fixed timezone conversion bug (6 PM Manila showing as 2 AM)
+- Fixed React hydration mismatch errors
+- Added gradient CTA buttons with helper text
+- Consistent header navigation styling
 
 ---
 
