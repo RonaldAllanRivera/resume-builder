@@ -3,6 +3,7 @@
 import React from 'react'
 import type { Certification, SiteSetting } from '@/payload-types'
 import { CTAButtons } from './components/CTAButtons'
+import { SearchBar } from './components/search/SearchBar'
 import {
   techStackIcons,
   getDynamicIconPosition,
@@ -232,7 +233,7 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
     <div className="min-h-screen text-white">
       {/* Hero Section */}
       <section className="hero-bg relative overflow-hidden px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-28 lg:pt-32">
-        <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+        <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <div>
             <span className="inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
               FULL-STACK, AI, AND CLOUD DEVELOPER CERTIFICATIONS LIBRARY
@@ -250,23 +251,33 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
             <CTAButtons />
           </div>
 
-          <aside className="rounded-[2rem] border border-white/10 bg-[#11131b]/70 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                <div className="text-4xl font-black text-white">{totalCerts}</div>
-                <p className="mt-2 text-sm text-white/65">Certificates</p>
-              </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                <div className="text-4xl font-black text-white">{totalCategories}</div>
-                <p className="mt-2 text-sm text-white/65">Skill categories</p>
-              </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                <div className="text-4xl font-black text-white">{Math.round(longestPath)}h</div>
-                <p className="mt-2 text-sm text-white/65">Longest learning path</p>
-              </div>
-              <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                <div className="text-4xl font-black brand-gradient">LinkedIn</div>
-                <p className="mt-2 text-sm text-white/65">Verifiable certificate links included</p>
+          <aside className="space-y-6">
+            {/* Search Bar - Interactive search with popular tags */}
+            <div className="lg:mt-[3.25rem] mb-20">
+              <SearchBar placeholder="Search certifications by name, provider, or technology..." />
+            </div>
+
+            {/* Stats Card */}
+            <div className="rounded-[2rem] border border-white/10 bg-[#11131b]/70 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                  <div className="text-4xl font-black text-white">{totalCerts}</div>
+                  <p className="mt-2 text-sm text-white/65">Certificates</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                  <div className="text-4xl font-black text-white">{totalCategories}</div>
+                  <p className="mt-2 text-sm text-white/65">Skill categories</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                  <div className="text-4xl font-black text-white">{Math.round(longestPath)}h</div>
+                  <p className="mt-2 text-sm text-white/65">Longest learning path</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                  <div className="text-4xl font-black brand-gradient">LinkedIn</div>
+                  <p className="mt-2 text-sm text-white/65">
+                    Verifiable certificate links included
+                  </p>
+                </div>
               </div>
             </div>
           </aside>
