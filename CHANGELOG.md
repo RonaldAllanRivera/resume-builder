@@ -21,12 +21,15 @@
   - Shows loading spinner during SSR, full calendar after client mount
   - Consistent static initial date for server rendering
 
-**Dual Timezone Display**
-- **Visitor + Provider Timezones**: Shows times in both user's local time and provider's timezone (Asia/Manila)
-  - Time slot buttons: Show local time with provider time as subtitle (when different)
-  - Confirmation page: Shows both timezones clearly labeled
-  - Header note: "Times shown in your timezone (America/New_York). Provider is in Asia/Manila."
-  - Your Timezone label in confirmation for clarity
+**Auto-Detected Visitor Timezone (Worldwide Support)**
+- **Automatic Timezone Detection**: Uses `Intl.DateTimeFormat().resolvedOptions().timeZone` to detect any visitor's timezone worldwide
+  - Works for any country: USA, UK, Japan, Australia, Europe, etc.
+  - No manual timezone selection needed
+  - Server provides UTC times, client converts to local time
+- **Dual Time Display**: Shows visitor's local time with provider's time (Asia/Manila) as reference when different
+  - Time slot buttons: Primary visitor time with provider time as subtitle
+  - Confirmation page: Both timezones clearly labeled
+  - Example: Visitor in New York sees "6:00 AM" with "7:00 PM Manila time" reference
 
 **Bug Fixes**
 - **Timezone Bug Fixed**: API now correctly converts rule times from Manila timezone to UTC

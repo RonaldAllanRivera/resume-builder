@@ -20,9 +20,10 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Docker-First Development**: Consistent environment, zero local setup
 - **Testing Infrastructure**: Vitest (integration) + Playwright (E2E) + GitHub Actions CI/CD
 - **Database Management UI**: Admin dashboard with reset/seed buttons for resume data (101 items) and booking data
-- **Custom Booking System**: Stripe-integrated scheduling with dual timezone support
+- **Custom Booking System**: Stripe-integrated scheduling with automatic timezone detection
+  - **Auto-Detected Visitor Timezone**: Works for any visitor worldwide (auto-detects via browser)
+  - **Dual Time Display**: Shows visitor's local time + provider's timezone (Asia/Manila) when different
   - **Two-Month Calendar View**: Side-by-side month display with MUI-inspired design
-  - **Dual Timezone Display**: Shows both visitor's local time and provider's timezone (Asia/Manila)
   - **Service Packages**: 4 pricing tiers (Consultation, Day Rate, Week Rate, Monthly Retainer)
   - **Timezone-Aware Scheduling**: Proper UTC conversion with @date-fns/tz
   - **Availability Rules**: Weekday evenings + Weekend full-day slots

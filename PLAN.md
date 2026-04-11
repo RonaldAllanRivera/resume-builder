@@ -701,11 +701,13 @@ Goal: Let a client choose a package, pick from your admin-managed availability, 
 - **MUI-Inspired Design**: Modern aesthetic without external dependencies
 - **Hydration-Safe Rendering**: Fixed SSR/client mismatch using `mounted` state pattern
 
-**Dual Timezone Support**
-- Shows both visitor's local time and provider's timezone (Asia/Manila)
-- Time slot buttons display both timezones when different
-- Clear timezone labeling throughout booking flow
-- Proper timezone conversion using `@date-fns/tz` TZDate
+**Auto-Detected Visitor Timezone (Worldwide Support)**
+- **Automatic Detection**: Uses `Intl.DateTimeFormat().resolvedOptions().timeZone` for any visitor worldwide
+  - Works for USA, UK, Japan, Australia, Europe, etc.
+  - No manual selection needed - detects from browser
+- **Dual Time Display**: Shows visitor's local time with provider's timezone (Asia/Manila) as reference
+  - Time slot buttons: Primary visitor time, provider time as subtitle when different
+  - Confirmation page: Both timezones clearly labeled
 
 **Bug Fixes & Improvements**
 - Fixed timezone conversion bug (6 PM Manila showing as 2 AM)
