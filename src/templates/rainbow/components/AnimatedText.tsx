@@ -11,6 +11,7 @@ interface AnimatedTextProps {
   duration?: number
   delay?: number
   as?: keyof React.JSX.IntrinsicElements
+  disabled?: boolean
 }
 
 export function AnimatedText({
@@ -20,21 +21,24 @@ export function AnimatedText({
   duration = 0.6,
   delay = 0,
   as: Component = 'div',
+  disabled = false,
 }: AnimatedTextProps) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const { words, getWordStyle } = useWordAnimation({ text, stagger, duration, delay })
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || disabled) {
     return <Component className={className}>{text}</Component>
   }
 
   return (
     <Component className={className}>
       {words.map((word, index) => (
-        <span key={`${word}-${index}`} style={getWordStyle(index)} className="inline-block">
-          {word}
-          {index < words.length - 1 && ' '}
-        </span>
+        <React.Fragment key={`${word}-${index}`}>
+          <span style={getWordStyle(index)} className="inline-block">
+            {word}
+          </span>
+          {index < words.length - 1 && <span> </span>}
+        </React.Fragment>
       ))}
     </Component>
   )

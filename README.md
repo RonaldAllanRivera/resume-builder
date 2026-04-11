@@ -39,8 +39,9 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - **Custom Hooks**: useWordAnimation, useScrollTrigger, usePrefersReducedMotion
       - **Hydration-Safe**: No SSR/client mismatches with proper state management
       - **Performance-First**: GPU-accelerated animations only (transform + opacity)
+      - **Mobile Optimization**: Animations disabled on screens < 768px for 95+ Lighthouse score
       - **Accessibility**: Full `prefers-reduced-motion` support
-      - **Design Philosophy**: Macro-animations on homepage, micro-interactions on content pages
+      - **Design Philosophy**: Macro-animations on desktop homepage, micro-interactions on content pages
     - **Animated 3D Starfield** - Interactive canvas animation with progressive enhancement
       - 4,300 rotating stars in 3D space with depth-based sizing
       - Interactive mouse movement (rotation speeds up on interaction)

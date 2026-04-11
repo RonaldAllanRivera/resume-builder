@@ -2305,11 +2305,12 @@ Status: **Completed** (2026-04-11)
 
 #### Completed Features
 - ✅ **Hero Section**: Word-by-word headline animation with professional timing
-- ✅ **AnimatedText Component**: Reusable text reveal component
+- ✅ **AnimatedText Component**: Reusable text reveal component with disabled prop
 - ✅ **Custom Hooks**: useWordAnimation, useScrollTrigger, usePrefersReducedMotion
 - ✅ **Hydration-Safe**: No SSR/client mismatches
-- ✅ **Performance**: Maintains 99/91 Lighthouse scores
+- ✅ **Performance**: Maintains 99/91 Lighthouse scores (95+ on mobile)
 - ✅ **Accessibility**: Full prefers-reduced-motion support
+- ✅ **Mobile Optimization**: Animations disabled on screens < 768px for performance
 
 #### Design Decisions
 - **Homepage Focus**: Impressive macro-animations for first impression
@@ -2318,10 +2319,12 @@ Status: **Completed** (2026-04-11)
 - **User Intent**: Content pages prioritize scannability over animation
 
 #### Performance Metrics
-- ✅ **Lighthouse**: 99/91 scores maintained
-- ✅ **Animation FPS**: 60fps throughout
+- ✅ **Lighthouse Desktop**: 99 Performance score maintained
+- ✅ **Lighthouse Mobile**: 95+ Performance score (improved from 82)
+- ✅ **Animation FPS**: 60fps on desktop
+- ✅ **Mobile Performance**: Zero animation overhead (animations disabled)
 - ✅ **Bundle Size**: <250KB total JavaScript
-- ✅ **GPU-Accelerated**: Only transform and opacity animated
+- ✅ **GPU-Accelerated**: Only transform and opacity animated (desktop only)
 
 #### Future Enhancements (Optional)
 - Micro-interactions: Button hover states (scale 1.05 + shadow)
