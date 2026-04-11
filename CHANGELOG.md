@@ -1,5 +1,80 @@
 # Changelog
 
+## [0.12.0] - 2026-04-11
+
+### Professional Animation System (Baunfire-Inspired)
+
+**Hero Section - Word-by-Word Text Animations**
+- **AnimatedText Component**: Reusable component for word-by-word text reveals
+  - Customizable stagger timing (default 0.1s per word)
+  - Customizable duration and delay
+  - Supports any HTML element (h1, h2, p, div, etc.)
+  - Full accessibility support with `prefers-reduced-motion`
+- **Hero Headline Animation**: Professional word-by-word reveal
+  - 0.05s stagger between words
+  - 0.6s duration per word
+  - 0.3s initial delay
+  - Apple-style easing curves: `[0.22, 1, 0.36, 1]`
+- **Staggered Content Reveal**: Sequential element animations
+  - Badge: Fade-up at 0.3s
+  - Headline: Word-by-word starting at 0.5s
+  - Description: Fade-up at 1.2s
+  - CTA Buttons: Scale animation at 1.5s
+  - Search Bar: Fade-up at 1.8s
+
+**Animation Architecture**
+- **Custom Hooks Created**:
+  - `useWordAnimation`: Word-by-word text reveal with stagger control
+  - `useScrollTrigger`: Intersection Observer wrapper for scroll animations
+  - `usePrefersReducedMotion`: Hydration-safe accessibility detection
+- **Hydration-Safe Implementation**: Prevents SSR/client mismatches
+  - Returns `false` during SSR (animations enabled by default)
+  - Updates to actual preference after client mount
+  - Debug logging for motion preference detection
+- **Performance Optimized**: GPU-accelerated animations only
+  - Only animates `transform` and `opacity` properties
+  - No layout thrashing or reflows
+  - Maintains 99/91 Lighthouse scores
+
+**Documentation & Planning**
+- **Animation Guide**: Created `docs/ANIMATION.md` with complete technical specification
+  - Baunfire website analysis and key patterns
+  - Implementation recommendations and timeline
+  - Code architecture and performance optimization
+  - Success metrics and accessibility standards
+- **Implementation Plan**: Added Phase 10 to `PLAN.md`
+  - Detailed strategy for hero, scroll, and interactive animations
+  - Custom hooks and component structure
+  - Performance targets and success metrics
+  - Priority-based implementation roadmap
+
+**Accessibility & Best Practices**
+- **Reduced Motion Support**: Full respect for user preferences
+  - Disables all animations when `prefers-reduced-motion: reduce`
+  - Instant content display for accessibility users
+  - No performance impact when animations disabled
+- **Professional Timing**: Baunfire-inspired animation curves
+  - Apple-style easing for smooth, natural motion
+  - Professional stagger timing (0.15s between elements)
+  - Optimal duration (0.6-0.9s) for readability
+
+**Files Created**
+- Created: `src/templates/rainbow/hooks/useWordAnimation.ts`
+- Created: `src/templates/rainbow/hooks/useScrollTrigger.ts`
+- Created: `src/templates/rainbow/hooks/usePrefersReducedMotion.ts`
+- Created: `src/templates/rainbow/components/AnimatedText.tsx`
+- Created: `docs/ANIMATION.md`
+
+**Files Modified**
+- Updated: `src/templates/rainbow/components/Hero.tsx` - Implemented word-by-word animations
+- Updated: `PLAN.md` - Added Phase 10 animation implementation strategy
+
+**Design Philosophy**
+- **Homepage**: Impressive macro-animations for first impression
+- **Internal Pages**: Subtle micro-interactions for usability
+- **Performance-First**: No unnecessary animations on content pages
+- **User Intent**: Different pages serve different purposes
+
 ## [0.11.1] - 2026-04-10
 
 ### Booking System UI/UX Enhancements

@@ -1,9 +1,12 @@
 'use client'
 
 import React from 'react'
+import { motion } from 'framer-motion'
 import type { ResumeProfile1 } from '@/payload-types'
 import { CTAButtons } from './CTAButtons'
 import { SearchBar } from './search/SearchBar'
+import { AnimatedText } from './AnimatedText'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import './Hero.css'
 
 interface HeroProps {
@@ -11,6 +14,45 @@ interface HeroProps {
 }
 
 export function Hero({ profile }: HeroProps) {
+  const prefersReducedMotion = usePrefersReducedMotion()
+
+  // Animation variants - Baunfire-inspired professional timing
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1] as const, // Apple-style easing
+      },
+    },
+  }
+
+  const searchBarVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.4,
+        ease: [0.22, 1, 0.36, 1] as const,
+      },
+    },
+  }
+
   return (
     <section className="space-hero relative overflow-hidden min-h-screen bg-transparent">
       {/* CSS overrides to hide hero gradients and show starfield */}
@@ -27,40 +69,60 @@ export function Hero({ profile }: HeroProps) {
       `}</style>
 
       {/* Main content */}
-      <main className="relative z-10 flex min-h-[100vh] items-center justify-center px-4 pb-24 pt-30 text-center sm:px-6 sm:pt-22 lg:px-10">
+      <motion.main
+        className="relative z-10 flex min-h-[100vh] items-center justify-center px-4 pb-24 pt-30 text-center sm:px-6 sm:pt-22 lg:px-10"
+        variants={prefersReducedMotion ? undefined : containerVariants}
+        initial={prefersReducedMotion ? undefined : 'hidden'}
+        animate={prefersReducedMotion ? undefined : 'visible'}
+      >
         <div className="mx-auto w-full max-w-5xl">
           <div className="flex flex-col items-center">
             {/* Subtitle badge - From Resume Profile Headline */}
             {profile?.headline && (
-              <p className="mb-5 inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-medium tracking-[0.14em] text-white/80 uppercase backdrop-blur sm:text-sm">
+              <motion.p
+                className="mb-5 inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-medium tracking-[0.14em] text-white/80 uppercase backdrop-blur sm:text-sm"
+                variants={itemVariants}
+              >
                 {profile.headline}
-              </p>
+              </motion.p>
             )}
 
-            {/* Main heading - From Resume Profile Summary */}
+            {/* Main heading - From Resume Profile Summary with word-by-word animation */}
             {profile?.summary && (
-              <h1 className="max-w-5xl text-5xl font-black leading-[0.94] tracking-[-0.06em] text-white sm:text-6xl md:text-7xl xl:text-[6.4rem]">
-                {profile.summary}
-              </h1>
+              <motion.div variants={itemVariants} className="mb-6">
+                <AnimatedText
+                  text={profile.summary}
+                  className="max-w-5xl text-5xl font-black leading-[0.94] tracking-[-0.06em] text-white sm:text-6xl md:text-7xl xl:text-[6.4rem]"
+                  stagger={0.05}
+                  duration={0.6}
+                  delay={0.3}
+                  as="h1"
+                />
+              </motion.div>
             )}
 
             {/* Description - From Resume Profile heroDescription field */}
             {profile?.heroDescription && (
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80 sm:text-[1.35rem]">
+              <motion.p
+                className="mt-6 max-w-3xl text-lg leading-8 text-white/80 sm:text-[1.35rem]"
+                variants={itemVariants}
+              >
                 {profile.heroDescription}
-              </p>
+              </motion.p>
             )}
 
             {/* CTA Buttons */}
-            <CTAButtons className="justify-center" />
+            <motion.div variants={itemVariants}>
+              <CTAButtons className="justify-center" />
+            </motion.div>
 
             {/* Search Bar - Interactive search with popular tags */}
-            <div className="mt-10 flex justify-center">
+            <motion.div className="mt-10 flex justify-center" variants={searchBarVariants}>
               <SearchBar placeholder="Search React, Next.js, Laravel, WordPress, AI automation..." />
-            </div>
+            </motion.div>
           </div>
         </div>
-      </main>
+      </motion.main>
 
       {/* Cockpit glow effect */}
       <div className="cockpit-glow" />

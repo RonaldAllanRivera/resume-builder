@@ -28,14 +28,6 @@ if [ -n "$DATABASE_URL" ] && [ -n "$VERCEL_ENV" ]; then
   else
     echo "⚠️ Migrations had issues, but continuing with build..."
   fi
-  
-  # Step 3: Sync database (ensure all collections are created)
-  echo "🔧 Step 3: Syncing database..."
-  if NODE_OPTIONS='--no-deprecation' npx payload migrate:sync 2>&1 || true; then
-    echo "✅ Database sync completed"
-  else
-    echo "⚠️ Database sync had issues, continuing with build..."
-  fi
 else
   echo "📋 Skipping migrations (no DATABASE_URL or not in Vercel environment)"
 fi

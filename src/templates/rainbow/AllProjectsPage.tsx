@@ -95,8 +95,8 @@ export function AllProjectsPage({ projects }: AllProjectsPageProps) {
             <p className="mt-4 max-w-3xl text-lg leading-8 text-white/60">
               Rather than just showing screenshots, this page highlights the kind of work I deliver:
               scalable builds, clean architecture, business-focused solutions, and systems designed
-              to be used in production. You'll find technical context, implementation details, tech
-              stack choices, and the breadth of experience behind the work.
+              to be used in production. You&apos;ll find technical context, implementation details,
+              tech stack choices, and the breadth of experience behind the work.
             </p>
             <CTAButtons />
           </div>

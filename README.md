@@ -32,6 +32,15 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
 - **Multiple Template System**: Switchable public templates via admin panel
   - **Rainbow Theme**: Modern space-themed design with dynamic gradients
     - Glass morphism navigation with unique gradient colors per menu item
+    - **Professional Animation System** - Baunfire-inspired animations with accessibility
+      - **Word-by-Word Text Reveals**: Hero headline animates word by word with professional timing
+      - **Staggered Content**: Badge, headline, description, CTA, and search bar appear sequentially
+      - **Apple-Style Easing**: Smooth `[0.22, 1, 0.36, 1]` curves for natural motion
+      - **Custom Hooks**: useWordAnimation, useScrollTrigger, usePrefersReducedMotion
+      - **Hydration-Safe**: No SSR/client mismatches with proper state management
+      - **Performance-First**: GPU-accelerated animations only (transform + opacity)
+      - **Accessibility**: Full `prefers-reduced-motion` support
+      - **Design Philosophy**: Macro-animations on homepage, micro-interactions on content pages
     - **Animated 3D Starfield** - Interactive canvas animation with progressive enhancement
       - 4,300 rotating stars in 3D space with depth-based sizing
       - Interactive mouse movement (rotation speeds up on interaction)

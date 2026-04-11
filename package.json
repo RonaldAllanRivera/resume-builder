@@ -33,6 +33,7 @@
     "test:db:down": "docker compose -f docker-compose.test.yml down"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.2.0",
     "@payloadcms/admin-bar": "3.74.0",
     "@payloadcms/db-postgres": "3.74.0",
     "@payloadcms/live-preview-react": "3.74.0",
@@ -48,11 +49,11 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
-    "@date-fns/tz": "^1.2.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
+    "framer-motion": "^12.38.0",
     "geist": "^1.3.0",
     "googleapis": "^171.4.0",
     "graphql": "^16.8.2",
