@@ -474,7 +474,7 @@ export const seedResumeComplete = async ({
         techStack: [{ name: 'WordPress' }, { name: 'OpenAI' }, { name: 'REST API' }],
         repoUrl: 'https://github.com/RonaldAllanRivera/used-cars-search',
         category: 'wordpress' as const,
-        featured: true,
+        featured: false,
         order: 11,
         _status: 'published' as const,
       },
