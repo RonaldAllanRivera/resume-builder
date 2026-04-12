@@ -17,16 +17,29 @@ interface AnimatedTextProps {
 export function AnimatedText({
   text,
   className = '',
-  stagger = 0.1,
-  duration = 0.6,
-  delay = 0,
+  stagger = 0.1, // Delay between each word (in seconds)
+  duration = 0.6, // Animation duration per word
+  delay = 0, // Initial delay before animation starts
   as: Component = 'div',
   disabled = false,
 }: AnimatedTextProps) {
   const prefersReducedMotion = usePrefersReducedMotion()
+  const [isDesktop, setIsDesktop] = React.useState(false)
+
+  // Detect desktop devices for animation enablement
+  React.useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768)
+    }
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
+
   const { words, getWordStyle } = useWordAnimation({ text, stagger, duration, delay })
 
-  if (prefersReducedMotion || disabled) {
+  // Disable animations on mobile, reduced motion, or when explicitly disabled
+  if (prefersReducedMotion || disabled || !isDesktop) {
     return <Component className={className}>{text}</Component>
   }
 
