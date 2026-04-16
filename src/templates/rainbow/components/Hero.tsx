@@ -6,7 +6,6 @@ import { CTAButtons } from './CTAButtons'
 import { SearchBar } from './search/SearchBar'
 import { AnimatedText } from './AnimatedText'
 import { HeroReveal } from './HeroReveal'
-import './Hero.css'
 
 interface HeroProps {
   profile?: ResumeProfile1 | null

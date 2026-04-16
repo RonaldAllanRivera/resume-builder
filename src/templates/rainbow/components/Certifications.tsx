@@ -6,6 +6,7 @@ import {
   extractTechFromCertificationTitle,
   getFallbackIcons,
 } from '@/utilities/techStackIcons'
+import { ScrollReveal } from './ScrollReveal'
 
 interface CertificationsProps {
   certifications: Certification[]
@@ -57,12 +58,21 @@ export function Certifications({ certifications }: CertificationsProps) {
   return (
     <section id="certifications" className="scroll-mt-24 py-16">
       <div className="mx-auto w-[min(calc(100%-40px),1320px)]">
-        <div className="mb-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <ScrollReveal
+          className="mb-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+          threshold={0.5}
+          delay={0.2}
+        >
           <h2 className="text-[clamp(2rem,4vw,3.4rem)] leading-none tracking-[-0.045em] text-white">
             Latest Certifications
           </h2>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        </ScrollReveal>
+        <ScrollReveal
+          className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+          threshold={0.1}
+          staggerChildren={0.3}
+          delay={0.3}
+        >
           {latestCertifications.map((cert, index) => {
             const gradient = gradients[index % gradients.length]
             const techNames = extractTechFromCertificationTitle(cert.title)
@@ -159,7 +169,7 @@ export function Certifications({ certifications }: CertificationsProps) {
               </article>
             )
           })}
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   )
