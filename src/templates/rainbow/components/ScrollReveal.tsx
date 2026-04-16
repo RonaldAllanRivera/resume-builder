@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import { useScrollTrigger } from '../hooks/useScrollTrigger'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
+type Direction = 'up' | 'left' | 'right'
+
 interface ScrollRevealProps {
   children: React.ReactNode
   className?: string
@@ -13,62 +15,73 @@ interface ScrollRevealProps {
   threshold?: number
   rootMargin?: string
   staggerChildren?: number
+  /** Slide-in direction. Default: 'up' */
+  direction?: Direction
+}
+
+function getHiddenState(direction: Direction) {
+  if (direction === 'left') return { opacity: 0, x: '-100vw', y: 0 }
+  if (direction === 'right') return { opacity: 0, x: '100vw', y: 0 }
+  return { opacity: 0, x: 0, y: 60 }
+}
+
+function getVisibleState(direction: Direction) {
+  if (direction === 'left' || direction === 'right') return { opacity: 1, x: 0, y: 0 }
+  return { opacity: 1, x: 0, y: 0 }
 }
 
 /**
  * Reusable scroll-triggered animation component
  * - Desktop only (≥768px)
  * - Respects prefers-reduced-motion
- * - Slow, elegant slide-up animation (Baunfire-style)
+ * - Slow, elegant slide animation (Baunfire-style)
  * - Supports staggered children animations
+ * - Supports directional slide: 'up' | 'left' | 'right'
  * - Optimized for 99 Lighthouse score
  */
 export function ScrollReveal({
   children,
   className = '',
-  delay = 0, // Delay before animation starts (in seconds)
-  duration = 0.9, // Animation duration (0.9s = slow Baunfire-style)
-  threshold = 0.5, // How much of element must be visible (0.5 = 50%)
-  rootMargin = '0px', // Offset from viewport edge (0px = no offset)
-  staggerChildren = 0, // Delay between each child animation (0 = no stagger)
+  delay = 0,
+  duration = 0.9,
+  threshold = 0.5,
+  rootMargin = '0px',
+  staggerChildren = 0,
+  direction = 'up',
 }: ScrollRevealProps) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const [isDesktop, setIsDesktop] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
 
-  // Detect desktop devices for animation enablement
   React.useEffect(() => {
     setMounted(true)
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 768)
-    }
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768)
     checkDesktop()
     window.addEventListener('resize', checkDesktop)
     return () => window.removeEventListener('resize', checkDesktop)
   }, [])
 
-  // Enable animations only on desktop and when user doesn't prefer reduced motion
   const shouldAnimate = mounted && !prefersReducedMotion && isDesktop
-
-  // Scroll trigger
   const { elementRef, isVisible } = useScrollTrigger({ threshold, rootMargin })
 
-  // Animation variants - slow, elegant Baunfire-style
+  const hidden = getHiddenState(direction)
+  const visible = getVisibleState(direction)
+
   const containerVariants = {
-    hidden: { opacity: 0, y: 60 },
+    hidden,
     visible: {
-      opacity: 1,
-      y: 0,
+      ...visible,
       transition: {
         duration,
         delay,
-        ease: [0.22, 1, 0.36, 1] as const, // Apple-style easing
-        staggerChildren: staggerChildren,
+        ease: [0.22, 1, 0.36, 1] as const,
+        staggerChildren,
         delayChildren: delay,
       },
     },
   }
 
+  // Item variants always slide up for staggered grids
   const itemVariants = {
     hidden: { opacity: 0, y: 60 },
     visible: {
@@ -83,7 +96,6 @@ export function ScrollReveal({
 
   return (
     <>
-      {/* CSS to hide content until mounted (prevents flash on desktop) */}
       {!mounted && (
         <style jsx global>{`
           @media (min-width: 768px) {
