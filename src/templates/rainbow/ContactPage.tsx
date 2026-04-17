@@ -3,6 +3,8 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import type { SiteSetting } from '@/payload-types'
+import { HeroReveal } from './components/HeroReveal'
+import { ScrollReveal } from './components/ScrollReveal'
 
 interface ContactPageProps {
   settings?: SiteSetting | null
@@ -72,7 +74,12 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-24 pb-16">
         <div className="w-full max-w-2xl">
           {/* Header */}
-          <div className="mb-12 text-center">
+          <HeroReveal
+            className="mb-12 text-center"
+            staggerChildren={0.15}
+            delay={0.2}
+            duration={0.8}
+          >
             <h1 className="mb-4 text-[clamp(2.5rem,5vw,4rem)] font-black leading-none tracking-[-0.045em] text-white">
               Hire a Senior Full-Stack Developer for Your Next Project
             </h1>
@@ -81,9 +88,10 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
               <span className="text-white/80">web, SaaS, AI, and automation solutions</span> using{' '}
               <span className="text-white/80">Python, Laravel, WordPress, React, and Next.js</span>.
             </p>
-          </div>
+          </HeroReveal>
 
           {/* Form */}
+          <ScrollReveal threshold={0.1} delay={0.3}>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name and Email Row */}
             <div className="grid gap-6 md:grid-cols-2">
@@ -283,6 +291,7 @@ export function ContactPage({ settings: _settings }: ContactPageProps) {
               </Link>
             </div>
           </form>
+          </ScrollReveal>
 
           {/* Footer Note */}
           <p className="mt-8 text-center text-sm text-white/40">
