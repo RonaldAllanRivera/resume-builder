@@ -2196,7 +2196,7 @@ Status: **Completed** (2026-03-03)
 
 ## Phase 10 - Professional Animation System (Baunfire-Inspired)
 
-Status: **Completed** (2026-04-11)
+Status: **Completed** (2026-04-17 — full site coverage)
 
 ### Inspiration & Analysis
 - **Reference**: Baunfire.com - Award-winning digital agency website
@@ -2212,11 +2212,14 @@ Status: **Completed** (2026-04-11)
 - **Apple-Style Easing**: `[0.22, 1, 0.36, 1]` curves
 - **Accessibility**: Respects `prefers-reduced-motion`
 
-#### Phase 10B - Scroll-Triggered Animations
+#### Phase 10B - Scroll-Triggered Animations ✅ COMPLETED
 - **Progressive Reveal**: Sections fade up from bottom
 - **Scale Effects**: Subtle scale from 0.95 to 1.0
 - **Intersection Observer**: `-100px` margin trigger
 - **Performance**: GPU-accelerated transforms only
+- **Edge-Slide Animations**: Experience + Education cards slide from browser edge (left/right alternating)
+- **`overflow-x-clip`**: Prevents horizontal scrollbar from 100vw slide animations without breaking `position: fixed`
+- **Full Site Coverage**: All internal pages animated — AllProjectsPage, AllCertificationsPage, PricingPage, SearchPage, ContactPage, Certifications, Experience, Education sections
 
 #### Phase 10C - Interactive Polish
 - **Button States**: Scale 1.05 + shadow intensification
@@ -2307,6 +2310,10 @@ Status: **Completed** (2026-04-11)
 - ✅ **Hero Section**: Word-by-word headline animation with professional timing
 - ✅ **AnimatedText Component**: Reusable text reveal component with disabled prop
 - ✅ **Custom Hooks**: useWordAnimation, useScrollTrigger, usePrefersReducedMotion
+- ✅ **HeroReveal Component**: Reusable on-load stagger animation for page hero sections
+- ✅ **ScrollReveal Component**: Reusable scroll-triggered animation with `direction` prop (`up` | `left` | `right`)
+- ✅ **Edge-Slide Animations**: Experience + Education cards alternate left/right from browser edge
+- ✅ **Full Site Coverage**: HeroReveal + ScrollReveal on all internal pages (AllProjectsPage, AllCertificationsPage, PricingPage, SearchPage, ContactPage) and homepage sections (Certifications, Experience, Education)
 - ✅ **Hydration-Safe**: No SSR/client mismatches
 - ✅ **Performance**: Maintains 99/91 Lighthouse scores (95+ on mobile)
 - ✅ **Accessibility**: Full prefers-reduced-motion support

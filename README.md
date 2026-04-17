@@ -36,12 +36,16 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - **Word-by-Word Text Reveals**: Hero headline animates word by word with professional timing
       - **Staggered Content**: Badge, headline, description, CTA, and search bar appear sequentially
       - **Apple-Style Easing**: Smooth `[0.22, 1, 0.36, 1]` curves for natural motion
+      - **`HeroReveal` Component**: Reusable on-load stagger for page hero sections
+      - **`ScrollReveal` Component**: Reusable scroll-triggered reveal supporting `up` / `left` / `right` directions
+      - **Edge-Slide Animations**: Experience + Education cards slide in alternating from left/right browser edge
+      - **Full Site Coverage**: Animations on all public pages — homepage sections, AllProjectsPage, AllCertificationsPage, PricingPage, SearchPage, ContactPage
       - **Custom Hooks**: useWordAnimation, useScrollTrigger, usePrefersReducedMotion
       - **Hydration-Safe**: No SSR/client mismatches with proper state management
-      - **Performance-First**: GPU-accelerated animations only (transform + opacity)
+      - **Performance-First**: GPU-accelerated animations only (transform + opacity); Framer Motion already bundled — no new dependencies
       - **Mobile Optimization**: Animations disabled on screens < 768px for 95+ Lighthouse score
       - **Accessibility**: Full `prefers-reduced-motion` support
-      - **Design Philosophy**: Macro-animations on desktop homepage, micro-interactions on content pages
+      - **Design Philosophy**: Macro-animations on desktop homepage, scroll-reveal on all internal pages
     - **Animated 3D Starfield** - Interactive canvas animation with progressive enhancement
       - 4,300 rotating stars in 3D space with depth-based sizing
       - Interactive mouse movement (rotation speeds up on interaction)

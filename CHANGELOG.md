@@ -1,5 +1,89 @@
 # Changelog
 
+## [0.13.0] - 2026-04-17
+
+### Scroll-Reveal Animation System — Full Site Coverage
+
+**New Reusable Animation Components**
+- **`HeroReveal` Component** (`src/templates/rainbow/components/HeroReveal.tsx`)
+  - On-load stagger animation for page hero sections
+  - Desktop-only (≥768px), respects `prefers-reduced-motion`
+  - Fires once on mount — no re-animation on re-render
+  - Props: `staggerChildren`, `delay`, `duration`, `className`
+  - Uses Framer Motion `staggerChildren` + `delayChildren` with Apple-style easing `[0.22, 1, 0.36, 1]`
+- **`ScrollReveal` Component** (`src/templates/rainbow/components/ScrollReveal.tsx`)
+  - Scroll-triggered reveal animation driven by `IntersectionObserver`
+  - Desktop-only (≥768px), respects `prefers-reduced-motion`
+  - Supports directional slides: `direction?: 'up' | 'left' | 'right'`
+  - `left` / `right` animate from full viewport edge (`x: '-100vw'` / `x: '100vw'`)
+  - Props: `direction`, `threshold`, `delay`, `staggerChildren`, `className`
+  - Injects `.scroll-reveal-content { opacity: 0 }` globally before mount to prevent SSR flash
+
+**Edge-Slide Animations — Experience & Education**
+- **Experience section** (`src/templates/rainbow/components/Experience.tsx`):
+  - Current and earlier experience cards alternate left/right directional slides
+  - Odd-indexed cards slide from left edge; even-indexed slide from right edge
+  - Section has `overflow-x-clip` to prevent horizontal scrollbar without breaking `position: fixed`
+- **Education section** (`src/templates/rainbow/components/Education.tsx`):
+  - Same alternating left/right pattern
+  - Static "Continuous Professional Learning" card continues the index sequence correctly
+  - Section has `overflow-x-clip`
+
+**Scroll Animations Applied to Homepage Sections**
+- **Certifications** (`components/Certifications.tsx`): heading + card grid with `staggerChildren={0.3}`
+
+**HeroReveal + ScrollReveal Applied to All Internal Pages**
+- **`AllProjectsPage.tsx`**: HeroReveal on hero grid (left column + aside), ScrollReveal on each category heading and card grid
+- **`AllCertificationsPage.tsx`**: Same pattern as AllProjectsPage
+- **`PricingPage.tsx`**: HeroReveal on page header, ScrollReveal on package grid (`staggerChildren={0.2}`) and custom CTA section
+- **`SearchPage.tsx`**: HeroReveal wrapping h1, description, and SearchBar
+- **`ContactPage.tsx`**: HeroReveal on heading block, ScrollReveal wrapping the entire form
+
+**Why Lighthouse Is Unaffected**
+- `HeroReveal` and `ScrollReveal` are already in the bundle (Framer Motion was pre-existing)
+- Both are `'use client'` components — no server-side impact
+- `IntersectionObserver` used by `ScrollReveal` has zero cost until elements enter viewport
+- Animations are desktop-only (`window.innerWidth >= 768`) — zero mobile overhead
+- `prefers-reduced-motion` respected — accessibility users see static content
+
+**Bug Fixes**
+- **Search page double-trigger** (`SearchPage.tsx`): Fixed shaking/staggering caused by `performSearch` calling `router.push` while `useEffect([urlQuery])` also triggered `performSearch`
+  - Root cause: circular dependency — URL change triggered effect, effect called performSearch, performSearch changed URL
+  - Fix: separated concerns — `performSearch` is pure API execution (no router), `navigateToSearch` is URL-only updater, `useEffect([urlQuery])` is the single callsite for `performSearch`
+  - `onSearch={navigateToSearch}` passed to `SearchBar` and `SearchResults` (not `performSearch`)
+
+**TypeScript Fixes**
+- Added `declare module '*.css'` to `src/environment.d.ts` to resolve TS2882 on `Hero.css` side-effect import
+- Removed deprecated `"baseUrl": "."` from `tsconfig.json` after migrating 5 files from bare `src/...` imports to `@/...` path aliases:
+  - `src/blocks/Banner/Component.tsx`
+  - `src/collections/Posts/hooks/populateAuthors.ts`
+  - `src/utilities/getDocument.ts`
+  - `src/utilities/getGlobals.ts`
+  - `src/heros/PostHero/index.tsx`
+
+**Files Created**
+- `src/templates/rainbow/components/HeroReveal.tsx`
+- `src/templates/rainbow/components/ScrollReveal.tsx`
+
+**Files Modified**
+- `src/templates/rainbow/components/Certifications.tsx` — added ScrollReveal
+- `src/templates/rainbow/components/Experience.tsx` — added ScrollReveal with left/right direction
+- `src/templates/rainbow/components/Education.tsx` — added ScrollReveal with left/right direction
+- `src/templates/rainbow/AllProjectsPage.tsx` — added HeroReveal + ScrollReveal
+- `src/templates/rainbow/AllCertificationsPage.tsx` — added HeroReveal + ScrollReveal
+- `src/templates/rainbow/components/PricingPage.tsx` — added HeroReveal + ScrollReveal
+- `src/templates/rainbow/SearchPage.tsx` — added HeroReveal, fixed double-trigger bug
+- `src/templates/rainbow/ContactPage.tsx` — added HeroReveal + ScrollReveal
+- `src/environment.d.ts` — added CSS module declaration
+- `tsconfig.json` — removed deprecated `baseUrl`
+- `src/blocks/Banner/Component.tsx` — migrated to `@/` imports
+- `src/collections/Posts/hooks/populateAuthors.ts` — migrated to `@/` imports
+- `src/utilities/getDocument.ts` — migrated to `@/` imports
+- `src/utilities/getGlobals.ts` — migrated to `@/` imports
+- `src/heros/PostHero/index.tsx` — migrated to `@/` imports
+
+---
+
 ## [0.12.0] - 2026-04-11
 
 ### Professional Animation System (Baunfire-Inspired)
