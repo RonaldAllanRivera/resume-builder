@@ -4,13 +4,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { SearchBar } from './components/search/SearchBar'
 import { SearchResults } from './components/search/SearchResults'
+import { HeroReveal } from './components/HeroReveal'
 import { StarfieldClient } from '@/components/StarfieldClient'
 import type { SearchResponse } from '@/utilities/search'
 
 export function SearchPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const initialQuery = searchParams.get('q') || ''
+  const urlQuery = searchParams.get('q') || ''
 
   const [results, setResults] = useState<SearchResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -19,85 +20,79 @@ export function SearchPage() {
     'all' | 'projects' | 'certifications' | 'experience'
   >('all')
 
-  const performSearch = useCallback(
-    async (query: string, retryCount = 0) => {
-      if (!query.trim()) {
-        setResults(null)
-        // Clear URL when search is empty
-        router.push('/search', { scroll: false })
-        return
+  // Pure API execution — never touches the URL
+  const performSearch = useCallback(async (query: string, retryCount = 0) => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        if (response.status === 429) throw new Error('RATE_LIMIT')
+        console.error('API Error:', response.status, response.statusText, errorText)
+        throw new Error(`Server error: ${response.status}`)
       }
 
-      // Update URL with search query for bookmarking
-      router.push(`/search?q=${encodeURIComponent(query)}`, { scroll: false })
+      const data: SearchResponse = await response.json()
+      setResults(data)
+    } catch (err) {
+      let errorMessage = 'Failed to search. Please try again.'
 
-      setIsLoading(true)
-      setError(null)
-
-      try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (!response.ok) {
-          const errorText = await response.text()
-
-          if (response.status === 429) {
-            // Don't log rate limit errors - they'll be retried automatically
-            throw new Error('RATE_LIMIT')
+      if (err instanceof Error) {
+        if (err.message === 'RATE_LIMIT') {
+          errorMessage = 'Too many requests. Please wait a moment and try again.'
+          if (retryCount < 3) {
+            const delay = Math.pow(2, retryCount) * 1000
+            setTimeout(() => performSearch(query, retryCount + 1), delay)
+            return
           }
-
-          console.error('API Error:', response.status, response.statusText, errorText)
-          throw new Error(`Server error: ${response.status}`)
-        }
-
-        const data: SearchResponse = await response.json()
-        setResults(data)
-      } catch (err) {
-        let errorMessage = 'Failed to search. Please try again.'
-
-        if (err instanceof Error) {
-          if (err.message === 'RATE_LIMIT') {
-            errorMessage = 'Too many requests. Please wait a moment and try again.'
-            // Retry with exponential backoff for rate limit
-            if (retryCount < 3) {
-              const delay = Math.pow(2, retryCount) * 1000 // 1s, 2s, 4s
-              console.log(`Rate limited. Retrying in ${delay / 1000}s...`)
-              setTimeout(() => performSearch(query, retryCount + 1), delay)
-              return
-            }
-          } else if (
-            err.message.includes('Failed to fetch') ||
-            err.message.includes('NetworkError')
-          ) {
-            errorMessage = 'Network error. Please check your connection and try again.'
-            // Retry once for network errors
-            if (retryCount === 0) {
-              console.log('Retrying search due to network error...')
-              setTimeout(() => performSearch(query, 1), 1000)
-              return
-            }
-          } else if (err.message.includes('Server error')) {
-            errorMessage = 'Server error. Please try again in a moment.'
+        } else if (
+          err.message.includes('Failed to fetch') ||
+          err.message.includes('NetworkError')
+        ) {
+          errorMessage = 'Network error. Please check your connection and try again.'
+          if (retryCount === 0) {
+            setTimeout(() => performSearch(query, 1), 1000)
+            return
           }
+        } else if (err.message.includes('Server error')) {
+          errorMessage = 'Server error. Please try again in a moment.'
         }
-
-        console.error('Search error:', err)
-        setError(errorMessage)
-      } finally {
-        setIsLoading(false)
       }
+
+      console.error('Search error:', err)
+      setError(errorMessage)
+    } finally {
+      setIsLoading(false)
+    }
+  }, []) // No router dependency — URL is managed separately
+
+  // URL is the single source of truth.
+  // This effect is the ONLY place performSearch is called, preventing double-triggers.
+  useEffect(() => {
+    if (urlQuery) {
+      performSearch(urlQuery)
+    } else {
+      setResults(null)
+    }
+  }, [urlQuery, performSearch])
+
+  // URL updater — passed to SearchBar and SearchResults instead of performSearch.
+  // Updating the URL triggers the effect above, which runs the search exactly once.
+  const navigateToSearch = useCallback(
+    (query: string) => {
+      const trimmed = query.trim()
+      router.push(
+        trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : '/search',
+        { scroll: false },
+      )
     },
     [router],
   )
-
-  useEffect(() => {
-    if (initialQuery) {
-      performSearch(initialQuery)
-    }
-  }, [initialQuery, performSearch])
 
   const filterTabs = [
     { id: 'all' as const, label: 'All', count: results?.totalResults || 0 },
@@ -119,21 +114,24 @@ export function SearchPage() {
       <div className="relative z-10">
         {/* Hero Section */}
         <section className="px-4 pb-12 pt-32 sm:px-6 lg:px-10">
-          <div className="mx-auto max-w-5xl text-center">
+          <HeroReveal
+            className="mx-auto max-w-5xl text-center"
+            staggerChildren={0.15}
+            delay={0.2}
+            duration={0.8}
+          >
             <h1 className="mb-4 text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl">
               Search My Work
             </h1>
             <p className="mb-8 text-lg text-white/70 sm:text-xl">
               Find projects, experience, certifications, and technical skills in one place.
             </p>
-
-            {/* Search Bar */}
             <SearchBar
-              onSearch={performSearch}
+              onSearch={navigateToSearch}
               autoFocus
               placeholder="Search React, Next.js, Laravel, WordPress, AI automation..."
             />
-          </div>
+          </HeroReveal>
         </section>
 
         {/* Filter Tabs */}
@@ -174,7 +172,7 @@ export function SearchPage() {
               isLoading={isLoading}
               error={error}
               activeFilter={activeFilter}
-              onSearch={performSearch}
+              onSearch={navigateToSearch}
             />
           </div>
         </section>
