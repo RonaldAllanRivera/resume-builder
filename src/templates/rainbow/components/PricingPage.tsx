@@ -3,6 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { Package } from '@/payload-types'
+import { HeroReveal } from './HeroReveal'
+import { ScrollReveal } from './ScrollReveal'
 
 interface PricingPageProps {
   packages: Package[]
@@ -13,7 +15,7 @@ export function PricingPage({ packages }: PricingPageProps) {
     <div className="min-h-screen bg-[#050608] text-white py-20 pt-24 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
+        <HeroReveal className="text-center mb-16" staggerChildren={0.15} delay={0.2} duration={0.8}>
           <h1 className="mb-4 text-[clamp(2.5rem,5vw,4rem)] font-black leading-none tracking-[-0.045em] text-white">
             Hire Me
           </h1>
@@ -21,17 +23,26 @@ export function PricingPage({ packages }: PricingPageProps) {
             Professional freelance services with transparent pricing. Choose the perfect package for
             your project needs.
           </p>
-        </div>
+        </HeroReveal>
 
         {/* Package Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <ScrollReveal
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+          threshold={0.1}
+          staggerChildren={0.2}
+          delay={0.3}
+        >
           {packages.map((pkg, index) => (
             <PackageCard key={pkg.id} package={pkg} featured={index === 1} />
           ))}
-        </div>
+        </ScrollReveal>
 
         {/* Contact Section */}
-        <div className="text-center bg-white/5 backdrop-blur rounded-2xl p-8">
+        <ScrollReveal
+          className="text-center bg-white/5 backdrop-blur rounded-2xl p-8"
+          threshold={0.3}
+          delay={0.2}
+        >
           <h2 className="text-2xl font-semibold mb-4">Need a Custom Solution?</h2>
           <p className="text-white/80 mb-6">
             Have a project that doesn&apos;t fit these packages? Let&apos;s discuss your specific
@@ -43,7 +54,7 @@ export function PricingPage({ packages }: PricingPageProps) {
           >
             Contact Me
           </Link>
-        </div>
+        </ScrollReveal>
       </div>
     </div>
   )
