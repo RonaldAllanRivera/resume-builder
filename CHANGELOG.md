@@ -1,5 +1,55 @@
 # Changelog
 
+## [0.14.0] - 2026-04-24
+
+### Booking Email Notifications + Animation FOUC Fix
+
+**Booking Email Notifications (via Resend)**
+- **New shared email utility** (`src/lib/booking-email.ts`):
+  - `sendBookingRequestEmails(customer, booking)` — fires when a new booking is submitted
+    - Customer: "We received your booking request" acknowledgement
+    - Admin: new booking alert with all booking details
+  - `sendPaymentConfirmedEmails(customer, booking)` — fires when Stripe webhook confirms payment
+    - Customer: payment receipt + next steps
+    - Admin: payment received alert
+  - Fire-and-forget pattern: email failures never block API responses
+  - Graceful no-op when `RESEND_API_KEY` is not set
+  - Falls back to `CONTACT_FORM_TO_EMAIL` if `BOOKING_NOTIFICATION_EMAIL` is not set
+- **`POST /api/bookings`** — calls `sendBookingRequestEmails` after booking creation
+- **`POST /api/webhooks/stripe`** — calls `sendPaymentConfirmedEmails` after payment confirmed, fetches full booking with `depth: 1` to resolve customer + package relationships before sending
+- **New env var**: `BOOKING_NOTIFICATION_EMAIL` — where admin booking alerts are sent (added to `.env.example`)
+
+**Animation FOUC Fix (Flash of Unstyled Content)**
+- **Root cause identified**: `InitTheme` script (`strategy="beforeInteractive"`) runs before React and sets `data-theme` on `<html>`, which triggers `html[data-theme] { opacity: initial }` in `globals.css`, making the entire page visible before Framer Motion initializes — exposing fully-rendered content 100–300ms before animations begin
+- **Fix: `.will-animate` CSS class** added to `globals.css` (`@media (min-width: 768px)`)
+  - Hides animated elements via CSS on first paint (before any script runs)
+  - Framer Motion's inline styles (higher specificity) override it automatically when animation starts — no JS class removal needed
+  - Mobile excluded: no animations, content is immediately visible
+- **Fix: Object-form `initial` in Framer Motion** — switched from string `"hidden"` (variant lookup, unreliable in SSR) to object form (`{ opacity: 0 }`) in both components, so inline styles are written directly into the SSR HTML
+- **`HeroReveal.tsx`** — added `will-animate` class, changed `initial` to `{ opacity: 0 }` object form
+- **`ScrollReveal.tsx`** — added `will-animate` class, changed `initial` to `getHiddenState(direction)` object form
+
+**Documentation**
+- `docs/STRIPE.md` — new comprehensive Stripe integration guide (account setup, API keys, restricted keys, webhook setup, test cards, going live, rotating keys, troubleshooting)
+- `docs/RESEND.md` — added "How `contact@allanai.dev` Is Set Up" and "How to Add Additional Email Recipients" sections
+- `PLAN.md` — Phase 4C.7 updated to reflect partial implementation; Phase 4C.12 (Coupon Codes) added
+
+**Files Created**
+- `src/lib/booking-email.ts`
+- `docs/STRIPE.md`
+
+**Files Modified**
+- `src/app/api/bookings/route.ts` — added email notification call
+- `src/app/api/webhooks/stripe/route.ts` — added payment confirmed email call
+- `src/templates/rainbow/components/HeroReveal.tsx` — FOUC fix
+- `src/templates/rainbow/components/ScrollReveal.tsx` — FOUC fix
+- `src/app/(frontend)/globals.css` — added `.will-animate` CSS rule
+- `.env.example` — added `BOOKING_NOTIFICATION_EMAIL`
+- `docs/RESEND.md` — added email setup and additional recipients sections
+- `PLAN.md` — Phase 4C.7 + Phase 4C.12
+
+---
+
 ## [0.13.0] - 2026-04-17
 
 ### Scroll-Reveal Animation System — Full Site Coverage

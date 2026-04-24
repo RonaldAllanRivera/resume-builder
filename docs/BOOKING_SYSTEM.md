@@ -318,7 +318,7 @@ Use the `blockedDates` field in Payload admin to block:
 - [ ] Build time slot picker component
 - [ ] Build customer information form
 - [ ] Implement booking request submission API (`/api/bookings`)
-- [ ] Add booking confirmation email (via Resend)
+- [x] Add booking confirmation email (via Resend) — `src/lib/booking-email.ts`
 
 ### Phase 4: Payment Integration (Week 2)
 
@@ -333,7 +333,8 @@ Use the `blockedDates` field in Payload admin to block:
 - [ ] Build admin booking dashboard (or use Payload admin)
 - [ ] Add accept/decline booking actions
 - [ ] Add payout tracking
-- [ ] Add email notifications for status changes
+- [x] Add email notifications for booking request + payment (implemented)
+- [ ] Add email notifications for accept/decline status changes (planned)
 
 ### Phase 6: Polish and Launch (Week 3-4)
 
@@ -434,6 +435,40 @@ Use the `blockedDates` field in Payload admin to block:
 
 ---
 
-**Last Updated**: 2026-04-06
-**Version**: 1.0
-**Next Review**: 2026-07-06
+---
+
+## Email Notifications
+
+Implemented via `src/lib/booking-email.ts` using Resend.
+
+### Triggers
+
+| Event | Customer Email | Admin Email | Env Var for Admin |
+|-------|---------------|-------------|-------------------|
+| Booking submitted | "We received your request" | New booking alert | `BOOKING_NOTIFICATION_EMAIL` |
+| Payment confirmed | Payment receipt + next steps | Payment received alert | `BOOKING_NOTIFICATION_EMAIL` |
+
+If `BOOKING_NOTIFICATION_EMAIL` is not set, falls back to `CONTACT_FORM_TO_EMAIL`.
+
+### Functions
+
+```ts
+// src/lib/booking-email.ts
+sendBookingRequestEmails(customer: Customer, booking: Booking): Promise<void>
+sendPaymentConfirmedEmails(customer: Customer, booking: Booking): Promise<void>
+```
+
+Both are fire-and-forget — they never throw or block API responses. The email silently no-ops if `RESEND_API_KEY` is not set.
+
+### Remaining (Planned)
+
+- Booking accepted/declined notification to customer
+- 24-hour reminder before session
+- 1-hour reminder before session
+- Post-booking follow-up
+
+---
+
+**Last Updated**: 2026-04-24
+**Version**: 1.1
+**Next Review**: 2026-07-24

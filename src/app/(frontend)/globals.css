@@ -233,3 +233,27 @@ html[data-theme='light'] {
 [aria-label='Select a theme'] {
   display: none !important;
 }
+
+/*
+ * Pre-animation hide — desktop only.
+ *
+ * The InitTheme script (strategy="beforeInteractive") sets data-theme on <html>
+ * before React or Framer Motion runs. That reveals the page instantly via the
+ * `html[data-theme] { opacity: initial }` rule above, showing fully-rendered
+ * content before any animation fires.
+ *
+ * This class is added to every animated element in HeroReveal and ScrollReveal.
+ * It hides the element in plain CSS — which the browser applies on first paint,
+ * before any script runs — so the content is never visible before animating in.
+ *
+ * Framer Motion sets inline `opacity` during the animation. Inline styles have
+ * higher specificity than class rules, so they override this class as soon as
+ * the animation starts. No JS is needed to remove this class.
+ *
+ * Mobile is excluded: content should be immediately visible with no animation.
+ */
+@media (min-width: 768px) {
+  .will-animate {
+    opacity: 0;
+  }
+}

@@ -13,44 +13,45 @@ interface HeroRevealProps {
 }
 
 /**
- * Reusable on-load animation component for Hero section
- * - Desktop only (≥768px)
- * - Respects prefers-reduced-motion
- * - Staggered entrance animations
- * - Optimized for 99 Lighthouse score
+ * Reusable on-load animation component for hero sections.
+ *
+ * How FOUC is prevented:
+ *   - `initial="hidden"` is unconditional — Framer Motion applies the hidden
+ *     variant styles (opacity: 0) to the SSR HTML on first paint. No JS needed.
+ *   - `animate` is controlled by `mounted` state only, never by a key change.
+ *   - No key change = no unmount/remount = no visible-then-hidden flash.
+ *   - Mobile: snaps to visible instantly (transition: 0) after hydration.
+ *   - Desktop: animates normally after hydration.
  */
 export function HeroReveal({
   children,
   className = '',
-  delay = 0, // Delay before animation starts (in seconds)
-  duration = 0.8, // Animation duration (0.8s for hero)
-  staggerChildren = 0, // Delay between each child animation (0 = no stagger)
+  delay = 0,
+  duration = 0.8,
+  staggerChildren = 0,
 }: HeroRevealProps) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const [isDesktop, setIsDesktop] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
 
-  // Detect desktop devices for animation enablement
   React.useEffect(() => {
     setMounted(true)
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 768)
-    }
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768)
     checkDesktop()
     window.addEventListener('resize', checkDesktop)
     return () => window.removeEventListener('resize', checkDesktop)
   }, [])
 
-  // Enable animations only on desktop and when user doesn't prefer reduced motion
   const shouldAnimate = mounted && !prefersReducedMotion && isDesktop
 
-  // Animation variants - Hero entrance style
+  // Variants always defined — Framer Motion reads `hidden` during SSR to set
+  // inline styles (opacity: 0) before any JS runs.
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: staggerChildren,
+        staggerChildren,
         delayChildren: delay,
       },
     },
@@ -63,39 +64,28 @@ export function HeroReveal({
       y: 0,
       transition: {
         duration,
-        ease: [0.22, 1, 0.36, 1] as const, // Apple-style easing
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   }
 
   return (
-    <>
-      {/* CSS to hide content until mounted (prevents flash on desktop) */}
-      {!mounted && (
-        <style jsx global>{`
-          @media (min-width: 768px) {
-            .hero-reveal-content {
-              opacity: 0;
-            }
-          }
-        `}</style>
-      )}
-
-      <motion.div
-        key={shouldAnimate ? 'animated' : 'static'}
-        className={`${className} hero-reveal-content`}
-        variants={shouldAnimate ? containerVariants : undefined}
-        initial={shouldAnimate ? 'hidden' : undefined}
-        animate={shouldAnimate ? 'visible' : undefined}
-      >
-        {staggerChildren > 0 && shouldAnimate
-          ? React.Children.map(children, (child, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                {child}
-              </motion.div>
-            ))
-          : children}
-      </motion.div>
-    </>
+    <motion.div
+      className={`${className} will-animate`}
+      variants={containerVariants}
+      // Object form — Framer Motion writes this as an inline style on the SSR
+      // HTML before any JS runs, so the element is hidden on first paint.
+      initial={{ opacity: 0 }}
+      animate={mounted ? 'visible' : { opacity: 0 }}
+      transition={mounted && !shouldAnimate ? { duration: 0 } : undefined}
+    >
+      {staggerChildren > 0 && shouldAnimate
+        ? React.Children.map(children, (child, index) => (
+            <motion.div key={index} variants={itemVariants}>
+              {child}
+            </motion.div>
+          ))
+        : children}
+    </motion.div>
   )
 }

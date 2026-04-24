@@ -20,7 +20,102 @@ Complete guide for setting up and using Resend email service with the contact fo
 
 ## Overview
 
-Resend is a modern email API designed for developers, providing reliable email delivery for transactional emails like contact form submissions. This project uses Resend to power the contact form at `/contact`.
+Resend is a modern email API designed for developers, providing reliable email delivery for transactional emails like contact form submissions. This project uses Resend to power the contact form at `/contact` and booking notification emails.
+
+---
+
+## How `contact@allanai.dev` Is Set Up
+
+**Short answer: Cloudflare owns the DNS records, Resend does the actual sending.**
+
+| Layer | Service | What It Does |
+|-------|---------|-------------|
+| Domain purchase | Cloudflare | Owns and manages `allanai.dev` |
+| DNS records | Cloudflare | Hosts TXT, MX, and DKIM records that Resend requires |
+| Email sending | Resend | Uses those DNS records to send authenticated email from `contact@allanai.dev` |
+
+**DNS records Resend added to Cloudflare:**
+
+```
+Type: TXT  | Name: @                    | Value: resend-verification=xxx (domain ownership proof)
+Type: MX   | Name: @                    | Value: feedback-smtp.resend.com (Priority: 10)
+Type: TXT  | Name: resend._domainkey    | Value: v=DKIM1; k=rsa; p=... (email signature key)
+```
+
+Resend reads these records to prove to receiving mail servers (Gmail, Outlook, etc.) that emails from `contact@allanai.dev` are legitimate. Without them, emails would land in spam.
+
+---
+
+## How to Add Additional Email Recipients
+
+This project supports multiple ways to route emails to extra recipients. Use the method that fits your need:
+
+### Option 1 — Booking Notification Email (separate from contact form)
+
+For booking-related alerts (new booking, payment received), set a dedicated admin email:
+
+```bash
+# .env.local or Vercel environment variables
+BOOKING_NOTIFICATION_EMAIL=your-email@gmail.com
+```
+
+- Falls back to `CONTACT_FORM_TO_EMAIL` if not set
+- Used by `src/lib/booking-email.ts` for both booking request and payment alerts
+- **Best practice**: Use a separate address so booking emails don't mix with contact form emails
+
+### Option 2 — CC Recipients on Contact Form Emails
+
+To CC additional addresses on every contact form submission:
+
+```bash
+CONTACT_FORM_CC_EMAILS=backup@gmail.com,team@company.com
+```
+
+- Comma-separated, no spaces
+- Optional — remove the variable entirely if not needed
+- Handled automatically in `src/app/(frontend)/api/contact/route.ts`
+
+### Option 3 — Multiple `To` Recipients (Code Change)
+
+To send the same email to multiple primary recipients, edit the contact route or booking email utility directly:
+
+```typescript
+// src/app/(frontend)/api/contact/route.ts — change `to` to an array
+await resend.emails.send({
+  from: fromEmail,
+  to: ['primary@gmail.com', 'secondary@gmail.com'],  // array of recipients
+  subject: '...',
+  html: '...',
+})
+```
+
+### Option 4 — Add a New Verified Sender Address
+
+If you want to send **from** a different address (e.g., `bookings@allanai.dev`):
+
+1. You do **not** need to do anything in Cloudflare — the domain `allanai.dev` is already verified
+2. Go to **Resend Dashboard → Domains → allanai.dev**
+3. The domain is already verified — any `*@allanai.dev` address works as the sender
+4. Update the env var:
+   ```bash
+   CONTACT_FORM_FROM_EMAIL=bookings@allanai.dev
+   ```
+5. Or hard-code it in the specific email utility
+
+> **Note:** Resend authorizes the entire domain, not individual mailboxes. You don't create individual email addresses — you just use `anything@allanai.dev` as the `from` field.
+
+### Option 5 — Completely Different Domain
+
+To send from a second custom domain (e.g., `notifications@anotherdomain.com`):
+
+1. Go to **Resend Dashboard → Domains → Add Domain**
+2. Enter `anotherdomain.com`
+3. Copy the DNS records Resend provides
+4. Add them in Cloudflare (or wherever `anotherdomain.com` DNS is managed)
+5. Click **Verify** in Resend
+6. Once verified, use `anything@anotherdomain.com` as a `from` address
+
+---
 
 **Key Features:**
 - ✅ Serverless-friendly (perfect for Vercel)

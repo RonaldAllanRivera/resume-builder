@@ -138,4 +138,58 @@
 
 ---
 
+## FOUC Fix (Flash of Unstyled Content on Vercel)
+
+### Problem
+
+`globals.css` uses this pattern to prevent theme-color flash:
+
+```css
+html { opacity: 0; }
+html[data-theme='dark'], html[data-theme='light'] { opacity: initial; }
+```
+
+`InitTheme` (`strategy="beforeInteractive"`) runs synchronously before React or Framer Motion loads, sets `data-theme` on `<html>`, and immediately triggers `opacity: initial` — making the **entire page visible** before Framer Motion has a chance to apply its initial hidden state. Result: fully-rendered content flashes on screen for 100–300ms before animations start.
+
+### Fix
+
+**Step 1 — CSS safety net** (`globals.css`):
+
+```css
+/* Desktop only — mobile has no animations */
+@media (min-width: 768px) {
+  .will-animate {
+    opacity: 0;
+  }
+}
+```
+
+Applied to every animated element via `HeroReveal` and `ScrollReveal`. Hides elements on first paint — before any script runs. Framer Motion's inline styles (higher specificity than class rules) automatically override it when animation starts.
+
+**Step 2 — Object-form `initial` in Framer Motion**:
+
+Framer Motion's string-form `initial="hidden"` does a variant lookup at runtime. Object-form `initial={{ opacity: 0 }}` is written directly into the SSR HTML as an inline style, so it's applied on the very first paint.
+
+```tsx
+// ❌ Unreliable in Next.js App Router SSR
+initial="hidden"
+
+// ✅ Inline style written to SSR HTML
+initial={{ opacity: 0 }}
+```
+
+Both components (`HeroReveal`, `ScrollReveal`) now use object-form `initial` + the `will-animate` CSS class for double-layer protection.
+
+### Why Two Layers?
+
+| Layer | When It Applies | Mechanism |
+|-------|----------------|-----------|
+| `.will-animate { opacity: 0 }` | Before any JS | CSS class (no JS needed) |
+| `initial={{ opacity: 0 }}` | SSR HTML inline style | Framer Motion SSR |
+| Framer Motion animation | After hydration | Inline style override |
+
+The CSS class alone is sufficient for the Vercel flash, but the object-form `initial` ensures there is no hydration mismatch if the CSS class ever fails to load.
+
+---
+
 *This document serves as the technical specification for implementing Baunfire-inspired animations while maintaining performance and accessibility standards.*

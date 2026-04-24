@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextRequest, NextResponse } from 'next/server'
+import { sendBookingRequestEmails } from '@/lib/booking-email'
 
 /**
  * POST /api/bookings
@@ -161,6 +162,26 @@ export async function POST(request: NextRequest) {
         }),
       },
     })
+
+    // Fire-and-forget — email failure must not block the booking response
+    sendBookingRequestEmails(
+      {
+        name: customer.name,
+        email: customer.email,
+        company: customer.company || null,
+      },
+      {
+        bookingId: booking.id,
+        packageName: typeof pkg.name === 'string' ? pkg.name : String(pkg.name),
+        startAt: booking.startAt ?? startDate.toISOString(),
+        endAt: booking.endAt ?? endDate.toISOString(),
+        amount: booking.amount ?? pkg.price,
+        currency: booking.currency ?? pkg.currency,
+        paymentMode: booking.paymentMode ?? paymentMode,
+        notes: booking.notes || null,
+        timezone: customer.timezone,
+      },
+    ).catch((err) => console.error('sendBookingRequestEmails failed:', err))
 
     return NextResponse.json({
       success: true,

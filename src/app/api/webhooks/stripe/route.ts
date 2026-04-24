@@ -3,6 +3,8 @@ import config from '@payload-config'
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import Stripe from 'stripe'
+import { sendPaymentConfirmedEmails } from '@/lib/booking-email'
+import type { Booking, Customer, Package } from '@/payload-types'
 
 /**
  * POST /api/webhooks/stripe
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
           break
         }
 
-        await payload.update({
+        const updatedBooking = await payload.update({
           collection: 'bookings',
           id: Number(bookingId),
           data: {
@@ -62,6 +64,45 @@ export async function POST(request: NextRequest) {
         })
 
         console.log(`Booking ${bookingId} marked as paid`)
+
+        // Fetch with depth to resolve customer + package relationships
+        const fullBooking = await payload.findByID({
+          collection: 'bookings',
+          id: Number(bookingId),
+          depth: 1,
+        }) as Booking & { customer: Customer; package: Package }
+
+        const bookingCustomer = fullBooking.customer
+        const bookingPackage = fullBooking.package
+
+        if (
+          bookingCustomer &&
+          typeof bookingCustomer === 'object' &&
+          bookingCustomer.email &&
+          bookingPackage &&
+          typeof bookingPackage === 'object'
+        ) {
+          sendPaymentConfirmedEmails(
+            {
+              name: bookingCustomer.name,
+              email: bookingCustomer.email,
+              company: bookingCustomer.company || null,
+            },
+            {
+              bookingId: Number(bookingId),
+              packageName: typeof bookingPackage.name === 'string' ? bookingPackage.name : String(bookingPackage.name),
+              startAt: fullBooking.startAt ?? '',
+              endAt: fullBooking.endAt ?? '',
+              amount: fullBooking.amount ?? 0,
+              currency: fullBooking.currency ?? 'usd',
+              paymentMode: fullBooking.paymentMode ?? 'pay_after_completion',
+              notes: fullBooking.notes || null,
+              timezone: bookingCustomer.timezone || undefined,
+            },
+          ).catch((err) => console.error('sendPaymentConfirmedEmails failed:', err))
+        }
+
+        void updatedBooking
         break
       }
 

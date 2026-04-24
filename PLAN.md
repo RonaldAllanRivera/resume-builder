@@ -964,15 +964,17 @@ BOOKING_RATE_LIMIT=3 per hour per IP
 
 ### Phase 4C.7 — Notifications & Automation (Priority: Medium)
 
-**Status**: Planned
+**Status**: ✅ Partially Implemented (2026-04-18 — booking request + payment emails live)
 
 **Email Notifications:**
-- Booking confirmation (customer)
-- Booking confirmation (you)
-- Payment receipt (Stripe)
-- 24-hour reminder
-- 1-hour reminder
-- Follow-up after booking
+- ✅ Booking request received → customer acknowledgement (`src/lib/booking-email.ts`)
+- ✅ New booking alert → admin notification (`src/lib/booking-email.ts`)
+- ✅ Payment confirmed → customer receipt (`src/lib/booking-email.ts`)
+- ✅ Payment received → admin alert (`src/lib/booking-email.ts`)
+- Booking accepted/declined → customer notification (planned)
+- 24-hour reminder (planned)
+- 1-hour reminder (planned)
+- Follow-up after booking (planned)
 
 **Automation:**
 - Calendar invites (Google Calendar)
@@ -1042,7 +1044,7 @@ BOOKING_RATE_LIMIT=3 per hour per IP
 - [ ] Test payment process (requires Stripe test mode verification)
 
 **Week 4: Polish & Launch**
-- [ ] Add email notifications (planned)
+- [x] Add email notifications (✅ implemented: booking request + payment confirmed via `src/lib/booking-email.ts`)
 - [x] Implement security measures (access control implemented, rate limiting pending)
 - [ ] Mobile optimization (pending)
 - [x] Documentation and testing (basic documentation complete)
@@ -2333,8 +2335,269 @@ Status: **Completed** (2026-04-17 — full site coverage)
 - ✅ **Bundle Size**: <250KB total JavaScript
 - ✅ **GPU-Accelerated**: Only transform and opacity animated (desktop only)
 
+#### Bug Fixes
+- ✅ **FOUC Fix (2026-04-24)**: Eliminated animation flash-of-unstyled-content on Vercel
+  - Root cause: `InitTheme` (`strategy="beforeInteractive"`) sets `data-theme` on `<html>` before React runs, triggering `html[data-theme] { opacity: initial }` and revealing fully-rendered content before Framer Motion initializes
+  - Fix 1: Added `.will-animate { opacity: 0 }` CSS rule in `globals.css` (desktop only via `@media (min-width: 768px)`) — hides animated elements before any script runs; Framer Motion's inline styles override it automatically
+  - Fix 2: Changed `initial` from string `"hidden"` to object form (e.g. `{ opacity: 0 }`) in both `HeroReveal` and `ScrollReveal` — object form is serialized to inline styles in SSR HTML, string form requires variant lookup at runtime
+  - Files: `src/templates/rainbow/components/HeroReveal.tsx`, `src/templates/rainbow/components/ScrollReveal.tsx`, `src/app/(frontend)/globals.css`
+
 #### Future Enhancements (Optional)
 - Micro-interactions: Button hover states (scale 1.05 + shadow)
 - Micro-interactions: Card hover effects (lift + shadow)
 - Micro-interactions: Navigation underline morphing
 - Page transitions: Smooth route changes (low priority)
+
+---
+
+## Phase 4C.12 — Coupon Codes & Promotional Discounts
+
+**Status**: Planned
+
+**Goal**: Let clients apply a discount code at checkout. Coupons are created in the Stripe Dashboard (source of truth for amounts/percentages) and optionally mirrored in Payload admin for display/management. A valid code reduces the Stripe Checkout total automatically.
+
+---
+
+### Why Stripe Is the Source of Truth
+
+Stripe natively supports Coupons and Promotion Codes. When you pass a promotion code to a Checkout Session, Stripe validates it, applies the discount, and records everything on the payment — no custom math needed. The app should never compute discounts itself.
+
+| Concept | What It Is | Where Managed |
+|---------|-----------|--------------|
+| **Coupon** | The discount rule (e.g. "20% off" or "$50 off") | Stripe Dashboard |
+| **Promotion Code** | The human-readable code tied to a Coupon (e.g. `LAUNCH20`) | Stripe Dashboard |
+| **Redemption** | Tracked automatically by Stripe per code use | Stripe Dashboard |
+| **Mirror record** | Optional Payload record for admin visibility / display | Payload admin |
+
+---
+
+### User Flow
+
+```
+Client on /pricing page
+        |
+Sees optional "Have a promo code?" input (or enters it at Stripe Checkout)
+        |
+Proceeds to checkout -> Stripe Checkout applies the discount automatically
+        |
+Stripe Checkout total reflects discount
+        |
+Payment confirmed -> webhook -> booking marked paid (discounted amount stored)
+```
+
+Two UX options — pick one or both:
+
+**Option A — Let Stripe handle it at checkout (simplest)**
+- Pass `allow_promotion_codes: true` on the Checkout Session
+- Client sees a "Add promo code" field natively in Stripe Checkout UI
+- Zero extra code required beyond one flag
+
+**Option B — Pre-validate on your site (better UX)**
+- Add a promo code input to the BookingFlow `confirm` step
+- Call `/api/bookings/validate-promo?code=LAUNCH20` before redirecting to Stripe
+- If valid, show the discounted price preview
+- Pass `discounts: [{ promotion_code: promoCodeId }]` to the Checkout Session
+
+Option B is recommended for a premium feel. It gives clients instant feedback before they leave your site.
+
+---
+
+### Phase 4C.12.1 — Stripe Setup
+
+**Steps to create a coupon + promotion code in Stripe:**
+
+1. Go to **Stripe Dashboard → Products → Coupons**
+2. Click **+ Create coupon**
+3. Choose type:
+   - **Percentage off**: e.g. 20% off (good for first-client discounts)
+   - **Fixed amount off**: e.g. $50 off (good for referral credits)
+4. Set redemption limits:
+   - **Max redemptions**: e.g. 10 (prevents unlimited use)
+   - **Expires**: optional date
+   - **Applies to**: all products or specific packages
+5. Click **Save**
+6. Click the coupon → **Add promotion code**
+7. Set the code string: e.g. `LAUNCH20`, `REFERRAL50`
+8. Click **Save**
+9. Copy the **Promotion Code ID** (starts with `promo_...`) for use in API calls
+
+**Best practices:**
+- One coupon can have multiple promotion codes (e.g. per-client codes, all sharing the same discount rule)
+- Set `max_redemptions: 1` on per-client codes to prevent sharing
+- Use `customer` restriction in Stripe to limit a code to a specific email
+- Test codes in test mode before go-live (test promo codes start with `promo_` in test mode)
+
+---
+
+### Phase 4C.12.2 — API Changes
+
+#### New endpoint: `POST /api/bookings/validate-promo`
+
+```typescript
+// Input
+{ code: string, packageSlug: string }
+
+// Output (success)
+{ valid: true, promoCodeId: string, discountType: 'percent' | 'amount', discountValue: number, finalAmount: number }
+
+// Output (invalid)
+{ valid: false, message: 'Invalid or expired promo code' }
+```
+
+Implementation:
+1. Use Stripe API to find the promotion code by `code` string (list promotion codes, filter by `code`)
+2. Check `active: true`, `expires_at` not passed, `max_redemptions` not reached
+3. Return discount details — never trust client-computed amounts
+
+#### Modified: `POST /api/bookings/checkout`
+
+Add optional `promoCodeId` to request body. When present:
+
+```typescript
+// If pre-validated promo code provided, apply it directly
+await stripe.checkout.sessions.create({
+  ...,
+  discounts: promoCodeId ? [{ promotion_code: promoCodeId }] : undefined,
+  // OR: let Stripe show the promo field itself
+  allow_promotion_codes: !promoCodeId,
+})
+```
+
+Never pass both `discounts` and `allow_promotion_codes` — Stripe rejects that combination.
+
+#### Modified: `src/app/api/webhooks/stripe/route.ts`
+
+The `checkout.session.completed` event already captures `session.amount_total` — this is the final paid amount after discount. Store it:
+
+```typescript
+await payload.update({
+  collection: 'bookings',
+  id: Number(bookingId),
+  data: {
+    status: 'paid',
+    amount: session.amount_total ?? booking.amount,  // discounted amount
+    paidAt: new Date().toISOString(),
+    stripePaymentIntentId: ...,
+  },
+})
+```
+
+---
+
+### Phase 4C.12.3 — Payload Admin Integration (Optional Mirror)
+
+Create a `coupons` collection in Payload so you can see and manage active codes from the admin panel without going to Stripe each time. This is a **display mirror only** — Stripe is always the source of truth.
+
+**Collection: `coupons`**
+
+```typescript
+{
+  fields: [
+    { name: 'code', type: 'text', required: true, unique: true },          // e.g. LAUNCH20
+    { name: 'stripePromoCodeId', type: 'text' },                           // promo_xxx
+    { name: 'stripeCouponId', type: 'text' },                              // co_xxx
+    { name: 'discountType', type: 'select', options: ['percent', 'amount'] },
+    { name: 'discountValue', type: 'number' },                             // 20 for 20% or 5000 for $50
+    { name: 'currency', type: 'text', defaultValue: 'usd' },
+    { name: 'maxRedemptions', type: 'number' },
+    { name: 'expiresAt', type: 'date' },
+    { name: 'active', type: 'checkbox', defaultValue: true },
+    { name: 'notes', type: 'textarea' },                                   // admin-only notes
+  ],
+  admin: { group: 'Booking', useAsTitle: 'code' },
+  access: { read: isAdmin, create: isAdmin, update: isAdmin, delete: isAdmin },
+}
+```
+
+**Sync approach:**
+- Create the coupon in Stripe first, then manually add the mirror record in Payload
+- Do NOT sync automatically from Payload → Stripe (Stripe is the authority)
+- Optional: add a Payload button that calls Stripe API to fetch current redemption count for display
+
+---
+
+### Phase 4C.12.4 — UI Changes
+
+#### BookingFlow (`/book/[packageId]` — Confirm step)
+
+Add a promo code field in the confirm step before the "Proceed to Payment" button:
+
+```tsx
+{/* Promo Code */}
+<div className="flex gap-2">
+  <input
+    type="text"
+    placeholder="Promo code (optional)"
+    value={promoCode}
+    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+    className="..."
+  />
+  <button onClick={handleValidatePromo} disabled={!promoCode || isValidating}>
+    {isValidating ? 'Checking...' : 'Apply'}
+  </button>
+</div>
+
+{promoResult?.valid && (
+  <p className="text-green-400">
+    ✓ {promoResult.discountType === 'percent'
+      ? `${promoResult.discountValue}% off applied`
+      : `$${promoResult.discountValue / 100} off applied`}
+    — New total: {formatCurrency(promoResult.finalAmount)}
+  </p>
+)}
+
+{promoResult?.valid === false && (
+  <p className="text-red-400">✗ {promoResult.message}</p>
+)}
+```
+
+#### PricingPage (optional)
+
+Add a note below the CTA on each package card:
+
+```tsx
+<p className="text-xs text-white/40 mt-2">Have a promo code? Enter it at checkout.</p>
+```
+
+---
+
+### Phase 4C.12.5 — Environment Variables
+
+No new env vars needed. Promo code validation uses the existing `STRIPE_SECRET_KEY`.
+
+---
+
+### Implementation Order (Recommended)
+
+1. **Create coupons in Stripe Dashboard** (5 minutes) — no code needed
+2. **Pass `allow_promotion_codes: true`** to Checkout Session — Option A, one-line change, ships immediately
+3. **Build `/api/bookings/validate-promo`** — Option B pre-validation (better UX)
+4. **Update BookingFlow UI** — add promo input field
+5. **Update webhook handler** to store `session.amount_total` as the paid amount
+6. **Create Payload `coupons` collection** — optional admin mirror
+
+Steps 1-2 can go live immediately with zero UI changes. Steps 3-6 are enhancement iterations.
+
+---
+
+### Security Considerations
+
+- **Always validate server-side** — never trust `discountValue` sent from client
+- **Rate limit the validate-promo endpoint** (10 requests/minute/IP) to prevent code enumeration
+- **Log all promo code redemptions** — Stripe does this automatically; mirror in Payload if needed
+- **Set `max_redemptions`** on every code — unlimited codes are a liability
+- **Use Stripe's `customer` restriction** for per-client codes (ties code to a specific email)
+
+---
+
+### Files to Create/Modify
+
+**New Files:**
+- `src/app/api/bookings/validate-promo/route.ts` — server-side promo code validation
+- `src/collections/Coupons.ts` — Payload admin mirror collection (optional)
+
+**Modified Files:**
+- `src/app/api/bookings/checkout/route.ts` — pass `discounts` or `allow_promotion_codes`
+- `src/app/api/webhooks/stripe/route.ts` — store `session.amount_total` as paid amount
+- `src/templates/rainbow/components/BookingFlow.tsx` — promo code input UI
+- `src/payload.config.ts` — register Coupons collection (if building the mirror)
