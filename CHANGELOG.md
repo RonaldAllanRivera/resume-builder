@@ -1,5 +1,37 @@
 # Changelog
 
+## [Unreleased] - 2026-05-07
+
+### Public Site Restructuring (Phase 11)
+
+**Audience split:** the public site now has two clear landing pages — `/` is the employer-first portfolio, `/services` is the client-facing storefront (replaces `/pricing`).
+
+**Route consolidation (11 → 6):**
+- `/experience` → 308 redirect to `/#experience` (now homepage section)
+- `/education` → 308 redirect to `/#education` (now homepage section)
+- `/certifications` → 308 redirect to `/#certifications` (now homepage section)
+- `/pricing` → 308 redirect to `/services` (rename + reframe)
+- `/search` → 308 redirect to `/` (chatbot will replace search in Phase 12)
+
+**Homepage:**
+- New section order: Hero → CredibilityStrip → FeaturedWork → Experience → Education → Certifications → HomeCTA → Footer
+- Added `CredibilityStrip` (Lighthouse 99 / TypeScript / Open source ↗)
+- Added `HomeCTA` dual-audience block ("Hiring? Email me" / "See services")
+- `ProjectCard` now shows both Live demo and Code buttons when both URLs exist (was: one button only)
+
+**Header nav simplified** (7 items → 4):
+- Desktop and mobile: Home · Work (Projects dropdown) · Services · Contact
+- Removed standalone Experience / Certifications / Search nav items (now homepage anchors)
+- Renamed Pricing → Services
+
+**Payload cleanup:**
+- Deleted unused `default` template; consolidated the only live default-template file (`ProjectCategoryPage.tsx`) into `rainbow/`. Rainbow is now the only template.
+- `SiteSettings.publicTemplate` field narrowed to `'rainbow'` (single option).
+- `Generations`, `JobAds`, `CoverLetterSettings`, `AIGenerationSettings` are now admin-only (private job-hunt tooling, not for public roles).
+- Investigated and kept `Companies` collection and `ResumeProfiles` collection (each serves a distinct purpose — see CLAUDE.md).
+
+**Phase 12 (chatbot) — not yet shipped.** Plan in `docs/superpowers/plans/2026-05-07-public-ai-chatbot.md`.
+
 ## [0.14.0] - 2026-04-24
 
 ### Booking Email Notifications + Animation FOUC Fix

@@ -29,7 +29,7 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
   - **Availability Rules**: Weekday evenings + Weekend full-day slots
 - **AI-Assisted Resume Generation**: Tailored resume + application letter from job ads
 - **Google Docs Export**: OAuth2 authentication with personal Drive quota
-- **Multiple Template System**: Switchable public templates via admin panel
+- **Rainbow Template**: Modern space-themed design with dynamic gradients (the only active template)
   - **Rainbow Theme**: Modern space-themed design with dynamic gradients
     - Glass morphism navigation with unique gradient colors per menu item
     - **Professional Animation System** - Baunfire-inspired animations with accessibility
@@ -140,9 +140,6 @@ It is based on the Payload Website Template (Payload + Next.js in a single app) 
       - Header navigation integration on all pages
       - Optimized PostgreSQL queries for fast performance
       - Responsive grid layout with mobile-first design
-  - **Default Theme**: Clean, professional layout
-  - **Modern Theme**: Contemporary design with smooth animations
-  - **Minimal Theme**: Simple, focused presentation
   - Template selection at `Site Settings → Public Template`
 - **Modern Projects Showcase**: Card-based design with homepage highlights and all information visible
   - Homepage includes a Featured Work rail for featured projects and a Latest Projects rail for selected non-featured categories
@@ -353,22 +350,20 @@ docker compose up
 
 ## Routes
 
-### Public site routes
+### Public routes
 
-- `/`
-  - Renders the `pages` collection entry with slug `home`.
-- `/[slug]`
-  - Renders any published entry in the `pages` collection.
-  - Uses `generateStaticParams` to statically generate published pages.
-  - Uses `generateMetadata` (via the SEO plugin fields on Pages).
-- `/posts`
-  - Lists published `posts`.
-- `/posts/[slug]`
-  - Renders a published `post`.
-- `/search`
-  - Searches the `search` index (Payload search plugin).
-- `/admin`
-  - Payload Admin UI.
+| Route | Purpose |
+|---|---|
+| `/` | Employer-first portfolio (Hero, FeaturedWork, Experience, Education, Certifications, HomeCTA) |
+| `/projects`, `/project/[slug]` | Project index + detail pages |
+| `/services` | Client-facing freelance package storefront |
+| `/book/[packageSlug]` | Stripe-integrated booking flow |
+| `/contact` | Contact form |
+| `/posts`, `/[slug]` | Blog (optional — kept for future use) |
+
+The site serves two audiences: hiring managers land on `/`, prospective clients land on `/services` via the header nav.
+
+`/admin` serves the Payload Admin UI.
 
 ### Internal (admin/editor) utility routes
 

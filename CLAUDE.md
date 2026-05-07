@@ -47,6 +47,8 @@ This is a **Payload CMS 3.x + Next.js 15** personal portfolio/resume site backed
 - `src/app/(payload)/` — Payload admin panel (`/admin`)
 - `src/app/api/` — custom REST endpoints (availability, bookings, webhooks/stripe, seed, etc.)
 
+The `/` homepage inlines Experience, Education, and Certifications as anchor sections (`#experience`, `#education`, `#certifications`). Old standalone routes (`/experience`, `/education`, `/certifications`, `/pricing`, `/search`) are 308-redirected; see `redirects.js`.
+
 ### Payload Collections
 
 Defined in `src/collections/`. Key collections:
@@ -57,13 +59,16 @@ Defined in `src/collections/`. Key collections:
 
 Globals: `Header`, `Footer`, `SiteSettings`, `ResumeProfile`, `CoverLetterSettings`, `AIGenerationSettings`
 
+**`ResumeProfile` (global) vs `ResumeProfiles` (collection)**: these are NOT duplicates — they serve different purposes.
+- `ResumeProfile` (global, slug `resumeProfile`): the single canonical public resume profile (`fullName`, `headline`, `summary`, `heroDescription`). Read by the public site. One row.
+- `ResumeProfiles` (collection, slug `resumeProfiles`): multi-row AI-tailoring presets used by the private generation workflow. Each row defines a "flavor" of resume (e.g., "WordPress-focused", "Laravel-heavy") that conditions AI generation per job ad.
+
 After modifying collection/global schemas, run `pnpm generate:types` to update `src/payload-types.ts` and `pnpm generate:importmap` after adding new admin components.
 
 ### Template System
 
-The public site uses a swappable template system. The active template is set in **Globals → Site Settings → Template** in the Payload admin (no rebuild required). Templates live in `src/templates/`:
+The active template is set in **Globals → Site Settings → Template**. Currently `rainbow` is the only template (the unused `default`/`modern`/`minimal` placeholders were removed). The registry pattern is preserved (`src/templates/registry.ts`) so new templates can be added without rebuild.
 
-- `registry.ts` — maps template keys (`default`, `modern`, `minimal`, `rainbow`) to component implementations
 - Each template must implement the `TemplateComponents` interface (Layout, HomePage, ExperiencePage, EducationPage, ProjectsPage, ProjectCategoryPage, CertificationsPage)
 - `src/utilities/getTemplate.ts` — reads the active template from SiteSettings and resolves the registry
 
@@ -95,6 +100,8 @@ Roles: `admin`, `editor`, `user`. Access control functions live in `src/access/`
 **Critical**: When using the Payload Local API with a `user`, always set `overrideAccess: false`, otherwise access control is bypassed and the operation runs with admin privileges.
 
 **Critical**: In collection hooks, always pass `req` to nested Payload operations so they run in the same transaction.
+
+**Private AI tooling**: `Generations`, `JobAds`, `CoverLetterSettings` (global), and `AIGenerationSettings` (global) are admin-only. They are Allan's private job-hunt workflow — never expose them in public-facing UI or roles below `admin`.
 
 ### Plugins
 
