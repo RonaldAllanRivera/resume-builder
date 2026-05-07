@@ -2601,3 +2601,142 @@ Steps 1-2 can go live immediately with zero UI changes. Steps 3-6 are enhancemen
 - `src/app/api/webhooks/stripe/route.ts` — store `session.amount_total` as paid amount
 - `src/templates/rainbow/components/BookingFlow.tsx` — promo code input UI
 - `src/payload.config.ts` — register Coupons collection (if building the mirror)
+
+---
+
+## Phase 11 — Public Site Restructuring & Audience Split
+
+**Spec:** `docs/superpowers/specs/2026-05-06-public-redesign-and-chatbot-design.md`
+**Goal:** Collapse 11 public routes to 6, split employer vs client audiences, clean up Payload collections, and restructure the homepage for faster scanning.
+
+### Sub-goals
+- Two distinct landing pages: `/` (employer-first portfolio) and `/services` (client-facing storefront, replaces `/pricing`).
+- Remove `/experience`, `/education`, `/certifications`, `/pricing`, `/search` as standalone routes; redirect to homepage sections or `/services`.
+- Delete unused `default` template.
+- Beef up `FeaturedWork` project cards with tech badges, live demo links, problem-solved blurbs.
+- Add credibility strip to homepage (Lighthouse score badge, TypeScript badge, open source GitHub link).
+- Inline Experience / Education / Certifications as compact homepage sections.
+- Add dual-audience CTA block above footer.
+
+### Route changes
+
+| Route | Action |
+|---|---|
+| `/` | Restructure (new section order) |
+| `/experience` | Remove → 308 redirect to `/#experience` |
+| `/education` | Remove → 308 redirect to `/#education` |
+| `/certifications` | Remove → 308 redirect to `/#certifications` |
+| `/search` | Remove → 308 redirect to `/` |
+| `/pricing` | Remove → 308 redirect to `/services` |
+| `/services` | New (replaces `/pricing`) |
+| `/projects`, `/project/[slug]` | Keep |
+| `/contact`, `/book/[packageSlug]` | Keep |
+
+### Payload cleanup
+
+- **Delete** `default` template (`src/templates/default/`)
+- **Investigate** `Companies` collection — convert to select field if < 20 entries
+- **Investigate** `ResumeProfiles` collection vs `ResumeProfile` global — deduplicate
+- **Remove** `Pages`, `Posts`, `Categories` if not actively used
+- **Enforce admin-only access** on `Generations`, `JobAds`, `CoverLetterSettings`, `AIGenerationSettings`
+
+### New env vars
+None required for this phase.
+
+### Acceptance criteria
+- [ ] All old routes issue 308 redirects
+- [ ] `/services` renders correctly with packages
+- [ ] Homepage section order matches spec
+- [ ] `default/` template directory removed
+- [ ] Lighthouse desktop ≥ 97 after changes
+- [ ] `pnpm exec tsc --noEmit` clean
+- [ ] `pnpm lint` clean
+
+---
+
+## Phase 12 — Public AI Chatbot (Claude Haiku 4.5 + Telegram Alerts)
+
+**Spec:** `docs/superpowers/specs/2026-05-06-public-redesign-and-chatbot-design.md`
+**Goal:** Replace hero SearchBar with a working RAG chatbot grounded in Allan's Payload data. Private Telegram alerts for high-intent visitor conversations.
+
+### Architecture summary
+- **LLM:** Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) via Anthropic SDK (server-only).
+- **RAG strategy:** Full resume data (~7,500 tokens) injected into system prompt with Anthropic prompt caching. No vector DB — data is too small to justify embeddings.
+- **Caching:** `cache_control: ephemeral` on system prompt block. ~90% cost reduction on repeated turns.
+- **Streaming:** `ReadableStream` via Edge runtime. No Vercel AI SDK dependency.
+- **Rate limiting:** Upstash Redis. 5 messages/session, 20/day per IP, 10K output tokens/session.
+- **Bot protection:** Cloudflare Turnstile (invisible challenge) on every `/api/chat` request.
+- **Notifications:** Telegram bot via HTTPS API (no SDK). Fires on high-intent signals.
+- **Storage:** Two new Payload collections (`ChatSessions`, `ChatMessages`), admin-only.
+
+### New collections
+
+**`ChatSessions`** — `id`, `ipAddress`, `userAgent`, `startedAt`, `lastMessageAt`, `messageCount`, `leadStatus` (new/contacted/qualified/cold), `capturedEmail`, `capturedName`, `intentSignals[]`
+
+**`ChatMessages`** — `id`, `session` → ChatSessions, `role` (user/assistant), `content`, `createdAt`, `tokenCount`
+
+### High-intent signals (Telegram trigger)
+- Pricing/hiring keywords in visitor message
+- Visitor leaves email or phone number
+- Conversation crosses 4 turns
+- Rate-limit hit (visitor wanted more)
+
+Telegram message format:
+```
+💬 New high-intent chat
+Signal: pricing-question
+Last msg: "What does the Starter package cost?"
+Session: abc123 (8 msgs)
+View → https://<site>/admin/collections/chat-sessions/abc123
+```
+
+### Performance rules (Lighthouse preservation)
+1. Anthropic SDK server-only — never in client bundle
+2. `Chat.tsx` lazy-loaded via `next/dynamic({ ssr: false })`, triggered on input focus
+3. `/api/chat` uses Edge runtime
+4. Streaming via plain `ReadableStream` (no AI SDK)
+5. All non-chat sections remain Server Components
+6. Pre-allocate chat container height to avoid CLS
+
+### New files
+- `src/app/api/chat/route.ts`
+- `src/collections/ChatSessions.ts`
+- `src/collections/ChatMessages.ts`
+- `src/templates/rainbow/components/Chat.tsx`
+- `src/lib/anthropic.ts`
+- `src/lib/telegram.ts`
+- `src/lib/rate-limit.ts`
+- `src/lib/intent-classifier.ts`
+- `docs/CHATBOT.md`
+- `docs/TELEGRAM_ALERTS.md`
+
+### Modified files
+- `src/templates/rainbow/components/Hero.tsx` — replace SearchBar with chat input
+- `src/templates/rainbow/HomePage.tsx` — import Chat lazily
+- `src/payload.config.ts` — register new collections
+- `src/payload-types.ts` — regenerate
+- `.env.example` — new vars
+
+### New env vars
+```
+ANTHROPIC_API_KEY=
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
+
+### Acceptance criteria
+- [ ] Chatbot answers 10 manual questions across profile, projects, experience, certifications, services
+- [ ] 6th message per session blocked with CTA card (not an error)
+- [ ] 21st message per IP/day blocked
+- [ ] Telegram alert fires on pricing question, email drop, rate-limit hit
+- [ ] No Anthropic SDK in client bundle (verified via `next build --analyze`)
+- [ ] Chat input visible on initial paint without chat module loaded
+- [ ] Lighthouse desktop ≥ 97
+- [ ] Integration test: `/api/chat` rate limiting
+- [ ] Unit test: intent classifier
+- [ ] `pnpm exec tsc --noEmit` clean
+- [ ] `pnpm lint` clean
