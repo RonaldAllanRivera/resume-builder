@@ -12,7 +12,11 @@
       "Bash(git commit *)",
       "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"SELECT COUNT\\(*\\) AS companies FROM companies;\")",
       "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"SELECT COUNT\\(*\\) AS resume_profiles FROM resume_profiles;\")",
-      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"\\\\dt resume_profiles*\")"
+      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"\\\\dt resume_profiles*\")",
+      "Bash(git -C /home/allan/code/next.js/resume-builder add CHANGELOG.md README.md CLAUDE.md)",
+      "Bash(git -C /home/allan/code/next.js/resume-builder commit -m \"docs: update CHANGELOG, README, CLAUDE.md for public site restructure \\(Phase 11\\)\")",
+      "Bash(git -C /home/allan/code/next.js/resume-builder rev-parse HEAD)",
+      "Bash(git -C /home/allan/code/next.js/resume-builder status)"
     ]
   }
 }

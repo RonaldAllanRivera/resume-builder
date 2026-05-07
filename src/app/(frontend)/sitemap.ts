@@ -4,6 +4,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
   // Static routes (excluding all project-related routes for contract compliance)
+  // Experience / Education / Certifications are now homepage anchor sections, not standalone pages.
   const routes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -12,22 +13,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/experience`,
+      url: `${baseUrl}/services`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.9,
     },
     {
-      url: `${baseUrl}/education`,
+      url: `${baseUrl}/contact`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/certifications`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      changeFrequency: 'yearly',
+      priority: 0.6,
     },
   ]
 

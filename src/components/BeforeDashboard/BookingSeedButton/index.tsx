@@ -8,8 +8,8 @@ import './index.scss'
 const SuccessMessage: React.FC = () => (
   <div>
     Booking data seeded! You can now{' '}
-    <a target="_blank" href="/pricing">
-      visit the pricing page
+    <a target="_blank" href="/services">
+      visit the services page
     </a>
   </div>
 )

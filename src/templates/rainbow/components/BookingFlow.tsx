@@ -259,10 +259,10 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
           A confirmation email has been sent to {customerEmail}
         </p>
         <Link
-          href="/pricing"
+          href="/services"
           className="inline-flex items-center justify-center rounded-xl bg-white/10 px-6 py-3 text-base font-semibold text-white transition-all hover:bg-white/20"
         >
-          Back to Pricing
+          Back to Services
         </Link>
       </div>
     )

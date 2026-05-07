@@ -3,7 +3,6 @@
 import React from 'react'
 import type { ResumeProfile1 } from '@/payload-types'
 import { CTAButtons } from './CTAButtons'
-import { SearchBar } from './search/SearchBar'
 import { AnimatedText } from './AnimatedText'
 import { HeroReveal } from './HeroReveal'
 
@@ -69,10 +68,7 @@ export function Hero({ profile }: HeroProps) {
               <CTAButtons className="justify-center" />
             </div>
 
-            {/* Search Bar - Interactive search with popular tags */}
-            <div className="mt-10 flex justify-center">
-              <SearchBar placeholder="Search React, Next.js, Laravel, WordPress, AI automation..." />
-            </div>
+            {/* Phase 12: AI chatbot input slots in here, replacing the removed SearchBar */}
           </HeroReveal>
         </div>
       </main>

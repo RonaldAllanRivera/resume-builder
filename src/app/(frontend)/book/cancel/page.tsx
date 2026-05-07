@@ -57,10 +57,10 @@ export default async function BookingCancelPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/pricing"
+              href="/services"
               className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 px-6 py-3 text-base font-semibold text-white transition-all hover:shadow-lg hover:shadow-[0_0_20px_rgba(100,180,255,0.4)]"
             >
-              Back to Pricing
+              Back to Services
             </Link>
             <Link
               href="/contact"
