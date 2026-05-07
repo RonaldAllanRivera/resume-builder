@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m 'docs: add public redesign + chatbot spec, plans, and PLAN.md phases *)",
+      "Bash(cat /home/allan/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/implementer-prompt.md 2>/dev/null | head -80)",
+      "Read(//home/allan/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/**)",
+      "Bash(git -C /home/allan/code/next.js/resume-builder branch --show-current)",
+      "Bash(pnpm exec *)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(pnpm lint *)",
+      "Bash(git commit *)",
+      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"SELECT COUNT\\(*\\) AS companies FROM companies;\")",
+      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"SELECT COUNT\\(*\\) AS resume_profiles FROM resume_profiles;\")",
+      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d payload -c \"\\\\dt resume_profiles*\")"
+    ]
+  }
+}
