@@ -104,20 +104,33 @@ export function ProjectCard({ project, gradient }: ProjectCardProps) {
           </div>
         )}
 
-        {/* Action Button */}
-        <div className="flex items-center justify-between gap-3">
-          {(project.liveUrl || project.repoUrl) && (
-            <a
-              href={(project.liveUrl || project.repoUrl) ?? ''}
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-              referrerPolicy="no-referrer"
-              className="inline-flex items-center rounded-full bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 px-3 py-2 text-xs font-semibold text-black shadow-[0_0_20px_rgba(255,180,100,0.3)] transition hover:shadow-[0_0_30px_rgba(255,180,100,0.5)]"
-            >
-              {project.liveUrl ? 'View Live' : 'View Code'}
-            </a>
-          )}
-        </div>
+        {/* Action Buttons — show both when both URLs exist */}
+        {(project.liveUrl || project.repoUrl) && (
+          <div className="flex flex-wrap items-center gap-3">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                referrerPolicy="no-referrer"
+                className="inline-flex items-center rounded-full bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 px-3 py-2 text-xs font-semibold text-black shadow-[0_0_20px_rgba(255,180,100,0.3)] transition hover:shadow-[0_0_30px_rgba(255,180,100,0.5)]"
+              >
+                Live demo ↗
+              </a>
+            )}
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                referrerPolicy="no-referrer"
+                className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-white/85 transition hover:bg-white/10"
+              >
+                Code ↗
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </article>
   )
