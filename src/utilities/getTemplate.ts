@@ -10,7 +10,7 @@ import type { TemplateComponents } from '@/templates/registry'
 export async function getTemplate(previewTemplate?: string): Promise<TemplateComponents> {
   // If preview template is provided and valid, use it
   if (previewTemplate) {
-    const validTemplates = ['default', 'modern', 'minimal']
+    const validTemplates = ['rainbow']
     if (validTemplates.includes(previewTemplate)) {
       return getTemplateFromRegistry(previewTemplate)
     }
@@ -24,11 +24,11 @@ export async function getTemplate(previewTemplate?: string): Promise<TemplateCom
       depth: 0,
     })
 
-    const templateKey = settings?.publicTemplate || 'default'
+    const templateKey = settings?.publicTemplate || 'rainbow'
     return getTemplateFromRegistry(templateKey)
   } catch (error) {
     console.error('Error fetching template from settings:', error)
-    return getTemplateFromRegistry('default')
+    return getTemplateFromRegistry('rainbow')
   }
 }
 

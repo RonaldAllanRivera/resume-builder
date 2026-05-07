@@ -2559,7 +2559,7 @@ export interface SiteSetting {
   /**
    * Choose the template for your public site. Changes apply instantly.
    */
-  publicTemplate: 'default' | 'modern' | 'minimal' | 'rainbow';
+  publicTemplate: 'rainbow';
   showExperience?: boolean | null;
   showEducation?: boolean | null;
   showProjects?: boolean | null;

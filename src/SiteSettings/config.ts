@@ -32,20 +32,8 @@ export const SiteSettings: GlobalConfig = {
               name: 'publicTemplate',
               type: 'select',
               required: true,
-              defaultValue: 'default',
+              defaultValue: 'rainbow',
               options: [
-                {
-                  label: 'Default',
-                  value: 'default',
-                },
-                {
-                  label: 'Modern',
-                  value: 'modern',
-                },
-                {
-                  label: 'Minimal',
-                  value: 'minimal',
-                },
                 {
                   label: 'Rainbow',
                   value: 'rainbow',

@@ -58,16 +58,7 @@ export interface TemplateComponents {
   }>
 }
 
-export type TemplateKey = 'default' | 'modern' | 'minimal' | 'rainbow'
-
-// Import default template
-import { Layout as DefaultLayout } from './default/Layout'
-import { HomePage as DefaultHomePage } from './default/HomePage'
-import { ExperiencePage as DefaultExperiencePage } from './default/ExperiencePage'
-import { EducationPage as DefaultEducationPage } from './default/EducationPage'
-import { ProjectsPage as DefaultProjectsPage } from './default/ProjectsPage'
-import { ProjectCategoryPage as DefaultProjectCategoryPage } from './default/ProjectCategoryPage'
-import { CertificationsPage as DefaultCertificationsPage } from './default/CertificationsPage'
+export type TemplateKey = 'rainbow'
 
 // Import Rainbow template
 import { ContactPage as RainbowContactPage } from './rainbow/ContactPage'
@@ -78,48 +69,18 @@ import { HomePage as RainbowHomePage } from './rainbow/HomePage'
 import { ExperiencePage as RainbowExperiencePage } from './rainbow/ExperiencePage'
 import { EducationPage as RainbowEducationPage } from './rainbow/EducationPage'
 import { ProjectsPage as RainbowProjectsPage } from './rainbow/ProjectsPage'
+import { ProjectCategoryPage as RainbowProjectCategoryPage } from './rainbow/ProjectCategoryPage'
 import { AllCertificationsPage as RainbowCertificationsPage } from './rainbow/AllCertificationsPage'
 
 // Template registry
 const templates: Record<TemplateKey, TemplateComponents> = {
-  default: {
-    Layout: DefaultLayout,
-    HomePage: DefaultHomePage,
-    ExperiencePage: DefaultExperiencePage,
-    EducationPage: DefaultEducationPage,
-    ProjectsPage: DefaultProjectsPage,
-    ProjectCategoryPage: DefaultProjectCategoryPage,
-    CertificationsPage: DefaultCertificationsPage,
-    PricingPage: RainbowPricingPage, // Reuse rainbow pricing for all templates
-  },
-  // Placeholder for future templates
-  modern: {
-    Layout: DefaultLayout,
-    HomePage: DefaultHomePage,
-    ExperiencePage: DefaultExperiencePage,
-    EducationPage: DefaultEducationPage,
-    ProjectsPage: DefaultProjectsPage,
-    ProjectCategoryPage: DefaultProjectCategoryPage,
-    CertificationsPage: DefaultCertificationsPage,
-    PricingPage: RainbowPricingPage, // Reuse rainbow pricing for all templates
-  },
-  minimal: {
-    Layout: DefaultLayout,
-    HomePage: DefaultHomePage,
-    ExperiencePage: DefaultExperiencePage,
-    EducationPage: DefaultEducationPage,
-    ProjectsPage: DefaultProjectsPage,
-    ProjectCategoryPage: DefaultProjectCategoryPage,
-    CertificationsPage: DefaultCertificationsPage,
-    PricingPage: RainbowPricingPage, // Reuse rainbow pricing for all templates
-  },
   rainbow: {
     Layout: RainbowLayout,
     HomePage: RainbowHomePage,
     ExperiencePage: RainbowExperiencePage,
     EducationPage: RainbowEducationPage,
     ProjectsPage: RainbowProjectsPage,
-    ProjectCategoryPage: DefaultProjectCategoryPage, // Reuse default for now
+    ProjectCategoryPage: RainbowProjectCategoryPage,
     CertificationsPage: RainbowCertificationsPage,
     ContactPage: RainbowContactPage,
     SearchPage: RainbowSearchPage,
@@ -129,11 +90,11 @@ const templates: Record<TemplateKey, TemplateComponents> = {
 
 /**
  * Get template components by key
- * Falls back to default template if key is invalid
+ * Falls back to rainbow template if key is invalid
  */
 export function getTemplate(key: string): TemplateComponents {
-  const validKeys: TemplateKey[] = ['default', 'modern', 'minimal', 'rainbow']
-  const templateKey = validKeys.includes(key as TemplateKey) ? (key as TemplateKey) : 'default'
+  const validKeys: TemplateKey[] = ['rainbow']
+  const templateKey = validKeys.includes(key as TemplateKey) ? (key as TemplateKey) : 'rainbow'
   return templates[templateKey]
 }
 
