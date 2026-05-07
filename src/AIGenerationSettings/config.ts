@@ -1,6 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
-import { adminOrEditor } from '../access/adminOrEditor'
+import { adminOnly } from '../access/adminOnly'
 
 export const DEFAULT_AI_GENERATION_PROMPT_VERSION = 'phase5-v1'
 
@@ -193,8 +193,8 @@ export const DEFAULT_AI_GENERATION_COVER_LETTER_PROMPT =
 export const AIGenerationSettings: GlobalConfig = {
   slug: 'aiGenerationSettings',
   access: {
-    read: adminOrEditor,
-    update: adminOrEditor,
+    read: adminOnly,
+    update: adminOnly,
   },
   fields: [
     {

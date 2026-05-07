@@ -1,12 +1,12 @@
 import type { GlobalConfig } from 'payload'
 
-import { adminOrEditor } from '../access/adminOrEditor'
+import { adminOnly } from '../access/adminOnly'
 
 export const CoverLetterSettings: GlobalConfig = {
   slug: 'coverLetterSettings',
   access: {
-    read: adminOrEditor,
-    update: adminOrEditor,
+    read: adminOnly,
+    update: adminOnly,
   },
   fields: [
     {

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { adminOrEditor } from '../access/adminOrEditor'
+import { adminOnly } from '../access/adminOnly'
 
 type RelIdValue = number | string | { id?: string | number; name?: string } | null | undefined
 
@@ -27,10 +27,10 @@ const resolveCompanyName = (value: RelIdValue): string | null => {
 export const JobAds: CollectionConfig = {
   slug: 'jobAds',
   access: {
-    create: adminOrEditor,
-    delete: adminOrEditor,
-    read: adminOrEditor,
-    update: adminOrEditor,
+    create: adminOnly,
+    delete: adminOnly,
+    read: adminOnly,
+    update: adminOnly,
   },
   admin: {
     group: 'Resume',

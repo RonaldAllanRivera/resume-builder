@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { adminOrEditor } from '../access/adminOrEditor'
+import { adminOnly } from '../access/adminOnly'
 
 type RelIdValue = number | string | { id?: string | number } | null | undefined
 
@@ -21,10 +21,10 @@ const getRelIdAsNumber = (value: unknown): number | null => {
 export const Generations: CollectionConfig = {
   slug: 'generations',
   access: {
-    create: adminOrEditor,
-    delete: adminOrEditor,
-    read: adminOrEditor,
-    update: adminOrEditor,
+    create: adminOnly,
+    delete: adminOnly,
+    read: adminOnly,
+    update: adminOnly,
   },
   admin: {
     group: 'AI',
