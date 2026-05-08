@@ -25,15 +25,19 @@ function getHiddenState(direction: Direction) {
   return { opacity: 0, x: 0, y: 60 }
 }
 
+function getVisibleState(direction: Direction) {
+  if (direction === 'left' || direction === 'right') return { opacity: 1, x: 0, y: 0 }
+  return { opacity: 1, x: 0, y: 0 }
+}
+
 /**
- * Reusable scroll-triggered animation component.
- *
- * How FOUC is prevented (same principle as HeroReveal):
- *   - `initial="hidden"` is unconditional — Framer Motion writes opacity: 0
- *     to the SSR HTML before any JS runs. No flash on first paint.
- *   - No `key` changes → no unmount/remount flash when scroll fires.
- *   - Mobile: snaps to visible after hydration (transition: 0).
- *   - Desktop: animates when element enters viewport via IntersectionObserver.
+ * Reusable scroll-triggered animation component
+ * - Desktop only (≥768px)
+ * - Respects prefers-reduced-motion
+ * - Slow, elegant slide animation (Baunfire-style)
+ * - Supports staggered children animations
+ * - Supports directional slide: 'up' | 'left' | 'right'
+ * - Optimized for 99 Lighthouse score
  */
 export function ScrollReveal({
   children,
@@ -61,7 +65,7 @@ export function ScrollReveal({
   const { elementRef, isVisible } = useScrollTrigger({ threshold, rootMargin })
 
   const hidden = getHiddenState(direction)
-  const visible = { opacity: 1, x: 0, y: 0 }
+  const visible = getVisibleState(direction)
 
   const containerVariants = {
     hidden,
@@ -77,6 +81,7 @@ export function ScrollReveal({
     },
   }
 
+  // Item variants always slide up for staggered grids
   const itemVariants = {
     hidden: { opacity: 0, y: 60 },
     visible: {
@@ -90,26 +95,33 @@ export function ScrollReveal({
   }
 
   return (
-    <motion.div
-      ref={elementRef}
-      className={`${className} will-animate`}
-      variants={containerVariants}
-      // Object form — written as inline styles on SSR HTML before any JS runs.
-      initial={hidden}
-      animate={
-        !mounted ? hidden :
-        !shouldAnimate ? visible :
-        isVisible ? 'visible' : hidden
-      }
-      transition={mounted && !shouldAnimate ? { duration: 0 } : undefined}
-    >
-      {staggerChildren > 0 && shouldAnimate
-        ? React.Children.map(children, (child, index) => (
-            <motion.div key={index} variants={itemVariants}>
-              {child}
-            </motion.div>
-          ))
-        : children}
-    </motion.div>
+    <>
+      {!mounted && (
+        <style jsx global>{`
+          @media (min-width: 768px) {
+            .scroll-reveal-content {
+              opacity: 0;
+            }
+          }
+        `}</style>
+      )}
+
+      <motion.div
+        ref={elementRef}
+        key={shouldAnimate && isVisible ? 'animated' : 'static'}
+        className={`${className} scroll-reveal-content`}
+        variants={shouldAnimate ? containerVariants : undefined}
+        initial={shouldAnimate ? 'hidden' : undefined}
+        animate={shouldAnimate && isVisible ? 'visible' : undefined}
+      >
+        {staggerChildren > 0 && shouldAnimate
+          ? React.Children.map(children, (child, index) => (
+              <motion.div key={index} variants={itemVariants}>
+                {child}
+              </motion.div>
+            ))
+          : children}
+      </motion.div>
+    </>
   )
 }
