@@ -6,11 +6,13 @@
 
 **Audience split:** the public site now has two clear landing pages — `/` is the employer-first portfolio, `/services` is the client-facing storefront (replaces `/pricing`).
 
-**Route changes (11 → 9, post-revision 2026-05-08):**
+**Route changes (11 → 7, post-revision 2026-05-08):**
 - `/pricing` → 308 redirect to `/services` (rename + reframe)
 - `/search` → 308 redirect to `/` (chatbot will replace search in Phase 12)
-- `/experience`, `/education`, `/certifications` — **kept as standalone routes** (initially planned to remove in favor of homepage anchors, but kept after review: deep links + SEO + the full 64-certification list deserve their own pages)
-- Homepage now hosts **preview sections** of each (top items only) with "View all →" links to the standalone pages.
+- `/experience` → 308 redirect to `/#experience` (homepage section is sufficient — full job history with "Show Earlier Jobs" toggle)
+- `/education` → 308 redirect to `/#education` (homepage section is sufficient — formal education + Continuous Learning card)
+- `/certifications` — **kept as standalone route** (full 60+ list deserves its own page; homepage shows only top 3 by hours)
+- Homepage Experience and Education sections render the full content inline; Certifications section shows top 3 with a "View all 64 →" link to the standalone page.
 
 **Homepage:**
 - New section order: Hero → CredibilityStrip → FeaturedWork → Experience → Education → Certifications → HomeCTA → Footer
@@ -20,7 +22,8 @@
 
 **Header nav simplified** (7 items → 4):
 - Desktop and mobile: Home · Work (Projects dropdown) · Services · Contact
-- Standalone Experience / Education / Certifications pages reachable via "View all →" links from each homepage preview section (kept off the header to preserve simplicity)
+- Experience and Education content lives entirely on the homepage; standalone routes are 308-redirected to homepage anchors.
+- Certifications standalone page is reachable via the "View all N certifications →" link in the homepage Latest Certifications section.
 - Renamed Pricing → Services
 - Removed Search nav item (route is now redirected)
 

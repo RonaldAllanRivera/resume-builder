@@ -16,7 +16,19 @@
       "Bash(git -C /home/allan/code/next.js/resume-builder add CHANGELOG.md README.md CLAUDE.md)",
       "Bash(git -C /home/allan/code/next.js/resume-builder commit -m \"docs: update CHANGELOG, README, CLAUDE.md for public site restructure \\(Phase 11\\)\")",
       "Bash(git -C /home/allan/code/next.js/resume-builder rev-parse HEAD)",
-      "Bash(git -C /home/allan/code/next.js/resume-builder status)"
+      "Bash(git -C /home/allan/code/next.js/resume-builder status)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} /\\\\n\"               http://localhost:3000/)",
+      "Bash(curl -sI http://localhost:3000/experience)",
+      "Bash(curl -sI http://localhost:3000/education)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} /certifications\\\\n\" http://localhost:3000/certifications)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} /services\\\\n\"       http://localhost:3000/services)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} /contact\\\\n\"        http://localhost:3000/contact)",
+      "Bash(curl -sI http://localhost:3000/pricing)",
+      "Bash(curl -sI http://localhost:3000/search)",
+      "Bash(docker exec *)",
+      "Bash(curl -s http://localhost:3000/ -o /tmp/home5.html)",
+      "Read(//tmp/**)",
+      "Bash(git push *)"
     ]
   }
 }

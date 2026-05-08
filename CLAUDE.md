@@ -47,7 +47,7 @@ This is a **Payload CMS 3.x + Next.js 15** personal portfolio/resume site backed
 - `src/app/(payload)/` — Payload admin panel (`/admin`)
 - `src/app/api/` — custom REST endpoints (availability, bookings, webhooks/stripe, seed, etc.)
 
-The `/` homepage shows **preview** sections for Experience, Education, and Certifications (with `#experience`, `#education`, `#certifications` anchors), plus a "View all →" link from each preview to the standalone page. The standalone `/experience`, `/education`, `/certifications` routes are kept (deep links + SEO + the full 64-certification list deserve their own pages). Only `/pricing` (→ `/services`) and `/search` (→ `/`) are 308-redirected; see `redirects.js`.
+The `/` homepage renders Experience and Education **inline in full** (no standalone page); the Certifications section is a top-3 **preview** with a "View all N certifications →" link to the standalone `/certifications` page (full 60+ list). Anchors: `#experience`, `#education`, `#certifications`. Old standalone routes 308-redirect to the anchors: `/experience → /#experience`, `/education → /#education`. Other redirects: `/pricing → /services`, `/search → /`. See `redirects.js`.
 
 ### Payload Collections
 

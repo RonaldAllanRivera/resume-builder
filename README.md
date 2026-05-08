@@ -354,19 +354,17 @@ docker compose up
 
 | Route | Purpose |
 |---|---|
-| `/` | Employer-first portfolio (Hero + preview sections for FeaturedWork / Experience / Education / Certifications / HomeCTA, with "View all →" links to each standalone page) |
+| `/` | Employer-first portfolio (Hero, FeaturedWork, full Experience, full Education, Certifications top-3 preview, HomeCTA) |
 | `/projects`, `/project/[slug]` | Project index + detail pages |
 | `/services` | Client-facing freelance package storefront (replaces former `/pricing`) |
 | `/book/[packageSlug]` | Stripe-integrated booking flow |
-| `/experience` | Full work history |
-| `/education` | Full education + continuous learning |
 | `/certifications` | All 60+ certifications with duration / category breakdown |
 | `/contact` | Contact form |
 | `/posts`, `/[slug]` | Blog (optional — kept for future use) |
 
-Redirects: `/pricing → /services`, `/search → /` (both 308). See `redirects.js`.
+Redirects (all 308): `/pricing → /services`, `/search → /`, `/experience → /#experience`, `/education → /#education`. See `redirects.js`.
 
-The site serves two audiences: hiring managers land on `/`, prospective clients land on `/services` via the header nav. The simplified header (Home · Work · Services · Contact) keeps top-level scan fast; deep-content pages are surfaced through the homepage's "View all →" links.
+The site serves two audiences: hiring managers land on `/`, prospective clients land on `/services` via the header nav. The simplified header (Home · Work · Services · Contact) keeps top-level scan fast. Experience and Education content lives entirely on the homepage; the standalone Certifications page is surfaced via the homepage section's "View all N →" link.
 
 `/admin` serves the Payload Admin UI.
 

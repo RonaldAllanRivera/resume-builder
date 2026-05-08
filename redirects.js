@@ -13,8 +13,11 @@ const redirects = async () => {
   }
 
   const consolidatedRoutes = [
-    // /experience, /education, /certifications kept as standalone routes
-    // (deep links + SEO + full lists). Homepage previews link to them.
+    // /experience and /education content lives entirely on the homepage now;
+    // 308 to anchors so old bookmarks / inbound links land on the right section.
+    // /certifications stays a standalone route (full 60+ list deserves its own page).
+    { source: '/experience', destination: '/#experience', permanent: true },
+    { source: '/education', destination: '/#education', permanent: true },
     { source: '/search', destination: '/', permanent: true },
     { source: '/pricing', destination: '/services', permanent: true },
   ]
