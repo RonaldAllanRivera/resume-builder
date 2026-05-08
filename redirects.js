@@ -13,9 +13,8 @@ const redirects = async () => {
   }
 
   const consolidatedRoutes = [
-    { source: '/experience', destination: '/#experience', permanent: true },
-    { source: '/education', destination: '/#education', permanent: true },
-    { source: '/certifications', destination: '/#certifications', permanent: true },
+    // /experience, /education, /certifications kept as standalone routes
+    // (deep links + SEO + full lists). Homepage previews link to them.
     { source: '/search', destination: '/', permanent: true },
     { source: '/pricing', destination: '/services', permanent: true },
   ]

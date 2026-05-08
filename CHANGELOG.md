@@ -6,12 +6,11 @@
 
 **Audience split:** the public site now has two clear landing pages — `/` is the employer-first portfolio, `/services` is the client-facing storefront (replaces `/pricing`).
 
-**Route consolidation (11 → 6):**
-- `/experience` → 308 redirect to `/#experience` (now homepage section)
-- `/education` → 308 redirect to `/#education` (now homepage section)
-- `/certifications` → 308 redirect to `/#certifications` (now homepage section)
+**Route changes (11 → 9, post-revision 2026-05-08):**
 - `/pricing` → 308 redirect to `/services` (rename + reframe)
 - `/search` → 308 redirect to `/` (chatbot will replace search in Phase 12)
+- `/experience`, `/education`, `/certifications` — **kept as standalone routes** (initially planned to remove in favor of homepage anchors, but kept after review: deep links + SEO + the full 64-certification list deserve their own pages)
+- Homepage now hosts **preview sections** of each (top items only) with "View all →" links to the standalone pages.
 
 **Homepage:**
 - New section order: Hero → CredibilityStrip → FeaturedWork → Experience → Education → Certifications → HomeCTA → Footer
@@ -21,8 +20,9 @@
 
 **Header nav simplified** (7 items → 4):
 - Desktop and mobile: Home · Work (Projects dropdown) · Services · Contact
-- Removed standalone Experience / Certifications / Search nav items (now homepage anchors)
+- Standalone Experience / Education / Certifications pages reachable via "View all →" links from each homepage preview section (kept off the header to preserve simplicity)
 - Renamed Pricing → Services
+- Removed Search nav item (route is now redirected)
 
 **Payload cleanup:**
 - Deleted unused `default` template; consolidated the only live default-template file (`ProjectCategoryPage.tsx`) into `rainbow/`. Rainbow is now the only template.

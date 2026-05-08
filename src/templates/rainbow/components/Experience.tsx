@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import type { Experience } from '@/payload-types'
 import { ScrollReveal } from './ScrollReveal'
 
@@ -28,6 +29,12 @@ export function Experience({ experiences }: ExperienceProps) {
           <h2 className="text-[clamp(2rem,4vw,3.4rem)] leading-none tracking-[-0.045em] text-white">
             Experience
           </h2>
+          <Link
+            href="/experience"
+            className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white"
+          >
+            View all experience →
+          </Link>
         </ScrollReveal>
 
         {/* Current Experiences */}

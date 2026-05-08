@@ -40,22 +40,15 @@ export function HomePage({
         <FeaturedWork projects={featuredProjects} />
       )}
 
-      {experiences && experiences.length > 0 && (
-        <section id="experience" className="scroll-mt-24">
-          <ExperienceSection experiences={experiences} />
-        </section>
-      )}
+      {/* Each section component renders its own <section id="..."> with the correct anchor */}
+      {experiences && experiences.length > 0 && <ExperienceSection experiences={experiences} />}
 
       {educations && educations.length > 0 && (
-        <section id="education" className="scroll-mt-24">
-          <EducationSection educations={educations} certifications={certifications} />
-        </section>
+        <EducationSection educations={educations} certifications={certifications} />
       )}
 
       {certifications && certifications.length > 0 && (
-        <section id="certifications" className="scroll-mt-24">
-          <Certifications certifications={certifications} />
-        </section>
+        <Certifications certifications={certifications} />
       )}
 
       <HomeCTA />

@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import type { Certification } from '@/payload-types'
 import {
   techStackIcons,
@@ -66,6 +67,12 @@ export function Certifications({ certifications }: CertificationsProps) {
           <h2 className="text-[clamp(2rem,4vw,3.4rem)] leading-none tracking-[-0.045em] text-white">
             Latest Certifications
           </h2>
+          <Link
+            href="/certifications"
+            className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white"
+          >
+            View all {certifications.length} certifications →
+          </Link>
         </ScrollReveal>
         <ScrollReveal
           className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"

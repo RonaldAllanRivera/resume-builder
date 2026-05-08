@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import type { Education, Certification } from '@/payload-types'
 import { ScrollReveal } from './ScrollReveal'
 
@@ -68,6 +69,12 @@ export function Education({ educations, certifications }: EducationProps) {
           <h2 className="text-[clamp(2rem,4vw,3.4rem)] leading-none tracking-[-0.045em] text-white">
             Education
           </h2>
+          <Link
+            href="/education"
+            className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white"
+          >
+            View education →
+          </Link>
         </ScrollReveal>
 
         <div className="grid gap-5 lg:grid-cols-2">

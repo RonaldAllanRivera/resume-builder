@@ -354,14 +354,19 @@ docker compose up
 
 | Route | Purpose |
 |---|---|
-| `/` | Employer-first portfolio (Hero, FeaturedWork, Experience, Education, Certifications, HomeCTA) |
+| `/` | Employer-first portfolio (Hero + preview sections for FeaturedWork / Experience / Education / Certifications / HomeCTA, with "View all →" links to each standalone page) |
 | `/projects`, `/project/[slug]` | Project index + detail pages |
-| `/services` | Client-facing freelance package storefront |
+| `/services` | Client-facing freelance package storefront (replaces former `/pricing`) |
 | `/book/[packageSlug]` | Stripe-integrated booking flow |
+| `/experience` | Full work history |
+| `/education` | Full education + continuous learning |
+| `/certifications` | All 60+ certifications with duration / category breakdown |
 | `/contact` | Contact form |
 | `/posts`, `/[slug]` | Blog (optional — kept for future use) |
 
-The site serves two audiences: hiring managers land on `/`, prospective clients land on `/services` via the header nav.
+Redirects: `/pricing → /services`, `/search → /` (both 308). See `redirects.js`.
+
+The site serves two audiences: hiring managers land on `/`, prospective clients land on `/services` via the header nav. The simplified header (Home · Work · Services · Contact) keeps top-level scan fast; deep-content pages are surfaced through the homepage's "View all →" links.
 
 `/admin` serves the Payload Admin UI.
 
