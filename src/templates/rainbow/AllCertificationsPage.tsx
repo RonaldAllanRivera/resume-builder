@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import type { Certification, SiteSetting } from '@/payload-types'
 import { CTAButtons } from './components/CTAButtons'
 import { SearchBar } from './components/search/SearchBar'
@@ -218,6 +219,20 @@ function matchesCertQuery(cert: Certification, q: string): boolean {
 export function AllCertificationsPage({ certifications = [] }: AllCertificationsPageProps) {
   const [query, setQuery] = useState('')
 
+  const handleSearch = useCallback((q: string) => {
+    setQuery(q)
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [])
+
+  const handleClear = useCallback(() => {
+    setQuery('')
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [])
+
   const trimmedQuery = query.trim()
   const isSearching = trimmedQuery.length > 0
 
@@ -255,149 +270,177 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
     return hours > max ? hours : max
   }, 0)
 
+  const transition = { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }
+
   return (
     <div className="min-h-screen text-white">
-      {/* Hero Section */}
-      <section className="hero-bg relative overflow-hidden px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-28 lg:pt-32">
-        <HeroReveal
-          className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start"
-          staggerChildren={0.15}
-          delay={0.2}
-          duration={0.8}
-        >
-          <div>
-            <span className="inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
-              FULL-STACK, AI, AND CLOUD DEVELOPER CERTIFICATIONS LIBRARY
-            </span>
-            <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl xl:text-8xl">
-              One page to showcase my full-stack, AI, cloud, and web development certifications.
-            </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/78">
-              This certifications page highlights my continuous learning in full-stack development,
-              AI engineering, SaaS platforms, cloud infrastructure, and automation systems. Each
-              certification reflects hands-on experience with technologies such as Python, Laravel,
-              WordPress, React, Next.js, DevOps, and API development, helping me build scalable,
-              high-performance applications and real-world solutions.
-            </p>
-            <CTAButtons />
-          </div>
+      {/* Always-visible search header */}
+      <header className="px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10">
+        <div className="mx-auto w-full max-w-3xl">
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Search certifications by name, provider, or technology..."
+          />
+        </div>
+      </header>
 
-          <aside className="space-y-6">
-            {/* Search Bar - Filters the certification list inline */}
-            <div className="lg:mt-[3.25rem] mb-20">
-              <SearchBar
-                onSearch={setQuery}
-                placeholder="Search certifications by name, provider, or technology..."
-              />
-            </div>
-
-            {/* Stats Card */}
-            <div className="rounded-[2rem] border border-white/10 bg-[#11131b]/70 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                  <div className="text-4xl font-black text-white">{totalCerts}</div>
-                  <p className="mt-2 text-sm text-white/65">Certificates</p>
-                </div>
-                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                  <div className="text-4xl font-black text-white">{totalCategories}</div>
-                  <p className="mt-2 text-sm text-white/65">Skill categories</p>
-                </div>
-                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                  <div className="text-4xl font-black text-white">{Math.round(longestPath)}h</div>
-                  <p className="mt-2 text-sm text-white/65">Longest learning path</p>
-                </div>
-                <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
-                  <div className="text-4xl font-black brand-gradient">LinkedIn</div>
-                  <p className="mt-2 text-sm text-white/65">
-                    Verifiable certificate links included
-                  </p>
-                </div>
-              </div>
-            </div>
-          </aside>
-        </HeroReveal>
-      </section>
-
-      {/* Search results — flat list when filtering */}
-      {isSearching && (
-        <section className="px-4 py-8 sm:px-6 lg:px-10">
-          <div className="mx-auto max-w-[1700px]">
-            <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
-              <h2 className="text-2xl font-black tracking-[-0.03em] text-white sm:text-3xl">
-                {searchResults.length}{' '}
-                {searchResults.length === 1 ? 'certification' : 'certifications'} match &ldquo;
-                {trimmedQuery}&rdquo;
-              </h2>
-              <button
-                type="button"
-                onClick={() => setQuery('')}
-                className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white"
+      <AnimatePresence mode="wait" initial={false}>
+        {!isSearching ? (
+          <motion.div
+            key="browse"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={transition}
+          >
+            {/* Hero (without SearchBar — lifted to header above) */}
+            <section className="hero-bg relative overflow-hidden px-4 pb-20 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pb-28">
+              <HeroReveal
+                className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start"
+                staggerChildren={0.15}
+                delay={0.2}
+                duration={0.8}
               >
-                Clear search ✕
-              </button>
-            </div>
-            {searchResults.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
-                {searchResults.map((cert, index) => (
-                  <CertificationCard
-                    key={cert.id}
-                    certification={cert}
-                    gradient={gradients[index % gradients.length]}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="rounded-2xl border border-white/10 bg-card-bg p-8 text-center text-white/70">
-                No certifications match &ldquo;{trimmedQuery}&rdquo;. Try a different keyword or{' '}
-                <button
-                  type="button"
-                  onClick={() => setQuery('')}
-                  className="underline-offset-4 hover:underline"
-                >
-                  clear the search
-                </button>
-                .
-              </p>
-            )}
-          </div>
-        </section>
-      )}
+                <div>
+                  <span className="inline-flex rounded-full border border-white/10 bg-[#191a21]/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/75 backdrop-blur">
+                    FULL-STACK, AI, AND CLOUD DEVELOPER CERTIFICATIONS LIBRARY
+                  </span>
+                  <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.06em] text-white sm:text-6xl xl:text-8xl">
+                    One page to showcase my full-stack, AI, cloud, and web development
+                    certifications.
+                  </h1>
+                  <p className="mt-6 max-w-3xl text-lg leading-8 text-white/78">
+                    This certifications page highlights my continuous learning in full-stack
+                    development, AI engineering, SaaS platforms, cloud infrastructure, and
+                    automation systems. Each certification reflects hands-on experience with
+                    technologies such as Python, Laravel, WordPress, React, Next.js, DevOps, and
+                    API development, helping me build scalable, high-performance applications and
+                    real-world solutions.
+                  </p>
+                  <CTAButtons />
+                </div>
 
-      {/* Certifications by Category — hidden while searching */}
-      {!isSearching &&
-        certificationsByCategory.map(({ category, certifications: categoryCerts }) => (
-          <section
-            key={category}
-            id={category}
-            className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-10"
+                <aside className="space-y-6">
+                  <div className="rounded-[2rem] border border-white/10 bg-[#11131b]/70 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                        <div className="text-4xl font-black text-white">{totalCerts}</div>
+                        <p className="mt-2 text-sm text-white/65">Certificates</p>
+                      </div>
+                      <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                        <div className="text-4xl font-black text-white">{totalCategories}</div>
+                        <p className="mt-2 text-sm text-white/65">Skill categories</p>
+                      </div>
+                      <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                        <div className="text-4xl font-black text-white">
+                          {Math.round(longestPath)}h
+                        </div>
+                        <p className="mt-2 text-sm text-white/65">Longest learning path</p>
+                      </div>
+                      <div className="rounded-[1.4rem] border border-white/10 bg-card-bg p-5 relative z-[100]">
+                        <div className="text-4xl font-black brand-gradient">LinkedIn</div>
+                        <p className="mt-2 text-sm text-white/65">
+                          Verifiable certificate links included
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </aside>
+              </HeroReveal>
+            </section>
+
+            {/* Certifications by Category */}
+            {certificationsByCategory.map(({ category, certifications: categoryCerts }) => (
+              <section
+                key={category}
+                id={category}
+                className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-10"
+              >
+                <div className="mx-auto max-w-[1700px]">
+                  <ScrollReveal className="mb-6" threshold={0.5} delay={0.2}>
+                    <h2 className="text-2xl font-black tracking-[-0.03em] text-white sm:text-3xl">
+                      {categoryLabels[category] || category}
+                    </h2>
+                    <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
+                      {categoryDescriptions[category]} — {categoryCerts.length} certification
+                      {categoryCerts.length !== 1 ? 's' : ''}
+                    </p>
+                  </ScrollReveal>
+                  <ScrollReveal
+                    className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3"
+                    threshold={0.1}
+                    staggerChildren={0.2}
+                    delay={0.3}
+                  >
+                    {categoryCerts.map((cert, index) => (
+                      <CertificationCard
+                        key={cert.id}
+                        certification={cert}
+                        gradient={gradients[index % gradients.length]}
+                      />
+                    ))}
+                  </ScrollReveal>
+                </div>
+              </section>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.section
+            key="search"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={transition}
+            className="px-4 py-12 sm:px-6 sm:py-16 lg:px-10"
           >
             <div className="mx-auto max-w-[1700px]">
-              <ScrollReveal className="mb-6" threshold={0.5} delay={0.2}>
-                <h2 className="text-2xl font-black tracking-[-0.03em] text-white sm:text-3xl">
-                  {categoryLabels[category] || category}
+              <div className="mb-8 flex flex-wrap items-baseline justify-between gap-3">
+                <h2 className="text-3xl font-black tracking-[-0.03em] text-white sm:text-4xl">
+                  {searchResults.length}{' '}
+                  {searchResults.length === 1 ? 'certification' : 'certifications'} match &ldquo;
+                  {trimmedQuery}&rdquo;
                 </h2>
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
-                  {categoryDescriptions[category]} — {categoryCerts.length} certification
-                  {categoryCerts.length !== 1 ? 's' : ''}
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white"
+                >
+                  Clear search ✕
+                </button>
+              </div>
+
+              {searchResults.length > 0 ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                  className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3"
+                >
+                  {searchResults.map((cert, index) => (
+                    <CertificationCard
+                      key={cert.id}
+                      certification={cert}
+                      gradient={gradients[index % gradients.length]}
+                    />
+                  ))}
+                </motion.div>
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-card-bg p-10 text-center text-white/70">
+                  No certifications match &ldquo;{trimmedQuery}&rdquo;. Try a different keyword or{' '}
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    className="underline-offset-4 hover:underline"
+                  >
+                    clear the search
+                  </button>
+                  .
                 </p>
-              </ScrollReveal>
-              <ScrollReveal
-                className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3"
-                threshold={0.1}
-                staggerChildren={0.2}
-                delay={0.3}
-              >
-                {categoryCerts.map((cert, index) => (
-                  <CertificationCard
-                    key={cert.id}
-                    certification={cert}
-                    gradient={gradients[index % gradients.length]}
-                  />
-                ))}
-              </ScrollReveal>
+              )}
             </div>
-          </section>
-        ))}
+          </motion.section>
+        )}
+      </AnimatePresence>
 
       <style jsx>{`
         .hero-bg {
