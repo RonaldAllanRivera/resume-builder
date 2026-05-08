@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import type { Certification, SiteSetting } from '@/payload-types'
 import { CTAButtons } from './components/CTAButtons'
 import { SearchBar } from './components/search/SearchBar'
@@ -201,7 +201,31 @@ function CertificationCard({ certification, gradient }: CertificationCardProps) 
   )
 }
 
+function matchesCertQuery(cert: Certification, q: string): boolean {
+  if (!q) return true
+  const haystack = [
+    cert.title,
+    cert.issuer,
+    cert.category,
+    categoryLabels[cert.category as string] ?? '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+  return haystack.includes(q.toLowerCase())
+}
+
 export function AllCertificationsPage({ certifications = [] }: AllCertificationsPageProps) {
+  const [query, setQuery] = useState('')
+
+  const trimmedQuery = query.trim()
+  const isSearching = trimmedQuery.length > 0
+
+  const searchResults = useMemo(
+    () => (isSearching ? certifications.filter((c) => matchesCertQuery(c, trimmedQuery)) : []),
+    [certifications, trimmedQuery, isSearching],
+  )
+
   // Group certifications by category
   const uniqueCategories = Array.from(
     new Set(certifications.map((c) => c.category).filter(Boolean)),
@@ -259,9 +283,12 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
           </div>
 
           <aside className="space-y-6">
-            {/* Search Bar - Interactive search with popular tags */}
+            {/* Search Bar - Filters the certification list inline */}
             <div className="lg:mt-[3.25rem] mb-20">
-              <SearchBar placeholder="Search certifications by name, provider, or technology..." />
+              <SearchBar
+                onSearch={setQuery}
+                placeholder="Search certifications by name, provider, or technology..."
+              />
             </div>
 
             {/* Stats Card */}
@@ -291,36 +318,86 @@ export function AllCertificationsPage({ certifications = [] }: AllCertifications
         </HeroReveal>
       </section>
 
-      {/* Certifications by Category */}
-      {certificationsByCategory.map(({ category, certifications: categoryCerts }) => (
-        <section key={category} id={category} className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-10">
+      {/* Search results — flat list when filtering */}
+      {isSearching && (
+        <section className="px-4 py-8 sm:px-6 lg:px-10">
           <div className="mx-auto max-w-[1700px]">
-            <ScrollReveal className="mb-6" threshold={0.5} delay={0.2}>
+            <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
               <h2 className="text-2xl font-black tracking-[-0.03em] text-white sm:text-3xl">
-                {categoryLabels[category] || category}
+                {searchResults.length}{' '}
+                {searchResults.length === 1 ? 'certification' : 'certifications'} match &ldquo;
+                {trimmedQuery}&rdquo;
               </h2>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
-                {categoryDescriptions[category]} — {categoryCerts.length} certification
-                {categoryCerts.length !== 1 ? 's' : ''}
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white"
+              >
+                Clear search ✕
+              </button>
+            </div>
+            {searchResults.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
+                {searchResults.map((cert, index) => (
+                  <CertificationCard
+                    key={cert.id}
+                    certification={cert}
+                    gradient={gradients[index % gradients.length]}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-2xl border border-white/10 bg-card-bg p-8 text-center text-white/70">
+                No certifications match &ldquo;{trimmedQuery}&rdquo;. Try a different keyword or{' '}
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  className="underline-offset-4 hover:underline"
+                >
+                  clear the search
+                </button>
+                .
               </p>
-            </ScrollReveal>
-            <ScrollReveal
-              className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3"
-              threshold={0.1}
-              staggerChildren={0.2}
-              delay={0.3}
-            >
-              {categoryCerts.map((cert, index) => (
-                <CertificationCard
-                  key={cert.id}
-                  certification={cert}
-                  gradient={gradients[index % gradients.length]}
-                />
-              ))}
-            </ScrollReveal>
+            )}
           </div>
         </section>
-      ))}
+      )}
+
+      {/* Certifications by Category — hidden while searching */}
+      {!isSearching &&
+        certificationsByCategory.map(({ category, certifications: categoryCerts }) => (
+          <section
+            key={category}
+            id={category}
+            className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-10"
+          >
+            <div className="mx-auto max-w-[1700px]">
+              <ScrollReveal className="mb-6" threshold={0.5} delay={0.2}>
+                <h2 className="text-2xl font-black tracking-[-0.03em] text-white sm:text-3xl">
+                  {categoryLabels[category] || category}
+                </h2>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-white/65">
+                  {categoryDescriptions[category]} — {categoryCerts.length} certification
+                  {categoryCerts.length !== 1 ? 's' : ''}
+                </p>
+              </ScrollReveal>
+              <ScrollReveal
+                className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3"
+                threshold={0.1}
+                staggerChildren={0.2}
+                delay={0.3}
+              >
+                {categoryCerts.map((cert, index) => (
+                  <CertificationCard
+                    key={cert.id}
+                    certification={cert}
+                    gradient={gradients[index % gradients.length]}
+                  />
+                ))}
+              </ScrollReveal>
+            </div>
+          </section>
+        ))}
 
       <style jsx>{`
         .hero-bg {

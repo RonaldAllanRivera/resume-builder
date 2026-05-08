@@ -28,7 +28,10 @@
       "Bash(docker exec *)",
       "Bash(curl -s http://localhost:3000/ -o /tmp/home5.html)",
       "Read(//tmp/**)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(curl -s http://localhost:3000/projects -o /tmp/projects.html)",
+      "Bash(curl -s http://localhost:3000/certifications -o /tmp/certs.html)"
     ]
   }
 }
