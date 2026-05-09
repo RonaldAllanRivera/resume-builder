@@ -1,6 +1,24 @@
 # Changelog
 
-## [Unreleased] - 2026-05-07
+## [Unreleased] - 2026-05-09
+
+### Live Lighthouse Badge in CredibilityStrip
+
+The homepage CredibilityStrip now displays the **live Lighthouse Performance score** for `NEXT_PUBLIC_SERVER_URL`, fetched from Google's PageSpeed Insights API.
+
+- **Both strategies fetched in parallel** (`mobile` and `desktop`), each cached 24h via Next.js fetch ISR. Free public API quota (25k/day) is more than enough.
+- **Responsive selection via CSS** — viewport `<768px` shows the mobile score + mobile report link; `≥768px` shows the desktop equivalents. No `headers()`, so the homepage stays fully static-renderable.
+- **Each badge links to the live PageSpeed report** for its strategy: `https://pagespeed.web.dev/analysis?url={SITE}&form_factor={mobile|desktop}` — visitors can verify the score on click.
+- **Graceful failure** — if the API errors, times out (8s), or returns a score below 90, the Lighthouse badge hides; TypeScript and Open-source items still render.
+- **Skips localhost / Vercel preview URLs** — only audits public production domains.
+- **New optional env var:** `PAGESPEED_API_KEY` — works without it (rate-limited to 25k/day public quota); set to lift the limit if needed.
+
+Files:
+- `src/utilities/getLighthouseScore.ts` (new)
+- `src/templates/rainbow/components/CredibilityStrip.tsx` (refactored to async Server Component)
+- `.env.example` (documents `PAGESPEED_API_KEY`)
+
+## [0.15.0] - 2026-05-07
 
 ### Public Site Restructuring (Phase 11)
 

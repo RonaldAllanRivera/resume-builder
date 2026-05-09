@@ -118,6 +118,10 @@ Uses Framer Motion. Key components: `HeroReveal` (hero section staggered entranc
 - **Path alias**: `@/` maps to `src/`
 - **Pre-commit hook**: runs `pnpm lint` and `tsc --noEmit` automatically
 
+### Lighthouse badge (CredibilityStrip)
+
+`src/utilities/getLighthouseScore.ts` calls Google's PageSpeed Insights API for `NEXT_PUBLIC_SERVER_URL` (mobile + desktop in parallel, 24h ISR cache, 8s timeout). The async Server Component `src/templates/rainbow/components/CredibilityStrip.tsx` renders both badges with Tailwind `md:hidden` / `hidden md:block` so CSS picks the right one for the viewport. Each badge links to the live PageSpeed report. Score < 90 hides the badge (graceful — never undermines). Localhost and `vercel.app` URLs are skipped. Optional `PAGESPEED_API_KEY` lifts the public 25k/day quota.
+
 ## Environment Variables
 
 See `.env.example` for all required variables. Key groups:
@@ -128,3 +132,4 @@ See `.env.example` for all required variables. Key groups:
 - `STRIPE_*` — booking payment processing
 - `BOOKING_*` — booking configuration (timezone, buffer, advance notice)
 - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` — Google Docs export feature
+- `PAGESPEED_API_KEY` — optional; lifts the public 25k/day quota for the homepage Lighthouse badge
