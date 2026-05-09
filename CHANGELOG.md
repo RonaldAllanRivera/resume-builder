@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased] - 2026-05-10
+
+### Lighthouse Badge: graceful fallback + dev override
+
+Two follow-ups to the live Lighthouse badge after the public PageSpeed Insights API was found to be aggressively rate-limited (429s) for unauthenticated calls.
+
+- **Fallback "Lighthouse Report ↗" badge.** If the API call fails (timeout, 429, etc.) or the score is below the display threshold (90), the badge no longer hides entirely — it now renders without a number, still linking to the live PageSpeed report so visitors can verify the current state themselves. Honest framing: never claim a number we can't substantiate, never hide the verification link.
+- **`LIGHTHOUSE_AUDIT_URL` env override.** Defaults to `NEXT_PUBLIC_SERVER_URL`. Set in `.env.local` to point the audit at the production domain (e.g. `https://www.allanai.dev`) so the badge renders during local dev. Localhost / 127.0.0.1 / `*.vercel.app` URLs are still auto-skipped.
+- **`PAGESPEED_API_KEY`** is now strongly recommended (not just optional) — without it, anonymous public calls to PageSpeed Insights frequently 429.
+
+Files:
+- `src/utilities/getLighthouseScore.ts` — return type now exposes `reportUrl` even when `score` is null
+- `src/templates/rainbow/components/CredibilityStrip.tsx` — extracted `LighthouseBadge` sub-component with the dual-state render
+- `.env.example` — documents `LIGHTHOUSE_AUDIT_URL` and elevates `PAGESPEED_API_KEY` to recommended
+
 ## [Unreleased] - 2026-05-09
 
 ### Live Lighthouse Badge in CredibilityStrip

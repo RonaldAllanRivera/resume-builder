@@ -120,7 +120,14 @@ Uses Framer Motion. Key components: `HeroReveal` (hero section staggered entranc
 
 ### Lighthouse badge (CredibilityStrip)
 
-`src/utilities/getLighthouseScore.ts` calls Google's PageSpeed Insights API for `NEXT_PUBLIC_SERVER_URL` (mobile + desktop in parallel, 24h ISR cache, 8s timeout). The async Server Component `src/templates/rainbow/components/CredibilityStrip.tsx` renders both badges with Tailwind `md:hidden` / `hidden md:block` so CSS picks the right one for the viewport. Each badge links to the live PageSpeed report. Score < 90 hides the badge (graceful — never undermines). Localhost and `vercel.app` URLs are skipped. Optional `PAGESPEED_API_KEY` lifts the public 25k/day quota.
+`src/utilities/getLighthouseScore.ts` calls Google's PageSpeed Insights API for the audit URL (`LIGHTHOUSE_AUDIT_URL` if set, else `NEXT_PUBLIC_SERVER_URL`), fetching mobile + desktop in parallel with a 24h ISR cache and 8s timeout per strategy. The async Server Component `src/templates/rainbow/components/CredibilityStrip.tsx` renders both badges with Tailwind `md:hidden` / `hidden md:block` so CSS picks the right one for the viewport.
+
+Render states per strategy:
+- `score >= 90` → `Lighthouse 92 ↗` (linked to live PageSpeed report)
+- `score < 90` or API failed → `Lighthouse Report ↗` (no number, link still works)
+- Audit URL is localhost / 127.0.0.1 / `*.vercel.app` → badge omitted entirely
+
+`PAGESPEED_API_KEY` is strongly recommended in production — anonymous PageSpeed API calls get 429-throttled aggressively. `LIGHTHOUSE_AUDIT_URL` is a dev-only override to point the audit at the production domain so the badge renders in local development.
 
 ## Environment Variables
 
@@ -132,4 +139,5 @@ See `.env.example` for all required variables. Key groups:
 - `STRIPE_*` — booking payment processing
 - `BOOKING_*` — booking configuration (timezone, buffer, advance notice)
 - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` — Google Docs export feature
-- `PAGESPEED_API_KEY` — optional; lifts the public 25k/day quota for the homepage Lighthouse badge
+- `PAGESPEED_API_KEY` — recommended in production; anonymous PageSpeed API calls get 429-throttled. Used by the homepage Lighthouse badge.
+- `LIGHTHOUSE_AUDIT_URL` — optional dev override; points the Lighthouse audit at a public URL (e.g. the production domain) so the badge renders in local dev. Defaults to `NEXT_PUBLIC_SERVER_URL`.

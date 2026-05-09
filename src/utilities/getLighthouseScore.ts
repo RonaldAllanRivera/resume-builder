@@ -1,19 +1,26 @@
 /**
- * Fetches the live Lighthouse Performance score from Google's PageSpeed
- * Insights API for the configured site. Used by `CredibilityStrip` so the
- * homepage always shows an honest, current score instead of a hardcoded one.
+ * Resolves the Lighthouse Performance state for the homepage CredibilityStrip.
  *
- * - Two strategies are fetched in parallel: `mobile` (harder) and `desktop`.
- * - Each fetch is cached for 24h via Next.js `revalidate` so we hit the API
- *   at most once per strategy per day, well under the 25k/day public quota.
- * - An 8-second `AbortController` timeout keeps a slow API from blocking
- *   the homepage on cache miss.
- * - Returns `null` for any strategy that fails or scores below the configured
- *   threshold so the badge can hide gracefully.
+ * - The audit URL is `LIGHTHOUSE_AUDIT_URL` (override) or `NEXT_PUBLIC_SERVER_URL`.
+ *   If neither is set or the resolved URL is not publicly reachable (localhost,
+ *   127.0.0.1, vercel.app preview), this returns `{ mobile: null, desktop: null }`
+ *   and the badges hide entirely.
+ * - For a public URL, both `mobile` and `desktop` strategies are fetched in
+ *   parallel from Google's PageSpeed Insights v5 API. Each fetch is cached
+ *   for 24h via Next.js fetch ISR; an 8s `AbortController` timeout prevents
+ *   a slow API from blocking the homepage on cache miss.
+ * - The `reportUrl` for each strategy is always constructed (from the audit
+ *   URL + form factor) — even when the score fetch fails, so the
+ *   CredibilityStrip can still render a "Lighthouse Report ↗" link that
+ *   sends visitors to a fresh PageSpeed analysis. `score` is `null` on
+ *   API failure or 429 rate-limit; the consumer decides how to render.
  *
  * Env vars:
- * - `NEXT_PUBLIC_SERVER_URL` — required. The site URL to audit.
- * - `PAGESPEED_API_KEY`     — optional. Lifts public rate limit if set.
+ * - `NEXT_PUBLIC_SERVER_URL` — the canonical site URL (default audit target).
+ * - `LIGHTHOUSE_AUDIT_URL`   — optional override; useful in local dev to point
+ *                              at the production domain so the badge renders.
+ * - `PAGESPEED_API_KEY`      — strongly recommended in production. The public
+ *                              quota gets 429-throttled on bursts.
  */
 
 const PAGESPEED_API = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
@@ -23,16 +30,29 @@ const REVALIDATE_SECONDS = 60 * 60 * 24 // 24 hours
 
 export type LighthouseStrategy = 'mobile' | 'desktop'
 
-export interface LighthouseScore {
-  /** Performance score, 0–100. */
-  score: number
-  /** Public PageSpeed report link for the same URL + strategy. */
+export interface LighthouseStrategyResult {
+  /** Public PageSpeed report link for this URL + strategy. Always present when the audit URL is public. */
   reportUrl: string
+  /** Performance score 0–100. `null` if the API call failed or returned no score. */
+  score: number | null
 }
 
 export interface LighthouseScores {
-  mobile: LighthouseScore | null
-  desktop: LighthouseScore | null
+  mobile: LighthouseStrategyResult | null
+  desktop: LighthouseStrategyResult | null
+}
+
+function resolveAuditUrl(): string | null {
+  const candidate = process.env.LIGHTHOUSE_AUDIT_URL || process.env.NEXT_PUBLIC_SERVER_URL
+  if (!candidate) return null
+  if (
+    candidate.includes('localhost') ||
+    candidate.includes('127.0.0.1') ||
+    candidate.includes('vercel.app')
+  ) {
+    return null
+  }
+  return candidate
 }
 
 function buildReportUrl(targetUrl: string, strategy: LighthouseStrategy): string {
@@ -40,10 +60,10 @@ function buildReportUrl(targetUrl: string, strategy: LighthouseStrategy): string
   return `${PAGESPEED_REPORT_BASE}?${params.toString()}`
 }
 
-async function fetchOneStrategy(
+async function fetchScore(
   targetUrl: string,
   strategy: LighthouseStrategy,
-): Promise<LighthouseScore | null> {
+): Promise<number | null> {
   const apiUrl = new URL(PAGESPEED_API)
   apiUrl.searchParams.set('url', targetUrl)
   apiUrl.searchParams.set('strategy', strategy)
@@ -68,10 +88,7 @@ async function fetchOneStrategy(
     const rawScore = data?.lighthouseResult?.categories?.performance?.score
     if (typeof rawScore !== 'number') return null
 
-    return {
-      score: Math.round(rawScore * 100),
-      reportUrl: buildReportUrl(targetUrl, strategy),
-    }
+    return Math.round(rawScore * 100)
   } catch {
     return null
   } finally {
@@ -79,28 +96,17 @@ async function fetchOneStrategy(
   }
 }
 
-/**
- * Returns the Lighthouse Performance scores for the configured site, fetched
- * in parallel for both mobile and desktop strategies. Returns `{ mobile: null,
- * desktop: null }` if no public site URL is configured (e.g. local dev or a
- * Vercel preview).
- */
 export async function getLighthouseScore(): Promise<LighthouseScores> {
-  const targetUrl = process.env.NEXT_PUBLIC_SERVER_URL
+  const targetUrl = resolveAuditUrl()
+  if (!targetUrl) return { mobile: null, desktop: null }
 
-  if (
-    !targetUrl ||
-    targetUrl.includes('localhost') ||
-    targetUrl.includes('127.0.0.1') ||
-    targetUrl.includes('vercel.app')
-  ) {
-    return { mobile: null, desktop: null }
-  }
-
-  const [mobile, desktop] = await Promise.all([
-    fetchOneStrategy(targetUrl, 'mobile'),
-    fetchOneStrategy(targetUrl, 'desktop'),
+  const [mobileScore, desktopScore] = await Promise.all([
+    fetchScore(targetUrl, 'mobile'),
+    fetchScore(targetUrl, 'desktop'),
   ])
 
-  return { mobile, desktop }
+  return {
+    mobile: { reportUrl: buildReportUrl(targetUrl, 'mobile'), score: mobileScore },
+    desktop: { reportUrl: buildReportUrl(targetUrl, 'desktop'), score: desktopScore },
+  }
 }
