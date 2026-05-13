@@ -1,4 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -73,14 +75,27 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
+  // Email adapter: Payload-internal emails (admin password resets, form-builder
+  // submissions, etc.) go through Resend. The booking emails in
+  // src/lib/booking-email.ts call Resend directly and are independent of this.
+  // Without this adapter, Vercel logs warn "No email adapter provided" and
+  // emails are silently written to console instead of sent.
+  email: resendAdapter({
+    defaultFromAddress:
+      process.env.CONTACT_FORM_FROM_EMAIL || 'noreply@allanai.dev',
+    defaultFromName: process.env.CONTACT_FORM_FROM_NAME || 'Allan Rivera',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
-      // Enable SSL only for remote databases (not localhost/CI environments)
-      // Production databases like Vercel Postgres require SSL
+      // Enable SSL only for remote databases (not localhost/CI environments).
+      // Recognizes both sslmode=require (legacy) and sslmode=verify-full
+      // (recommended; required pre-pg-v9 to keep strict cert verification).
       ssl:
         process.env.DATABASE_URL?.includes('.vercel-storage.com') ||
         process.env.DATABASE_URL?.includes('sslmode=require') ||
+        process.env.DATABASE_URL?.includes('sslmode=verify-full') ||
         process.env.DATABASE_SSL === 'true' ||
         false,
     },
@@ -107,7 +122,18 @@ export default buildConfig({
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteSettings, ResumeProfile, CoverLetterSettings, AIGenerationSettings],
-  plugins,
+  plugins: [
+    ...plugins,
+    // Vercel Blob storage for Media uploads. Without this, uploads on Vercel
+    // succeed but vanish on the next deploy (Vercel filesystem is ephemeral).
+    // Auto-disables locally if BLOB_READ_WRITE_TOKEN is unset — uploads then
+    // fall back to public/media on disk (fine for dev, not for Vercel).
+    vercelBlobStorage({
+      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
+      collections: { media: true },
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+  ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

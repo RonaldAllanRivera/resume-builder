@@ -5,6 +5,7 @@ Complete guide for setting up, managing, and testing Stripe API keys for the boo
 ## Table of Contents
 
 - [Overview](#overview)
+- [**Setup Runbook (Test → Live)**](#setup-runbook-test--live) ← start here
 - [Account Setup](#account-setup)
 - [Creating a New Test API Key](#creating-a-new-test-api-key)
 - [Restricted Keys (Best Practice)](#restricted-keys-best-practice)
@@ -25,6 +26,129 @@ This project uses Stripe for booking payments. The integration covers:
 - **Webhooks** — server-to-server confirmation that a payment succeeded
 - **Refunds** — admin-initiated from the Stripe dashboard
 - **Coupons / Promotion Codes** — discount codes applied at checkout (Phase 4C.12)
+
+---
+
+## Setup Runbook (Test → Live)
+
+If you have never set up Stripe before, follow this runbook end-to-end. **Never skip Phase 2 or 3** — going straight to Live with an untested integration is how freelancers lose money on failed webhooks, mismatched amounts, and broken refund flows.
+
+> **Time estimate:** Phase 1 ≈ 30 min; Phase 2 ≈ 30 min; Phase 3 (waiting on Stripe verification) hours-to-days; Phase 4 ≈ 15 min.
+
+### Phase 1 — Test mode setup (your first run)
+
+Goal: a working booking flow that takes a fake card payment, fires a webhook, marks the booking paid in Payload, and sends the confirmation emails.
+
+- [ ] **Create Stripe account** → see [Account Setup](#account-setup). Country = Philippines, Individual / Sole Proprietor.
+- [ ] **Set payouts to manual.** Settings → Payouts → Manual. Don't skip this — it's your safety net.
+- [ ] **Get test API keys.** Dashboard top-left toggle → **TEST**. Then [Creating a New Test API Key](#creating-a-new-test-api-key). Copy `pk_test_...` and `sk_test_...`.
+- [ ] **Add test keys to `.env`** (local dev — see [Environment Variables](#environment-variables)):
+  ```
+  STRIPE_PUBLISHABLE_KEY=pk_test_...
+  STRIPE_SECRET_KEY=sk_test_...
+  STRIPE_WEBHOOK_SECRET=          # filled in next step
+  ```
+- [ ] **Install and run Stripe CLI** for webhook forwarding → see [Webhook Setup for Local Testing](#webhook-setup-for-local-testing). Run in a separate terminal:
+  ```
+  stripe listen --forward-to localhost:3000/api/webhooks/stripe
+  ```
+  The CLI prints `whsec_...` — paste that into `STRIPE_WEBHOOK_SECRET` in `.env`.
+- [ ] **Restart the Docker dev container** so it picks up the new env vars:
+  ```
+  docker restart resume-builder-app
+  ```
+- [ ] **Seed the booking system data** (only if you don't have packages yet):
+  ```
+  pnpm seed:resume      # or use the admin → "Seed bookings" button
+  ```
+- [ ] **First fake-payment dry run.** With dev server up + Stripe CLI listening:
+  1. Visit `http://localhost:3000/services` → click any package → fill the booking form
+  2. After admin acceptance (Payload admin → Bookings → set status to `accepted`), the customer gets the payment link
+  3. On the checkout page, use card `4242 4242 4242 4242` (any future expiry, any 3-digit CVC)
+  4. Watch the Stripe CLI terminal — you should see `checkout.session.completed` event being forwarded
+  5. Open Payload admin → Bookings → confirm status flipped to `paid`
+  6. Check the configured `BOOKING_NOTIFICATION_EMAIL` and customer email for confirmation messages
+
+If all of that works on the first try, congratulations — you have a fully wired test-mode booking system. If not, see [Troubleshooting](#troubleshooting). 90% of issues are missing/wrong env vars or the Stripe CLI not running.
+
+### Phase 2 — Test scenarios you MUST run before going Live
+
+Don't skip any of these. Each one corresponds to a real failure mode that will hit you eventually with real money.
+
+- [ ] **Successful payment** — `4242 4242 4242 4242`. Booking → `paid`. Emails fire. ✅
+- [ ] **Generic card decline** — `4000 0000 0000 0002`. User sees decline message. Booking stays in `pending_payment`. No email sent. No webhook side-effects. ✅
+- [ ] **3D Secure / SCA flow** — `4000 0025 0000 3155`. Browser prompts for authentication; on confirm, payment succeeds. ✅
+- [ ] **3D Secure failure** — `4000 0000 0000 3055`. Auth fails; user can retry. ✅
+- [ ] **Insufficient funds** — `4000 0000 0000 9995`. Same as decline; user gets a clear message. ✅
+- [ ] **Webhook resilience** — kill the Stripe CLI, complete a successful payment with `4242`, restart the CLI. Stripe should retry the webhook delivery (visible in the CLI). Booking eventually flips to `paid`. ✅
+- [ ] **Refund flow** — In Stripe dashboard → Payments → click your test payment → **Refund**. Confirm the booking transitions correctly (Payload admin should reflect the refund — check whatever your refund handling logic does).
+- [ ] **Dispute / chargeback** — `4000 0000 0000 2685` triggers an automatic dispute after a few minutes. Make sure your admin sees it (Stripe dashboard → Disputes).
+- [ ] **Email receipts** — verify the customer email and your admin notification email both arrived (sent via Resend, see `BOOKING_NOTIFICATION_EMAIL`).
+- [ ] **Coupon / promo code** (if enabled) — apply a test promo code at checkout, verify the discount is reflected in the final amount and stored on the booking record.
+
+If any of these fail, fix before continuing. **Do not flip to Live until all checkboxes are green.**
+
+### Phase 3 — Stripe account verification (required for Live)
+
+Stripe won't let you accept real payments until your account is fully verified. This is gated by Stripe's review and can take hours-to-days.
+
+- [ ] **Submit business details.** Dashboard → Settings → Account details → fill out everything (legal name, address, phone, tax ID if you have one).
+- [ ] **Verify identity.** Upload a government ID (Stripe will tell you which docs are accepted for PH).
+- [ ] **Add and verify your bank account.** Settings → Payouts → Add bank account. Stripe sends a tiny verification deposit; confirm the amount in their dashboard.
+- [ ] **(Recommended) Use Wise as your payout destination** — see the booking-system suggestion in your previous chat. Wise gives you a USD account that connects to Stripe; you then convert USD → PHP at mid-market rate. Saves 2–3% vs your local bank's FX markup on every payout.
+- [ ] **Wait for the dashboard to say "Account verified"** — appears as a green badge next to your account name.
+- [ ] **Set the live payout schedule to manual** — same reason as Phase 1: keep money in your Stripe balance until you've delivered the work.
+
+### Phase 4 — Go Live
+
+- [ ] **Switch dashboard to LIVE mode** (toggle top-left, must show "LIVE" not "TEST").
+- [ ] **Get live API keys.** Developers → API keys → copy `pk_live_...` and create a new `sk_live_...`. See [Switching to Live Keys](#switching-to-live-keys).
+- [ ] **Configure the production webhook endpoint** in Stripe Dashboard:
+  - URL: `https://www.allanai.dev/api/webhooks/stripe` (or whichever production URL applies)
+  - Events to send: at minimum `checkout.session.completed`, `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.refunded`, `charge.dispute.created`
+  - Copy the new live `whsec_...` signing secret
+- [ ] **Update Vercel environment variables** for Production environment:
+  ```
+  STRIPE_PUBLISHABLE_KEY=pk_live_...
+  STRIPE_SECRET_KEY=sk_live_...
+  STRIPE_WEBHOOK_SECRET=whsec_...   # the LIVE webhook secret, NOT the CLI one
+  ```
+  → Vercel project → Settings → Environment Variables → update each → save → **Redeploy**.
+- [ ] **First real-money smoke test.** Use your own card to pay $1 (or the smallest package you offer):
+  1. Run through the live booking flow on production
+  2. Verify the payment shows in the live Stripe dashboard
+  3. Verify Vercel function logs show `/api/webhooks/stripe` returning 200
+  4. Verify Payload production admin marked the booking `paid`
+  5. Verify both confirmation emails arrived
+  6. **Refund yourself** from the dashboard — verify the refund flow handles correctly. (You eat the Stripe fee, ~$0.30 — cheapest insurance you'll ever buy.)
+- [ ] **Done.** You're live.
+
+### Pre-go-Live one-page checklist
+
+Print or screenshot this. If you can't tick every box, don't flip the switch.
+
+```
+TEST MODE
+[ ] All Phase 1 dry-run checkboxes green
+[ ] Phase 2 — every test scenario verified
+[ ] Webhook signing secret matches the running mode (CLI for local, dashboard for prod)
+
+ACCOUNT
+[ ] Stripe account fully verified (green badge)
+[ ] Bank account verified
+[ ] Payouts set to MANUAL (both test and live)
+
+PRODUCTION CONFIG
+[ ] Vercel env vars updated to pk_live_ / sk_live_ / live whsec_
+[ ] Production webhook endpoint configured in Stripe dashboard
+[ ] Production webhook events list includes the 5 critical events
+[ ] Vercel deployment redeployed AFTER updating env vars
+
+GO-LIVE TEST
+[ ] $1 real payment from your own card succeeded end-to-end
+[ ] Refund tested and worked
+[ ] Production logs clean (no errors in webhook handler)
+```
 
 ---
 

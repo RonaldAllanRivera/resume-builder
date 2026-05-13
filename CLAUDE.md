@@ -105,7 +105,13 @@ Roles: `admin`, `editor`, `user`. Access control functions live in `src/access/`
 
 ### Plugins
 
-Configured in `src/plugins/index.ts`: `redirects`, `nestedDocs` (categories), `seo`, `formBuilder`, `search` (posts only).
+Configured in `src/plugins/index.ts`: `redirects`, `nestedDocs` (categories), `seo`, `formBuilder`, `search` (posts only). Additionally, `vercelBlobStorage` is appended in `src/payload.config.ts` so Media uploads persist on Vercel — auto-disables locally when `BLOB_READ_WRITE_TOKEN` is unset.
+
+### Email + storage adapters
+
+- **Email:** `resendAdapter` from `@payloadcms/email-resend` is wired in `src/payload.config.ts` using the existing `RESEND_API_KEY`. This covers Payload-internal emails (admin password reset, form-builder submissions). Booking-flow emails in `src/lib/booking-email.ts` call Resend directly and are independent.
+- **Media storage:** `vercelBlobStorage` is plugged into the `media` collection. Needs `BLOB_READ_WRITE_TOKEN` set on Vercel (provision via Vercel dashboard → Storage → Blob). Without it (e.g. local dev), uploads fall back to `public/media` on disk.
+- **Postgres SSL:** the SSL detection in `db: postgresAdapter` accepts both `sslmode=require` and `sslmode=verify-full`. Use `sslmode=verify-full` in production to keep strict cert hostname verification — pg v9 will silently downgrade `sslmode=require` to weaker libpq semantics.
 
 ### Animation System
 

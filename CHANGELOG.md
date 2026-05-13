@@ -1,5 +1,30 @@
 # Changelog
 
+## [Unreleased] - 2026-05-13
+
+### Vercel production fixes: email adapter, Blob storage, stricter SSL
+
+Three production warnings surfaced in Vercel logs:
+
+1. **`No email adapter provided. Email will be written to console.`** Payload-internal emails (admin password resets, form-builder submissions) were silently logged to console instead of sent.
+2. **`Collections with uploads enabled require a storage adapter when deploying to Vercel.`** Media uploads succeeded in the admin UI but vanished on the next deploy (Vercel's filesystem is ephemeral).
+3. **`SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.`** In `pg-connection-string@3.x` / `pg@9.x`, `sslmode=require` will silently downgrade to weaker libpq semantics (no cert hostname verification).
+
+Fixes:
+
+- **Installed `@payloadcms/email-resend@3.74.0`** (version-matched to the existing Payload 3.74.0) and wired `resendAdapter` into `payload.config.ts`. Uses the existing `RESEND_API_KEY` and `CONTACT_FORM_FROM_*` env vars. Booking-flow emails in `src/lib/booking-email.ts` continue to call Resend directly — this adapter only covers the rest of Payload's internal email needs.
+- **Installed `@payloadcms/storage-vercel-blob@3.74.0`** and wired `vercelBlobStorage` into the plugins array, scoped to the `media` collection. Auto-disables locally when `BLOB_READ_WRITE_TOKEN` is unset — uploads fall back to `public/media` on disk for dev. On Vercel with the token set, uploads go to Vercel Blob CDN and persist across deploys.
+- **Updated SSL detection in `payload.config.ts`** to recognize `sslmode=verify-full` in addition to `sslmode=require`. Operators should update production `DATABASE_URL` to use `sslmode=verify-full` to keep strict cert verification before pg v9 lands.
+- **Documented dashboard actions in `docs/VERCEL_DEPLOYMENT_FIXES.md`** — runbook for: (a) updating Vercel `DATABASE_URL`, (b) provisioning Vercel Blob, (c) verifying the Resend sender domain.
+- **`.env.example`** — clarified `DATABASE_URL` should append `?sslmode=verify-full` in production, and `BLOB_READ_WRITE_TOKEN` is required on Vercel for media uploads.
+
+Files:
+- `package.json`, `pnpm-lock.yaml` — two new deps at 3.74.0
+- `src/payload.config.ts` — `email:` adapter + `vercelBlobStorage` plugin + SSL check tweak
+- `.env.example`, `CHANGELOG.md`, `CLAUDE.md`, `docs/VERCEL_DEPLOYMENT_FIXES.md`
+
+Verified: tsc clean, lint clean, container restart loads new packages, the three warnings no longer appear in dev-server logs, all routes return 200.
+
 ## [Unreleased] - 2026-05-10
 
 ### Lighthouse Badge: graceful fallback + dev override

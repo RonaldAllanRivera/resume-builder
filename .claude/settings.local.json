@@ -31,7 +31,11 @@
       "Bash(git push *)",
       "Bash(echo \"EXIT: $?\")",
       "Bash(curl -s http://localhost:3000/projects -o /tmp/projects.html)",
-      "Bash(curl -s http://localhost:3000/certifications -o /tmp/certs.html)"
+      "Bash(curl -s http://localhost:3000/certifications -o /tmp/certs.html)",
+      "Bash(git fetch *)",
+      "Bash(curl -s http://localhost:3000/ -o /tmp/home6.html)",
+      "Bash(curl -sL -o /tmp/prod-final.html -w \"Final URL after redirects: %{url_effective}\\\\nHTTP: %{http_code}\\\\n\" https://allanai.dev/)",
+      "Bash(curl -s -o /dev/null -w \"PageSpeed API now: HTTP %{http_code}\\\\n\" --max-time 20 \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fallanai.dev&strategy=mobile&category=performance\")"
     ]
   }
 }
