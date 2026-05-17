@@ -21,16 +21,20 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-// ISR: Revalidate every 5 minutes for fresh content with fast page loads
+// ISR: revalidate every 5 minutes. The page is statically generated; new
+// requests within the 5-minute window serve the cached HTML. After the
+// window expires, the next request triggers a background regeneration.
+//
+// IMPORTANT: do not add `searchParams`, `cookies()`, `headers()`, or
+// `useSearchParams()` access to this page. Any of those opt the route out
+// of static rendering and back into per-request serverless execution
+// (which is what we just fixed). Verified via Vercel cache headers:
+//   cache: MISS  →  searchParams was accessed (dynamic)
+//   cache: HIT   →  static + ISR (the goal)
 export const revalidate = 300
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ template?: string }>
-}) {
-  const params = await searchParams
-  const template = await getTemplate(params.template)
+export default async function HomePage() {
+  const template = await getTemplate()
   const settings = await getSiteSettings()
   const profile = await getResumeProfile()
   const featuredProjects = await getFeaturedProjects()

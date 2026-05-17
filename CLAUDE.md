@@ -74,7 +74,7 @@ The active template is set in **Globals → Site Settings → Template**. Curren
 
 Frontend pages fetch data server-side and pass it as props to template components. Templates are purely presentational. Data fetching utilities are in `src/utilities/fetchPublicData.ts`.
 
-Preview any template without changing the saved setting: `/?template=rainbow`
+> **Homepage performance:** the homepage (`src/app/(frontend)/page.tsx`) is statically generated with 5-minute ISR. **Do not add `searchParams`, `cookies()`, `headers()`, or `useSearchParams()` access at the page level** — any of those opts the route out of static rendering and forces a serverless function execution on every visit. The `?template=` preview override that previously used `searchParams` is removed; with `rainbow` as the only template, it served no purpose.
 
 ### Booking System
 

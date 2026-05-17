@@ -1,5 +1,23 @@
 # Changelog
 
+## [Unreleased] - 2026-05-14
+
+### Homepage ISR fix: stop hitting serverless on every request
+
+**Problem.** Vercel logs showed every `GET /` returning `cache: MISS` and executing a serverless function, while other pages (`/contact`, etc.) served as `cache: HIT` (static). ISR writes for the homepage were near-zero over 30 days, confirming `export const revalidate = 300` was being ignored at runtime.
+
+**Root cause.** `src/app/(frontend)/page.tsx` accepted a `searchParams` prop and awaited it (`const params = await searchParams`) — even just to read the `?template=` preview override. In Next.js 15 App Router, any access to `searchParams` at the page level **opts the route out of static rendering** regardless of `export const revalidate = N`. The page was being rendered dynamically on every request.
+
+**Fix.** Removed the `searchParams` parameter and the preview-override branch (the override was effectively dead — `rainbow` has been the only template since the Plan 11 consolidation, so `?template=rainbow` had no remaining purpose). `getTemplate()` is now called with no argument; it falls back to SiteSettings → `rainbow` as before.
+
+Files:
+- `src/app/(frontend)/page.tsx` — removed `searchParams` prop + access; added a comment warning future devs not to reintroduce dynamic-rendering triggers
+- `CLAUDE.md` — replaced the `?template=` preview-override docs with an inline warning about ISR triggers
+
+**Verified locally:** tsc clean, lint clean, homepage HTML still renders all sections (Hero, FeaturedWork, Experience, Education, Certifications, HomeCTA), 200 OK, 335KB response.
+
+**Verify in production:** after this deploys, `vercel logs` should show `/` switching from `Dynamic` (or `ƒ /`) to `Static` (or `○ /`) in the build output, and `GET /` response headers should show `x-vercel-cache: HIT` after the first warm-up request post-deploy.
+
 ## [Unreleased] - 2026-05-13
 
 ### Vercel production fixes: email adapter, Blob storage, stricter SSL
