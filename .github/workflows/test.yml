@@ -97,6 +97,21 @@ jobs:
           NODE_ENV: test
         run: pnpm run init:db
 
+      # Seed BEFORE build. The homepage and other pages are statically
+      # prerendered at `next build` time, so they bake in whatever the
+      # DB returns at that point. If we seed AFTER build, prerendered
+      # HTML keeps the empty-DB fallbacks (e.g. title="Home" instead of
+      # the seeded siteName), and any e2e assertion against prerendered
+      # content fails.
+      - name: Seed test database
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
+          PAYLOAD_SECRET: test-secret-key
+          NODE_ENV: test
+          NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+          OPENAI_API_KEY: sk-test-mock-key
+        run: pnpm run seed:e2e
+
       - name: Build application
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
@@ -114,15 +129,6 @@ jobs:
           GOOGLE_REDIRECT_URI: ""
           GOOGLE_DRIVE_FOLDER_ID: ""
         run: pnpm run build
-
-      - name: Seed test database
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
-          PAYLOAD_SECRET: test-secret-key
-          NODE_ENV: test
-          NEXT_PUBLIC_SERVER_URL: http://localhost:3000
-          OPENAI_API_KEY: sk-test-mock-key
-        run: pnpm run seed:e2e
 
       - name: Run E2E tests
         env:
