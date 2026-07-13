@@ -5,7 +5,7 @@ import { adminOrEditor } from '../access/adminOrEditor'
 export const BookingSettings: GlobalConfig = {
   slug: 'bookingSettings',
   access: {
-    read: () => true,
+    read: adminOrEditor,
     update: adminOrEditor,
   },
   admin: {

@@ -26,4 +26,17 @@ describe('BookingSettings global', () => {
     expect(settings.paymentInstructions).toContain('GCash')
     expect(settings.paymentTermsSummary).toBe('Payment by invoice after acceptance.')
   })
+
+  it('denies an unauthenticated read (payment instructions must not be public)', async () => {
+    await payload.updateGlobal({
+      slug: 'bookingSettings',
+      data: {
+        paymentInstructions: 'BPI 1234-5678-90\nGCash 0917-000-0000',
+      },
+    })
+
+    await expect(
+      payload.findGlobal({ slug: 'bookingSettings', overrideAccess: false }),
+    ).rejects.toThrow(/not allowed to perform this action/i)
+  })
 })
