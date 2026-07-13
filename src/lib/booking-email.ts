@@ -30,8 +30,9 @@ function getResend(): Resend | null {
   return process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 }
 
-function getAdminEmail(): string {
+function getAdminEmail(override?: string): string {
   return (
+    override?.trim() ||
     process.env.BOOKING_NOTIFICATION_EMAIL ||
     process.env.CONTACT_FORM_TO_EMAIL ||
     ''
@@ -130,6 +131,19 @@ function detailRow(label: string, value: string): string {
     <td style="padding:8px 0;color:rgba(255,255,255,0.5);font-size:13px;width:140px;vertical-align:top;">${label}</td>
     <td style="padding:8px 0;color:#fff;font-size:13px;vertical-align:top;">${value}</td>
   </tr>`
+}
+
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/** Plain-text (from the BookingSettings textarea) → email-safe HTML with line breaks. */
+function toEmailHtml(input: string): string {
+  return escapeHtml(input.trim()).replace(/\r?\n/g, '<br />')
 }
 
 // ---------------------------------------------------------------------------
@@ -245,7 +259,7 @@ function buildAdminPaymentReceivedHtml(
       Payment Received
     </h1>
     <p style="margin:0 0 32px;color:rgba(255,255,255,0.6);font-size:15px;">
-      A booking payment has been confirmed via Stripe.
+      You marked this booking as paid.
     </p>
 
     <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Customer</h3>
@@ -271,6 +285,109 @@ function buildAdminPaymentReceivedHtml(
     </a>
   `
   return emailShell('Payment Received', body)
+}
+
+function buildCustomerPaymentInstructionsHtml(
+  customer: CustomerEmailData,
+  booking: BookingEmailData,
+  paymentInstructions: string,
+): string {
+  const body = `
+    <h1 style="margin:0 0 8px;font-size:28px;font-weight:800;color:#fff;line-height:1.2;">
+      Payment Instructions
+    </h1>
+    <p style="margin:0 0 32px;color:rgba(255,255,255,0.6);font-size:15px;">
+      Hi ${escapeHtml(customer.name)}, your booking is accepted. Here is how to settle payment.
+    </p>
+
+    <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
+      ${detailRow('Package', escapeHtml(booking.packageName))}
+      ${detailRow('Start', formatDatetime(booking.startAt, booking.timezone))}
+      ${detailRow('Amount Due', formatCurrency(booking.amount, booking.currency))}
+      ${detailRow('Reference', `#${booking.bookingId}`)}
+    </table>
+
+    <div style="background:#0d0e17;border-radius:8px;padding:24px;margin-bottom:32px;">
+      <p style="margin:0 0 12px;color:rgba(255,255,255,0.5);font-size:13px;text-transform:uppercase;letter-spacing:0.5px;">
+        How to pay
+      </p>
+      <p style="margin:0;color:#fff;font-size:14px;line-height:1.8;">
+        ${toEmailHtml(paymentInstructions)}
+      </p>
+    </div>
+
+    <p style="margin:0;color:rgba(255,255,255,0.5);font-size:13px;line-height:1.7;">
+      Please quote reference <strong style="color:#fff;">#${booking.bookingId}</strong> with your
+      payment. I&rsquo;ll confirm by email as soon as it arrives.
+    </p>
+  `
+
+  return emailShell(`Payment Instructions – ${booking.packageName}`, body)
+}
+
+function buildAdminProofSubmittedHtml(
+  customer: CustomerEmailData,
+  booking: BookingEmailData,
+  opts: ProofSubmittedOptions,
+): string {
+  const claimedAmount =
+    opts.extractedAmountMinor != null
+      ? formatCurrency(opts.extractedAmountMinor, booking.currency)
+      : 'Not detected'
+  const claimedReference = opts.extractedReference
+    ? escapeHtml(opts.extractedReference)
+    : 'Not detected'
+
+  const body = `
+    <h1 style="margin:0 0 8px;font-size:28px;font-weight:800;color:#fff;line-height:1.2;">
+      Payment Proof Submitted
+    </h1>
+    <p style="margin:0 0 32px;color:rgba(255,255,255,0.6);font-size:15px;">
+      The client uploaded a payment screenshot for booking
+      <strong style="color:#fff;">#${booking.bookingId}</strong>. A screenshot is a
+      <strong style="color:#fff;">claim</strong>, not proof &mdash; it can be edited or
+      reused. Check the amounts below against your own bank or GCash records before
+      marking this booking paid.
+    </p>
+
+    ${
+      !opts.amountMatches
+        ? `<div style="background:#3a1a1a;border:1px solid #ef4444;border-radius:8px;padding:16px 20px;margin-bottom:28px;">
+      <p style="margin:0;color:#fca5a5;font-size:14px;font-weight:700;">
+        Mismatch: the claimed amount does not match the amount due for this booking.
+      </p>
+    </div>`
+        : ''
+    }
+
+    <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Customer</h3>
+    <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:28px;">
+      ${detailRow('Name', escapeHtml(customer.name))}
+      ${detailRow('Email', escapeHtml(customer.email))}
+      ${customer.company ? detailRow('Company', escapeHtml(customer.company)) : ''}
+    </table>
+
+    <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Client&rsquo;s Claim (not yet checked)</h3>
+    <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
+      ${detailRow('Package', escapeHtml(booking.packageName))}
+      ${detailRow('Amount Due', formatCurrency(booking.amount, booking.currency))}
+      ${detailRow('Amount Claimed', claimedAmount)}
+      ${detailRow('Reference Claimed', claimedReference)}
+      ${detailRow('Booking ID', `#${booking.bookingId}`)}
+    </table>
+
+    <p style="margin:0 0 24px;color:rgba(255,255,255,0.5);font-size:13px;line-height:1.7;">
+      Log into your bank or GCash app and match the amount and reference above to an
+      actual incoming transfer. Only mark this booking as paid once you have checked it
+      yourself.
+    </p>
+
+    <a href="${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/admin/collections/bookings/${booking.bookingId}"
+       style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:9999px;font-size:14px;">
+      Review in Admin &rarr;
+    </a>
+  `
+  return emailShell('Payment Proof Submitted', body)
 }
 
 // ---------------------------------------------------------------------------
@@ -329,7 +446,7 @@ export async function sendBookingRequestEmails(
 
 /**
  * Send payment confirmation to customer + payment receipt to admin.
- * Called after `checkout.session.completed` Stripe webhook marks booking as paid.
+ * Called by the Bookings afterChange hook when an admin marks the booking paid.
  * Fire-and-forget — never throws so it cannot block the webhook response.
  */
 export async function sendPaymentConfirmedEmails(
@@ -375,4 +492,96 @@ export async function sendPaymentConfirmedEmails(
       console.error(`booking-email: send[${i}] failed:`, r.reason)
     }
   })
+}
+
+export interface PaymentInstructionsOptions {
+  /** Plain text from BookingSettings.paymentInstructions. */
+  paymentInstructions: string
+  /** Overrides BOOKING_NOTIFICATION_EMAIL. Currently unused — customer-only email. */
+  adminEmail?: string
+}
+
+/**
+ * Email the client how to pay.
+ * Called by the Bookings afterChange hook on entry to `pending_payment`.
+ * Fire-and-forget — never throws, so a mail failure cannot roll back the status change.
+ */
+export async function sendPaymentInstructionsEmail(
+  customer: CustomerEmailData,
+  booking: BookingEmailData,
+  opts: PaymentInstructionsOptions,
+): Promise<void> {
+  const resend = getResend()
+  if (!resend) {
+    console.warn('RESEND_API_KEY not set — payment instructions email skipped')
+    return
+  }
+
+  if (!opts.paymentInstructions?.trim()) {
+    console.warn(
+      `booking-email: BookingSettings.paymentInstructions is empty — no instructions sent for booking #${booking.bookingId}`,
+    )
+    return
+  }
+
+  try {
+    await resend.emails.send({
+      from: getFromEmail(),
+      to: customer.email,
+      subject: `Payment Instructions – ${booking.packageName} (#${booking.bookingId})`,
+      html: buildCustomerPaymentInstructionsHtml(customer, booking, opts.paymentInstructions),
+    })
+  } catch (err) {
+    console.error('booking-email: sendPaymentInstructionsEmail failed:', err)
+  }
+}
+
+export interface ProofSubmittedOptions {
+  /** Overrides BOOKING_NOTIFICATION_EMAIL. */
+  adminEmail?: string
+  /** Amount (minor units) extracted from the client-uploaded screenshot, or null if not detected. */
+  extractedAmountMinor: number | null
+  /** Reference/transaction number extracted from the screenshot, or null if not detected. */
+  extractedReference: string | null
+  /** Whether the extracted amount matches the amount due for this booking. */
+  amountMatches: boolean
+}
+
+/**
+ * Notify the admin that the client submitted payment proof.
+ * ADMIN ONLY — the client receives nothing here, because a client-uploaded
+ * screenshot is a claim, not proof: screenshots are trivially forged. The
+ * admin must check the claimed amount/reference against their own bank or
+ * GCash records before marking the booking paid.
+ * Fire-and-forget — never throws, so a mail failure cannot block the upload.
+ */
+export async function sendProofSubmittedAdminEmail(
+  customer: CustomerEmailData,
+  booking: BookingEmailData,
+  opts: ProofSubmittedOptions,
+): Promise<void> {
+  const resend = getResend()
+  if (!resend) {
+    console.warn('RESEND_API_KEY not set — proof submitted admin email skipped')
+    return
+  }
+
+  const adminEmail = getAdminEmail(opts.adminEmail)
+  if (!adminEmail) {
+    console.warn(
+      `booking-email: no admin email configured — proof submitted notification skipped for booking #${booking.bookingId}`,
+    )
+    return
+  }
+
+  try {
+    await resend.emails.send({
+      from: getFromEmail(),
+      to: adminEmail,
+      subject: `Payment Proof Submitted by ${customer.name} – ${booking.packageName} (#${booking.bookingId})`,
+      html: buildAdminProofSubmittedHtml(customer, booking, opts),
+    })
+  } catch (err) {
+    console.error('booking-email: sendProofSubmittedAdminEmail failed:', err)
+  }
 }
