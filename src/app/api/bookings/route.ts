@@ -19,6 +19,17 @@ import { sendBookingRequestEmails } from '@/lib/booking-email'
  */
 export async function POST(request: NextRequest) {
   try {
+    const payload = await getPayload({ config })
+
+    const bookingSettings = await payload.findGlobal({ slug: 'bookingSettings', depth: 0 })
+
+    if (bookingSettings?.bookingEnabled === false) {
+      return NextResponse.json(
+        { error: 'Bookings are currently closed. Please use the contact form.' },
+        { status: 503 },
+      )
+    }
+
     const body = await request.json()
     const { packageSlug, startAt, endAt, customer, notes } = body
 
@@ -50,8 +61,6 @@ export async function POST(request: NextRequest) {
     if (startDate <= new Date()) {
       return NextResponse.json({ error: 'Booking must be in the future' }, { status: 400 })
     }
-
-    const payload = await getPayload({ config })
 
     // Find the package
     const { docs: packages } = await payload.find({
