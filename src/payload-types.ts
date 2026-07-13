@@ -84,6 +84,7 @@ export interface Config {
     customers: Customer;
     availabilityRules: AvailabilityRule;
     bookings: Booking;
+    paymentProofs: PaymentProof;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -118,6 +119,7 @@ export interface Config {
     customers: CustomersSelect<false> | CustomersSelect<true>;
     availabilityRules: AvailabilityRulesSelect<false> | AvailabilityRulesSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
+    paymentProofs: PaymentProofsSelect<false> | PaymentProofsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1117,14 +1119,6 @@ export interface Package {
    * Order for displaying packages (lower numbers first)
    */
   sortOrder?: number | null;
-  /**
-   * Stripe Price ID for direct payment processing
-   */
-  stripePriceId?: string | null;
-  /**
-   * Stripe Product ID for catalog management
-   */
-  stripeProductId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1254,16 +1248,16 @@ export interface Booking {
    */
   package: number | Package;
   /**
-   * Booking lifecycle: pending_review → accepted → pending_payment → paid → in_progress → work_completed → payment_released
+   * Booking lifecycle: pending_review → accepted → pending_payment → payment_submitted → paid → in_progress → work_completed. Pending Payment emails the client payment instructions. Payment Submitted means the client uploaded proof — VERIFY IT AGAINST YOUR OWN BANK/GCASH BEFORE setting Paid. Paid emails the client a confirmation.
    */
   status:
     | 'pending_review'
     | 'accepted'
     | 'pending_payment'
+    | 'payment_submitted'
     | 'paid'
     | 'in_progress'
     | 'work_completed'
-    | 'payment_released'
     | 'cancelled'
     | 'expired'
     | 'refunded'
@@ -1293,14 +1287,6 @@ export interface Booking {
    */
   notes?: string | null;
   termsAcceptedAt?: string | null;
-  /**
-   * Stripe Checkout Session ID
-   */
-  stripeCheckoutSessionId?: string | null;
-  /**
-   * Stripe Payment Intent ID
-   */
-  stripePaymentIntentId?: string | null;
   paidAt?: string | null;
   /**
    * Amount paid in cents
@@ -1322,8 +1308,55 @@ export interface Booking {
    * Internal notes for admin use only
    */
   adminNotes?: string | null;
+  /**
+   * Screenshot the client uploaded as proof of payment. NOT verification — check your own bank/GCash.
+   */
+  paymentProof?: (number | null) | PaymentProof;
+  /**
+   * Read automatically from the uploaded screenshot. This is what the client CLAIMS, not what was received.
+   */
+  proofExtracted?: {
+    /**
+     * False if the image does not look like a payment receipt at all.
+     */
+    isReceipt?: boolean | null;
+    /**
+     * Amount in the smallest currency unit (centavos).
+     */
+    amountMinor?: number | null;
+    currency?: string | null;
+    referenceNumber?: string | null;
+    senderName?: string | null;
+    paidAt?: string | null;
+    /**
+     * e.g. GCash, BPI, Maya.
+     */
+    channel?: string | null;
+  };
+  /**
+   * Does the extracted amount equal the booking amount? A mismatch is a red flag; a match still is not proof.
+   */
+  proofAmountMatches?: boolean | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paymentProofs".
+ */
+export interface PaymentProof {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1582,6 +1615,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'bookings';
         value: number | Booking;
+      } | null)
+    | ({
+        relationTo: 'paymentProofs';
+        value: number | PaymentProof;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2136,8 +2173,6 @@ export interface PackagesSelect<T extends boolean = true> {
   requiresScheduling?: T;
   active?: T;
   sortOrder?: T;
-  stripePriceId?: T;
-  stripeProductId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2205,16 +2240,44 @@ export interface BookingsSelect<T extends boolean = true> {
   timezoneAtBooking?: T;
   notes?: T;
   termsAcceptedAt?: T;
-  stripeCheckoutSessionId?: T;
-  stripePaymentIntentId?: T;
   paidAt?: T;
   amount?: T;
   currency?: T;
   refundAmount?: T;
   refundReason?: T;
   adminNotes?: T;
+  paymentProof?: T;
+  proofExtracted?:
+    | T
+    | {
+        isReceipt?: T;
+        amountMinor?: T;
+        currency?: T;
+        referenceNumber?: T;
+        senderName?: T;
+        paidAt?: T;
+        channel?: T;
+      };
+  proofAmountMatches?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paymentProofs_select".
+ */
+export interface PaymentProofsSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

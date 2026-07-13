@@ -19,6 +19,7 @@ import { JobAds } from './collections/JobAds'
 import { Media } from './collections/Media'
 import { Packages } from './collections/Packages'
 import { Pages } from './collections/Pages'
+import { PaymentProofs } from './collections/PaymentProofs'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
 import { ResumeProfiles } from './collections/ResumeProfiles'
@@ -120,6 +121,7 @@ export default buildConfig({
     Customers,
     AvailabilityRules,
     Bookings,
+    PaymentProofs,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [

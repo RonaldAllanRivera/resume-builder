@@ -52,6 +52,10 @@ export const Bookings: CollectionConfig = {
           value: 'pending_payment',
         },
         {
+          label: 'Payment Submitted (unverified)',
+          value: 'payment_submitted',
+        },
+        {
           label: 'Paid',
           value: 'paid',
         },
@@ -62,10 +66,6 @@ export const Bookings: CollectionConfig = {
         {
           label: 'Work Completed',
           value: 'work_completed',
-        },
-        {
-          label: 'Payment Released',
-          value: 'payment_released',
         },
         {
           label: 'Cancelled',
@@ -86,7 +86,7 @@ export const Bookings: CollectionConfig = {
       ],
       admin: {
         description:
-          'Booking lifecycle: pending_review → accepted → pending_payment → paid → in_progress → work_completed → payment_released',
+          'Booking lifecycle: pending_review → accepted → pending_payment → payment_submitted → paid → in_progress → work_completed. Pending Payment emails the client payment instructions. Payment Submitted means the client uploaded proof — VERIFY IT AGAINST YOUR OWN BANK/GCASH BEFORE setting Paid. Paid emails the client a confirmation.',
       },
     },
     {
@@ -167,20 +167,6 @@ export const Bookings: CollectionConfig = {
       },
     },
     {
-      name: 'stripeCheckoutSessionId',
-      type: 'text',
-      admin: {
-        description: 'Stripe Checkout Session ID',
-      },
-    },
-    {
-      name: 'stripePaymentIntentId',
-      type: 'text',
-      admin: {
-        description: 'Stripe Payment Intent ID',
-      },
-    },
-    {
       name: 'paidAt',
       type: 'date',
       admin: {
@@ -222,6 +208,42 @@ export const Bookings: CollectionConfig = {
       type: 'textarea',
       admin: {
         description: 'Internal notes for admin use only',
+      },
+    },
+    {
+      name: 'paymentProof',
+      type: 'upload',
+      relationTo: 'paymentProofs',
+      admin: {
+        description: 'Screenshot the client uploaded as proof of payment. NOT verification — check your own bank/GCash.',
+      },
+    },
+    {
+      name: 'proofExtracted',
+      type: 'group',
+      admin: {
+        description: 'Read automatically from the uploaded screenshot. This is what the client CLAIMS, not what was received.',
+      },
+      fields: [
+        {
+          name: 'isReceipt',
+          type: 'checkbox',
+          admin: { readOnly: true, description: 'False if the image does not look like a payment receipt at all.' },
+        },
+        { name: 'amountMinor', type: 'number', admin: { readOnly: true, description: 'Amount in the smallest currency unit (centavos).' } },
+        { name: 'currency', type: 'text', admin: { readOnly: true } },
+        { name: 'referenceNumber', type: 'text', admin: { readOnly: true } },
+        { name: 'senderName', type: 'text', admin: { readOnly: true } },
+        { name: 'paidAt', type: 'text', admin: { readOnly: true } },
+        { name: 'channel', type: 'text', admin: { readOnly: true, description: 'e.g. GCash, BPI, Maya.' } },
+      ],
+    },
+    {
+      name: 'proofAmountMatches',
+      type: 'checkbox',
+      admin: {
+        readOnly: true,
+        description: 'Does the extracted amount equal the booking amount? A mismatch is a red flag; a match still is not proof.',
       },
     },
   ],

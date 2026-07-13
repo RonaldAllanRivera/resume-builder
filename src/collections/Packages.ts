@@ -152,20 +152,6 @@ export const Packages: CollectionConfig = {
         description: 'Order for displaying packages (lower numbers first)',
       },
     },
-    {
-      name: 'stripePriceId',
-      type: 'text',
-      admin: {
-        description: 'Stripe Price ID for direct payment processing',
-      },
-    },
-    {
-      name: 'stripeProductId',
-      type: 'text',
-      admin: {
-        description: 'Stripe Product ID for catalog management',
-      },
-    },
   ],
   timestamps: true,
 }
