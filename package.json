@@ -33,6 +33,7 @@
     "test:db:down": "docker compose -f docker-compose.test.yml down"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.111.0",
     "@date-fns/tz": "^1.2.0",
     "@payloadcms/admin-bar": "3.74.0",
     "@payloadcms/db-postgres": "3.74.0",
