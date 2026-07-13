@@ -20,6 +20,8 @@ const redirects = async () => {
     { source: '/education', destination: '/#education', permanent: true },
     { source: '/search', destination: '/', permanent: true },
     { source: '/pricing', destination: '/services', permanent: true },
+    { source: '/book/success', destination: '/services', permanent: true },
+    { source: '/book/cancel', destination: '/services', permanent: true },
   ]
 
   const redirects = [internetExplorerRedirect, ...consolidatedRoutes]
