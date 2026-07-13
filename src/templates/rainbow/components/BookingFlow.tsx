@@ -18,11 +18,12 @@ interface SlotsResponse {
 
 interface BookingFlowProps {
   pkg: Package
+  paymentTermsSummary?: string
 }
 
 type Step = 'date' | 'time' | 'details' | 'confirm'
 
-export function BookingFlow({ pkg }: BookingFlowProps) {
+export function BookingFlow({ pkg, paymentTermsSummary }: BookingFlowProps) {
   const [step, setStep] = useState<Step>('date')
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
@@ -728,6 +729,10 @@ export function BookingFlow({ pkg }: BookingFlowProps) {
             By submitting this booking request, you agree that you will receive a confirmation email
             within 24 hours. Payment will be collected after the booking is accepted.
           </p>
+
+          {paymentTermsSummary ? (
+            <p className="text-white/50 text-sm mb-4 text-center">{paymentTermsSummary}</p>
+          ) : null}
 
           <div className="flex items-center gap-4 mt-8">
             <button

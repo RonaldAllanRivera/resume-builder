@@ -58,6 +58,8 @@ export default async function BookingPageRoute({ params }: Args) {
     notFound()
   }
 
+  const bookingSettings = await payload.findGlobal({ slug: 'bookingSettings', depth: 0 })
+
   const template = await getTemplate(settings.publicTemplate || 'rainbow')
   const { Layout } = template
 
@@ -65,7 +67,7 @@ export default async function BookingPageRoute({ params }: Args) {
     <Layout>
       <div className="min-h-screen bg-[#050608] text-white py-20 px-4">
         <div className="max-w-3xl mx-auto">
-          <BookingFlow pkg={pkg} />
+          <BookingFlow pkg={pkg} paymentTermsSummary={bookingSettings?.paymentTermsSummary ?? ''} />
         </div>
       </div>
     </Layout>
