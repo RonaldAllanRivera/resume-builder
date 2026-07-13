@@ -141,7 +141,7 @@ export default buildConfig({
     // fall back to public/media on disk (fine for dev, not for Vercel).
     vercelBlobStorage({
       enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
-      collections: { media: true },
+      collections: { media: true, paymentProofs: true },
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],
