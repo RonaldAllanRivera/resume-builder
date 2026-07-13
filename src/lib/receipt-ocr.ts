@@ -58,9 +58,9 @@ export async function extractReceipt(
     return EMPTY_EXTRACTION
   }
 
-  const client = new Anthropic()
-
   try {
+    const client = new Anthropic()
+
     const response = await client.messages.parse({
       model: 'claude-opus-4-8',
       max_tokens: 16000,
@@ -82,7 +82,10 @@ export async function extractReceipt(
       ],
     })
 
-    return response.parsed_output ?? EMPTY_EXTRACTION
+    const parsed = response.parsed_output
+    if (!parsed?.isReceipt) return EMPTY_EXTRACTION
+
+    return parsed
   } catch (err) {
     console.error('receipt-ocr: extraction failed:', err)
     return EMPTY_EXTRACTION

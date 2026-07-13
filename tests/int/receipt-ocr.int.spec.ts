@@ -10,6 +10,16 @@ vi.mock('@anthropic-ai/sdk', () => ({
 
 const PNG = Buffer.from('fake-png-bytes')
 
+const EMPTY_EXTRACTION = {
+  isReceipt: false,
+  amountMinor: null,
+  currency: null,
+  referenceNumber: null,
+  senderName: null,
+  paidAt: null,
+  channel: null,
+}
+
 describe('extractReceipt', () => {
   beforeEach(() => {
     parseMock.mockReset()
@@ -51,8 +61,7 @@ describe('extractReceipt', () => {
     const result = await extractReceipt(PNG, 'image/png')
 
     // A failed extraction must NOT look like a verified receipt
-    expect(result.isReceipt).toBe(false)
-    expect(result.amountMinor).toBeNull()
+    expect(result).toEqual(EMPTY_EXTRACTION)
   })
 
   it('degrades safely when the image is not a receipt', async () => {
@@ -71,7 +80,45 @@ describe('extractReceipt', () => {
     const { extractReceipt } = await import('@/lib/receipt-ocr')
     const result = await extractReceipt(PNG, 'image/png')
 
-    expect(result.isReceipt).toBe(false)
-    expect(result.amountMinor).toBeNull()
+    expect(result).toEqual(EMPTY_EXTRACTION)
+  })
+
+  it('returns empty extraction and never calls the SDK when ANTHROPIC_API_KEY is missing', async () => {
+    delete process.env.ANTHROPIC_API_KEY
+
+    const { extractReceipt } = await import('@/lib/receipt-ocr')
+    const result = await extractReceipt(PNG, 'image/png')
+
+    expect(result).toEqual(EMPTY_EXTRACTION)
+    expect(parseMock).not.toHaveBeenCalled()
+  })
+
+  it('returns empty extraction when the SDK resolves but parsed_output is undefined', async () => {
+    parseMock.mockResolvedValue({ parsed_output: undefined })
+
+    const { extractReceipt } = await import('@/lib/receipt-ocr')
+    const result = await extractReceipt(PNG, 'image/png')
+
+    expect(result).toEqual(EMPTY_EXTRACTION)
+  })
+
+  it('enforces isReceipt:false in code even if the model leaks stray fields on a non-receipt image', async () => {
+    parseMock.mockResolvedValue({
+      parsed_output: {
+        isReceipt: false,
+        amountMinor: 999999,
+        currency: 'PHP',
+        referenceNumber: 'stray-ref',
+        senderName: 'Stray Name',
+        paidAt: '2026-01-01T00:00:00Z',
+        channel: 'GCash',
+      },
+    })
+
+    const { extractReceipt } = await import('@/lib/receipt-ocr')
+    const result = await extractReceipt(PNG, 'image/png')
+
+    // Never trust prompt compliance: isReceipt:false must force a fully-null extraction
+    expect(result).toEqual(EMPTY_EXTRACTION)
   })
 })
