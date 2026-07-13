@@ -14,6 +14,7 @@ vi.mock('resend', () => ({
 let payload: Payload
 let packageId: number
 let customerId: number
+const customerEmail = `jane-${Date.now()}@example.com`
 
 async function createBooking(): Promise<number> {
   const booking = await payload.create({
@@ -61,7 +62,7 @@ describe('Bookings afterChange status emails', () => {
 
     const cust = await payload.create({
       collection: 'customers',
-      data: { name: 'Jane Dev', email: 'jane@example.com' },
+      data: { name: 'Jane Dev', email: customerEmail },
     })
     customerId = cust.id as number
   })
@@ -82,7 +83,7 @@ describe('Bookings afterChange status emails', () => {
 
     expect(sendMock).toHaveBeenCalledTimes(1)
     const sent = sendMock.mock.calls[0][0]
-    expect(sent.to).toBe('jane@example.com')
+    expect(sent.to).toBe(customerEmail)
     expect(sent.subject).toContain('Payment Instructions')
     expect(sent.html).toContain('GCash 0917-000-0000')
   })
