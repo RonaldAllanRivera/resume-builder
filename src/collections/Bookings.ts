@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrEditor } from '@/access/adminOrEditor'
+import { sendStatusEmails } from './Bookings/hooks/sendStatusEmails'
 
 export const Bookings: CollectionConfig = {
   slug: 'bookings',
@@ -247,5 +248,8 @@ export const Bookings: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterChange: [sendStatusEmails],
+  },
   timestamps: true,
 }
