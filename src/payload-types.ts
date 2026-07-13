@@ -140,6 +140,7 @@ export interface Config {
     resumeProfile: ResumeProfile1;
     coverLetterSettings: CoverLetterSetting;
     aiGenerationSettings: AiGenerationSetting;
+    bookingSettings: BookingSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -148,6 +149,7 @@ export interface Config {
     resumeProfile: ResumeProfileSelect<false> | ResumeProfileSelect<true>;
     coverLetterSettings: CoverLetterSettingsSelect<false> | CoverLetterSettingsSelect<true>;
     aiGenerationSettings: AiGenerationSettingsSelect<false> | AiGenerationSettingsSelect<true>;
+    bookingSettings: BookingSettingsSelect<false> | BookingSettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -2630,6 +2632,31 @@ export interface AiGenerationSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookingSettings".
+ */
+export interface BookingSetting {
+  id: number;
+  /**
+   * When off, the booking form stops accepting submissions.
+   */
+  bookingEnabled?: boolean | null;
+  /**
+   * One line shown on the booking form before the client submits.
+   */
+  paymentTermsSummary?: string | null;
+  /**
+   * Bank / GCash details and invoice terms. Emailed to the client when a booking moves to Pending Payment. Plain text; line breaks are preserved.
+   */
+  paymentInstructions?: string | null;
+  /**
+   * Where new booking alerts go. Falls back to the BOOKING_NOTIFICATION_EMAIL env var.
+   */
+  notificationEmail?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -2745,6 +2772,19 @@ export interface AiGenerationSettingsSelect<T extends boolean = true> {
   projectsRewritePrompt?: T;
   coverLetterStyle?: T;
   coverLetterPrompt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookingSettings_select".
+ */
+export interface BookingSettingsSelect<T extends boolean = true> {
+  bookingEnabled?: T;
+  paymentTermsSummary?: T;
+  paymentInstructions?: T;
+  notificationEmail?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

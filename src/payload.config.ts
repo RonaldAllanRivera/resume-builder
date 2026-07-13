@@ -24,6 +24,7 @@ import { Projects } from './collections/Projects'
 import { ResumeProfiles } from './collections/ResumeProfiles'
 import { Users } from './collections/Users'
 import { AIGenerationSettings } from './AIGenerationSettings/config'
+import { BookingSettings } from './BookingSettings/config'
 import { CoverLetterSettings } from './CoverLetterSettings/config'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -121,7 +122,15 @@ export default buildConfig({
     Bookings,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, SiteSettings, ResumeProfile, CoverLetterSettings, AIGenerationSettings],
+  globals: [
+    Header,
+    Footer,
+    SiteSettings,
+    ResumeProfile,
+    CoverLetterSettings,
+    AIGenerationSettings,
+    BookingSettings,
+  ],
   plugins: [
     ...plugins,
     // Vercel Blob storage for Media uploads. Without this, uploads on Vercel
