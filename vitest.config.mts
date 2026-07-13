@@ -14,5 +14,8 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/int/**/*.int.spec.ts'],
     env: testEnv,
+    // Integration tests share ONE Postgres test DB. Running files in parallel
+    // races Payload's schema push ("type ... already exists") on a fresh volume.
+    fileParallelism: false,
   },
 })
