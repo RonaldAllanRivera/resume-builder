@@ -15,6 +15,7 @@ let payload: Payload
 let packageId: number
 let customerId: number
 const customerEmail = `jane-${Date.now()}@example.com`
+const adminEmail = `admin-${Date.now()}@example.com`
 
 async function createBooking(): Promise<number> {
   const booking = await payload.create({
@@ -43,6 +44,7 @@ describe('Bookings afterChange status emails', () => {
       data: {
         bookingEnabled: true,
         paymentInstructions: 'BPI 1234-5678-90\nGCash 0917-000-0000',
+        notificationEmail: adminEmail,
       },
     })
 
@@ -121,5 +123,41 @@ describe('Bookings afterChange status emails', () => {
     await payload.update({ collection: 'bookings', id, data: { status: 'accepted' } })
 
     expect(sendMock).not.toHaveBeenCalled()
+  })
+
+  it('emails ONLY the admin on entry to payment_submitted, never the client, and flags a mismatch', async () => {
+    const id = await createBooking()
+    await payload.update({ collection: 'bookings', id, data: { status: 'pending_payment' } })
+    sendMock.mockClear()
+
+    await payload.update({
+      collection: 'bookings',
+      id,
+      data: {
+        status: 'payment_submitted',
+        proofExtracted: {
+          amountMinor: 450000,
+          currency: 'PHP',
+          referenceNumber: 'REF-TEST-123',
+        },
+        proofAmountMatches: false,
+      },
+    })
+
+    // 1. Exactly one email is sent for this transition.
+    expect(sendMock).toHaveBeenCalledTimes(1)
+    const sent = sendMock.mock.calls[0][0]
+
+    // 2. It goes to the admin, never to the customer.
+    expect(sent.to).toBe(adminEmail)
+    expect(sent.to).not.toBe(customerEmail)
+
+    // 3. A forged/unverified claim must never be described as confirmed or verified.
+    expect(sent.html.toLowerCase()).not.toContain('confirmed')
+    expect(sent.html.toLowerCase()).not.toContain('verified')
+
+    // 4. The mismatch signal is present because proofAmountMatches is false.
+    expect(sent.html).toContain('Mismatch')
+    expect(sent.html).toContain('REF-TEST-123')
   })
 })
