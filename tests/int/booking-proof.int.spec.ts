@@ -77,6 +77,15 @@ async function createBooking(status: Booking['status']): Promise<number> {
   return booking.id as number
 }
 
+// The route rate-limits per client IP (x-forwarded-for). Give each call its
+// own IP by default so unrelated tests in this file don't share a rate-limit
+// bucket — only the rate-limit test itself deliberately reuses one IP.
+let ipCounter = 0
+function nextTestIp(): string {
+  ipCounter += 1
+  return `10.0.0.${ipCounter}`
+}
+
 function buildProofRequest(opts: {
   bookingId?: string | number
   mimetype?: string
@@ -84,6 +93,8 @@ function buildProofRequest(opts: {
   filename?: string
   includeFile?: boolean
   includeBookingId?: boolean
+  ip?: string
+  contentLengthOverride?: string
 } = {}) {
   const {
     bookingId,
@@ -92,6 +103,8 @@ function buildProofRequest(opts: {
     filename = 'proof.png',
     includeFile = true,
     includeBookingId = true,
+    ip = nextTestIp(),
+    contentLengthOverride,
   } = opts
 
   const formData = new FormData()
@@ -102,8 +115,14 @@ function buildProofRequest(opts: {
     formData.set('file', new File([bytes], filename, { type: mimetype }))
   }
 
+  const headers: Record<string, string> = { 'x-forwarded-for': ip }
+  if (contentLengthOverride !== undefined) {
+    headers['content-length'] = contentLengthOverride
+  }
+
   return new NextRequest('http://localhost/api/bookings/proof', {
     method: 'POST',
+    headers,
     body: formData,
   })
 }
@@ -283,5 +302,42 @@ describe('POST /api/bookings/proof', () => {
     expect(res.status).toBe(404)
     const body = await res.json()
     expect(JSON.stringify(body).toLowerCase()).not.toContain('customer')
+  })
+
+  it('rate-limits repeated uploads from the same IP, returning 429 once the cap is exceeded', async () => {
+    extractReceiptMock.mockResolvedValue(PERFECT_MATCH_EXTRACTION)
+    const ip = 'rate-limit-test-ip'
+    // RATE_LIMIT_MAX in the route is 5 per window. Re-upload against the same
+    // booking is allowed (payment_submitted stays in AWAITING_PAYMENT_STATUSES),
+    // so the same booking can absorb every call in this test.
+    const bookingId = await createBooking('pending_payment')
+
+    const statuses: number[] = []
+    for (let i = 0; i < 6; i++) {
+      const res = await POST(buildProofRequest({ bookingId, ip }))
+      statuses.push(res.status)
+    }
+
+    expect(statuses.slice(0, 5)).toEqual([202, 202, 202, 202, 202])
+    expect(statuses[5]).toBe(429)
+
+    // The rejected 6th call must never have reached extraction or storage.
+    expect(extractReceiptMock).toHaveBeenCalledTimes(5)
+  })
+
+  it('rejects an oversized Content-Length header before processing the body', async () => {
+    const bookingId = await createBooking('pending_payment')
+
+    const res = await POST(
+      buildProofRequest({ bookingId, contentLengthOverride: String(50 * 1024 * 1024) }),
+    )
+    expect(res.status).toBe(413)
+
+    // The header-based fast-fail must short-circuit before formData() is ever
+    // parsed, so extraction never runs and the booking is left untouched.
+    expect(extractReceiptMock).not.toHaveBeenCalled()
+    const updated = await payload.findByID({ collection: 'bookings', id: bookingId, depth: 0 })
+    expect(updated.status).toBe('pending_payment')
+    expect(updated.paymentProof).toBeFalsy()
   })
 })
