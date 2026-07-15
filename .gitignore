@@ -37,3 +37,6 @@ Build a resume AI assistant with OpenAI, Gemini, & Pydantic.ipynb
 .google-token.json
 
 html/
+
+# Local disk fallback for payment-proof uploads (Vercel Blob used in prod)
+/paymentProofs/
