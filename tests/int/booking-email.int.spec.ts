@@ -40,6 +40,8 @@ describe('sendPaymentInstructionsEmail', () => {
     expect(sent.html).toContain('GCash 0917-000-0000')
     // Newlines must render as line breaks, not collapse into one run of text
     expect(sent.html).toContain('<br />')
+    // Upload link must point at the proof page for this specific booking
+    expect(sent.html).toContain('/book/proof/42')
   })
 
   it('sends nothing when no instructions are configured', async () => {

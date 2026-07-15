@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { getServerSideURL } from '@/utilities/getURL'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -316,10 +317,15 @@ function buildCustomerPaymentInstructionsHtml(
       </p>
     </div>
 
-    <p style="margin:0;color:rgba(255,255,255,0.5);font-size:13px;line-height:1.7;">
+    <p style="margin:0 0 24px;color:rgba(255,255,255,0.5);font-size:13px;line-height:1.7;">
       Please quote reference <strong style="color:#fff;">#${booking.bookingId}</strong> with your
       payment. I&rsquo;ll confirm by email as soon as it arrives.
     </p>
+
+    <a href="${getServerSideURL()}/book/proof/${booking.bookingId}"
+       style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:9999px;font-size:14px;">
+      Once you&rsquo;ve paid, upload your receipt here &rarr;
+    </a>
   `
 
   return emailShell(`Payment Instructions – ${booking.packageName}`, body)
