@@ -340,4 +340,41 @@ describe('POST /api/bookings/proof', () => {
     expect(updated.status).toBe('pending_payment')
     expect(updated.paymentProof).toBeFalsy()
   })
+
+  it('aborts via the boundedStream byte cap when Content-Length cannot be trusted (no header, oversized real body)', async () => {
+    const bookingId = await createBooking('pending_payment')
+
+    // The route's stream cap is MAX_FILE_SIZE (10 MB = 10,485,760 bytes) +
+    // MULTIPART_OVERHEAD_ALLOWANCE (64 KB = 65,536 bytes) = 10,551,296 bytes
+    // (~10.55 MB). This fixture is ~11 MB of raw file bytes — before even
+    // counting multipart boundary/header overhead — which is comfortably
+    // over that cap. That guarantees `boundedStream`'s running byte count
+    // crosses the limit *while the multipart parser is still assembling the
+    // body*, so `controller.error('PAYLOAD_TOO_LARGE')` fires and
+    // `boundedRequest.formData()` rejects before a `File` object ever
+    // exists — i.e. `file.size` (the downstream, post-parse check already
+    // covered by "rejects a file over the 10 MB cap" above, which uses a
+    // 10 MB + 1 byte fixture deliberately *under* this stream cap) is never
+    // reached at all here.
+    const streamCapBustingBytes = Buffer.alloc(11 * 1024 * 1024, 1)
+
+    const req = buildProofRequest({ bookingId, bytes: streamCapBustingBytes })
+    // Confirm the premise this test relies on: no Content-Length header is
+    // present, so the earlier header-based pre-check in the route cannot
+    // possibly be what catches this — only the stream cap can.
+    expect(req.headers.get('content-length')).toBeNull()
+
+    const res = await POST(req)
+    expect(res.status).toBe(413)
+
+    const body = await res.json()
+    expect(body.error).toBe('File exceeds the 10 MB limit.')
+
+    // Same guarantees as every other rejected-upload path: no billed
+    // extraction call, no state change on the booking.
+    expect(extractReceiptMock).not.toHaveBeenCalled()
+    const updated = await payload.findByID({ collection: 'bookings', id: bookingId, depth: 0 })
+    expect(updated.status).toBe('pending_payment')
+    expect(updated.paymentProof).toBeFalsy()
+  })
 })
