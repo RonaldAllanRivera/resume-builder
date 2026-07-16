@@ -18,6 +18,10 @@ const booking = {
   currency: 'PHP',
   paymentMode: 'pay_upfront',
   timezone: 'Asia/Manila',
+  // Unguessable per-booking token — the proof-upload link must be keyed off
+  // this, never off the sequential bookingId (that's the IDOR this token
+  // exists to close).
+  proofToken: 'test-proof-token-abc123',
 }
 
 describe('sendPaymentInstructionsEmail', () => {
@@ -40,8 +44,22 @@ describe('sendPaymentInstructionsEmail', () => {
     expect(sent.html).toContain('GCash 0917-000-0000')
     // Newlines must render as line breaks, not collapse into one run of text
     expect(sent.html).toContain('<br />')
-    // Upload link must point at the proof page for this specific booking
-    expect(sent.html).toContain('/book/proof/42')
+    // Upload link must point at the proof page keyed by the unguessable
+    // token — NOT the sequential bookingId, which is enumerable (IDOR).
+    expect(sent.html).toContain('/book/proof/test-proof-token-abc123')
+    expect(sent.html).not.toContain('/book/proof/42')
+  })
+
+  it('sends nothing when the booking has no proofToken (refuses to send a broken/insecure link)', async () => {
+    const { sendPaymentInstructionsEmail } = await import('@/lib/booking-email')
+
+    await sendPaymentInstructionsEmail(
+      customer,
+      { ...booking, proofToken: undefined },
+      { paymentInstructions: 'GCash 0917-000-0000' },
+    )
+
+    expect(sendMock).not.toHaveBeenCalled()
   })
 
   it('sends nothing when no instructions are configured', async () => {

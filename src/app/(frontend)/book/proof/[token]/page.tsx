@@ -5,7 +5,7 @@ import { getTemplate } from '@/utilities/getTemplate'
 import { PaymentProofUpload } from '@/templates/rainbow/components/PaymentProofUpload'
 
 type Args = {
-  params: Promise<{ bookingId: string }>
+  params: Promise<{ token: string }>
 }
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ProofUploadPageRoute({ params }: Args) {
-  const { bookingId } = await params
+  const { token } = await params
   const payload = await getPayload({ config })
 
   const settings = await payload.findGlobal({
@@ -31,7 +31,7 @@ export default async function ProofUploadPageRoute({ params }: Args) {
     <Layout>
       <div className="min-h-screen bg-[#050608] text-white py-20 px-4">
         <div className="max-w-lg mx-auto">
-          <PaymentProofUpload bookingId={bookingId} />
+          <PaymentProofUpload token={token} />
         </div>
       </div>
     </Layout>

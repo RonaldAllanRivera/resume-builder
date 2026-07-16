@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrEditor } from '@/access/adminOrEditor'
 import { sendStatusEmails } from './Bookings/hooks/sendStatusEmails'
+import { setProofToken } from './Bookings/hooks/setProofToken'
 
 export const Bookings: CollectionConfig = {
   slug: 'bookings',
@@ -247,8 +248,19 @@ export const Bookings: CollectionConfig = {
         description: 'Does the extracted amount equal the booking amount? A mismatch is a red flag; a match still is not proof.',
       },
     },
+    {
+      name: 'proofToken',
+      type: 'text',
+      index: true,
+      admin: {
+        readOnly: true,
+        description:
+          'Unguessable token used to authorize the unauthenticated payment-proof upload link (/book/proof/[token]). Generated automatically on create — never derived from the id.',
+      },
+    },
   ],
   hooks: {
+    beforeChange: [setProofToken],
     afterChange: [sendStatusEmails],
   },
   timestamps: true,

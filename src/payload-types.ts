@@ -1337,6 +1337,10 @@ export interface Booking {
    * Does the extracted amount equal the booking amount? A mismatch is a red flag; a match still is not proof.
    */
   proofAmountMatches?: boolean | null;
+  /**
+   * Unguessable token used to authorize the unauthenticated payment-proof upload link (/book/proof/[token]). Generated automatically on create — never derived from the id.
+   */
+  proofToken?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2259,6 +2263,7 @@ export interface BookingsSelect<T extends boolean = true> {
         channel?: T;
       };
   proofAmountMatches?: T;
+  proofToken?: T;
   updatedAt?: T;
   createdAt?: T;
 }

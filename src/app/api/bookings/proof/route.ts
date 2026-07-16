@@ -118,7 +118,13 @@ function boundedStream(stream: ReadableStream<Uint8Array>, limit: number): Reada
  * account. `payment_submitted` means "client claims they paid, unverified".
  * Only a human sets `paid`, from the admin panel.
  *
- * Body: multipart/form-data { bookingId: string, file: File }
+ * The booking is identified by an unguessable per-booking `proofToken`
+ * (generated on create by `setProofToken`), NOT by the sequential `bookings.id`
+ * — the id is enumerable, the token is not. A missing/wrong token returns the
+ * same generic 404 as any other lookup failure so a caller can't distinguish
+ * "token doesn't exist" from any other failure mode.
+ *
+ * Body: multipart/form-data { token: string, file: File }
  */
 export async function POST(request: NextRequest) {
   try {
@@ -168,17 +174,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid form data.' }, { status: 400 })
     }
 
-    const bookingIdRaw = formData.get('bookingId')
+    const tokenRaw = formData.get('token')
     const file = formData.get('file')
 
-    if (typeof bookingIdRaw !== 'string' || !bookingIdRaw.trim()) {
-      return NextResponse.json({ error: 'Missing bookingId.' }, { status: 400 })
+    if (typeof tokenRaw !== 'string' || !tokenRaw.trim()) {
+      return NextResponse.json({ error: 'Missing token.' }, { status: 400 })
     }
 
-    const bookingId = Number(bookingIdRaw)
-    if (!Number.isInteger(bookingId) || bookingId <= 0) {
-      return NextResponse.json({ error: 'Invalid bookingId.' }, { status: 400 })
-    }
+    const token = tokenRaw.trim()
 
     if (!(file instanceof File)) {
       return NextResponse.json({ error: 'Missing file.' }, { status: 400 })
@@ -197,15 +200,30 @@ export async function POST(request: NextRequest) {
 
     const payload = await getPayload({ config })
 
-    const booking = await payload
-      .findByID({ collection: 'bookings', id: bookingId, depth: 0 })
+    // overrideAccess: true — this is an unauthenticated route with no logged-in
+    // user, so the default `bookings.read` access control (adminOrEditor) would
+    // otherwise reject every lookup. The token itself is the authorization
+    // check: only someone who received the payment-instructions email (or
+    // brute-forced 192 bits of randomness) can produce a match.
+    const found = await payload
+      .find({
+        collection: 'bookings',
+        where: { proofToken: { equals: token } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+      })
       .catch(() => null)
 
-    // Unauthenticated caller — do not leak whether the id merely doesn't
+    const booking = found?.docs?.[0] ?? null
+
+    // Unauthenticated caller — do not leak whether the token merely doesn't
     // exist vs. anything else about the booking.
     if (!booking) {
       return NextResponse.json({ error: 'Booking not found.' }, { status: 404 })
     }
+
+    const bookingId = booking.id
 
     if (!AWAITING_PAYMENT_STATUSES.has(booking.status)) {
       return NextResponse.json(

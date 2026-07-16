@@ -15,6 +15,12 @@ export interface BookingEmailData {
   paymentMode: string
   notes?: string | null
   timezone?: string
+  /**
+   * Unguessable per-booking token used to authorize the proof-upload link.
+   * Only required for `sendPaymentInstructionsEmail` (the email that contains
+   * the upload link) — never the sequential `bookingId`, which is enumerable.
+   */
+  proofToken?: string
 }
 
 export interface CustomerEmailData {
@@ -322,7 +328,7 @@ function buildCustomerPaymentInstructionsHtml(
       payment. I&rsquo;ll confirm by email as soon as it arrives.
     </p>
 
-    <a href="${getServerSideURL()}/book/proof/${booking.bookingId}"
+    <a href="${getServerSideURL()}/book/proof/${booking.proofToken}"
        style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:9999px;font-size:14px;">
       Once you&rsquo;ve paid, upload your receipt here &rarr;
     </a>
@@ -526,6 +532,13 @@ export async function sendPaymentInstructionsEmail(
   if (!opts.paymentInstructions?.trim()) {
     console.warn(
       `booking-email: BookingSettings.paymentInstructions is empty — no instructions sent for booking #${booking.bookingId}`,
+    )
+    return
+  }
+
+  if (!booking.proofToken) {
+    console.warn(
+      `booking-email: booking #${booking.bookingId} has no proofToken — refusing to send a broken proof-upload link`,
     )
     return
   }

@@ -3,12 +3,12 @@
 import { useState } from 'react'
 
 interface PaymentProofUploadProps {
-  bookingId: string
+  token: string
 }
 
 const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 
-export function PaymentProofUpload({ bookingId }: PaymentProofUploadProps) {
+export function PaymentProofUpload({ token }: PaymentProofUploadProps) {
   const [file, setFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -39,7 +39,7 @@ export function PaymentProofUpload({ bookingId }: PaymentProofUploadProps) {
 
     try {
       const formData = new FormData()
-      formData.append('bookingId', bookingId)
+      formData.append('token', token)
       formData.append('file', file)
 
       const res = await fetch('/api/bookings/proof', {
@@ -87,8 +87,7 @@ export function PaymentProofUpload({ bookingId }: PaymentProofUploadProps) {
     <div>
       <h1 className="text-2xl font-bold mb-2">Upload Payment Proof</h1>
       <p className="text-white/60 text-sm mb-8">
-        Booking reference #{bookingId}. Upload a screenshot of your payment (PNG, JPEG, or WebP,
-        up to 10 MB).
+        Upload a screenshot of your payment (PNG, JPEG, or WebP, up to 10 MB).
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">

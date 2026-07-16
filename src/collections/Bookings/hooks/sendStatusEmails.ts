@@ -69,6 +69,7 @@ export const sendStatusEmails: CollectionAfterChangeHook = async ({
       paymentMode: doc.paymentMode,
       notes: doc.notes ?? null,
       timezone: doc.timezoneAtBooking,
+      proofToken: doc.proofToken ?? undefined,
     }
 
     if (doc.status === 'pending_payment') {
