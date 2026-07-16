@@ -45,7 +45,7 @@ This is a **Payload CMS 3.x + Next.js 15** personal portfolio/resume site backed
 
 - `src/app/(frontend)/` — public-facing portfolio pages
 - `src/app/(payload)/` — Payload admin panel (`/admin`)
-- `src/app/api/` — custom REST endpoints (availability, bookings, webhooks/stripe, seed, etc.)
+- `src/app/api/` — custom REST endpoints (availability, bookings, bookings/proof, seed, etc.)
 
 The `/` homepage renders Experience and Education **inline in full** (no standalone page); the Certifications section is a top-3 **preview** with a "View all N certifications →" link to the standalone `/certifications` page (full 60+ list). Anchors: `#experience`, `#education`, `#certifications`. Old standalone routes 308-redirect to the anchors: `/experience → /#experience`, `/education → /#education`. Other redirects: `/pricing → /services`, `/search → /`. See `redirects.js`.
 
@@ -78,20 +78,42 @@ Frontend pages fetch data server-side and pass it as props to template component
 
 ### Booking System
 
-A freelance booking platform with Stripe payments. Lifecycle:
+A freelance booking platform. Payment is settled **out of band** (invoice / bank transfer / GCash) —
+there is no payment processor integration. Lifecycle:
 
 ```
-pending_review → accepted → pending_payment → paid → in_progress → work_completed → payment_released
+pending_review → accepted → pending_payment → payment_submitted → paid → in_progress → work_completed
 ```
+
+(plus terminal side-states `cancelled`, `expired`, `refunded`, `disputed`)
+
+Moving a booking to `pending_payment` emails the client the payment instructions configured in
+**Globals → Booking Settings**; moving it to `payment_submitted` (the client uploaded a receipt
+screenshot) emails the ADMIN to go verify the payment by hand — nothing is auto-confirmed; moving
+it to `paid` emails the client a confirmation. All three are driven by
+`src/collections/Bookings/hooks/sendStatusEmails.ts`, guarded on an actual status change so re-saving
+a booking never re-sends mail.
+
+Clients can upload a payment-receipt screenshot at `/book/proof/[bookingId]`, handled by
+`POST /api/bookings/proof` (rate-limited, size- and stream-bounded). Claude vision
+(`src/lib/receipt-ocr.ts`) extracts the amount/reference/channel from the image purely as a
+convenience for the admin reviewing the booking — the extraction is an unverified claim from the
+client's own upload, so the app never auto-marks a booking `paid`; only the admin does, after
+checking their own bank/GCash.
+
+**Two LLM providers, deliberately**: OpenAI (`src/utilities/openai.ts`) powers résumé/cover-letter
+generation; Claude (`src/lib/receipt-ocr.ts`, `@anthropic-ai/sdk`) powers receipt OCR. This is not
+duplication to clean up — they're independent features that happen to both need a model.
 
 Key files:
 - `src/app/api/bookings/route.ts` — booking submission endpoint
-- `src/app/api/webhooks/stripe/route.ts` — Stripe webhook handler
-- `src/lib/stripe.ts` — Stripe client
-- `src/lib/booking-email.ts` — booking email via Resend
+- `src/app/api/bookings/proof/route.ts` — payment-proof upload + Claude OCR extraction
+- `src/collections/Bookings/hooks/sendStatusEmails.ts` — status-transition emails
+- `src/BookingSettings/config.ts` — global: `bookingEnabled` (kill switch), `paymentTermsSummary`,
+  `paymentInstructions`, `notificationEmail`
+- `src/lib/booking-email.ts` — booking email templates via Resend
 - `src/app/(frontend)/book/[packageSlug]/` — booking flow pages
-
-Stripe webhooks must be forwarded locally: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
+- `src/app/(frontend)/book/proof/[bookingId]/` — client proof-upload page
 
 ### Access Control
 
@@ -140,10 +162,11 @@ Render states per strategy:
 See `.env.example` for all required variables. Key groups:
 - `DATABASE_URL` — PostgreSQL connection string
 - `PAYLOAD_SECRET` — JWT encryption secret
-- `OPENAI_API_KEY` — AI generation features
+- `OPENAI_API_KEY` — AI generation features (résumé/cover-letter generation)
+- `ANTHROPIC_API_KEY` — Claude vision for payment-receipt OCR (`src/lib/receipt-ocr.ts`)
 - `RESEND_API_KEY` + `CONTACT_FORM_*` — contact form emails
-- `STRIPE_*` — booking payment processing
-- `BOOKING_*` — booking configuration (timezone, buffer, advance notice)
+- `BOOKING_*` — booking configuration (timezone, buffer, advance notice); payment terms/instructions
+  now live in the `bookingSettings` global, not env vars
 - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` — Google Docs export feature
 - `PAGESPEED_API_KEY` — recommended in production; anonymous PageSpeed API calls get 429-throttled. Used by the homepage Lighthouse badge.
 - `LIGHTHOUSE_AUDIT_URL` — optional dev override; points the Lighthouse audit at a public URL (e.g. the production domain) so the badge renders in local dev. Defaults to `NEXT_PUBLIC_SERVER_URL`.

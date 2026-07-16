@@ -2,65 +2,53 @@
 
 ## Overview
 
-A custom freelance booking platform integrated into your portfolio with Stripe payments, availability management, and a **pay-after-completion** workflow. Designed for a full-time employee doing freelance work on the side with 1-week advance booking notice.
+A custom freelance booking platform integrated into the portfolio, with availability management and
+a **pay-after-acceptance, out-of-band payment** workflow. Designed for a full-time employee doing
+freelance work on the side with 1-week advance booking notice.
+
+There is no payment processor integration. Payment is settled by the client directly — bank
+transfer, GCash, or invoice — using instructions the admin writes once in Payload admin. The admin
+confirms receipt by hand after checking their own bank/GCash; the app never auto-marks a booking
+paid.
 
 ## Table of Contents
 
 1. [Payment Model](#payment-model)
 2. [Booking Lifecycle](#booking-lifecycle)
-3. [Stripe Setup Tasks](#stripe-setup-tasks)
-4. [Environment Variables](#environment-variables)
-5. [Availability Configuration](#availability-configuration)
-6. [Implementation Checklist](#implementation-checklist)
-7. [Testing Checklist](#testing-checklist)
-8. [Security Checklist](#security-checklist)
-9. [Maintenance](#maintenance)
+3. [Booking Settings (Global)](#booking-settings-global)
+4. [Payment-Proof Upload](#payment-proof-upload)
+5. [Environment Variables](#environment-variables)
+6. [Availability Configuration](#availability-configuration)
+7. [Email Notifications](#email-notifications)
+8. [Testing Checklist](#testing-checklist)
+9. [Security Checklist](#security-checklist)
+10. [Maintenance](#maintenance)
 
 ---
 
 ## Payment Model
 
-### Can I complete work before accepting payment? **Yes.**
-
-Stripe supports multiple payment workflows. Here is the recommended approach for your situation:
-
-### Recommended: **Manual Payout Mode**
+### How payment works
 
 ```
-Client books -> Client pays -> Money held in Stripe balance -> You complete work -> You transfer to bank
+Client submits request -> Admin accepts -> Admin moves status to "Pending Payment"
+  -> Client receives payment instructions by email (bank / GCash / invoice)
+  -> Client pays out of band, optionally uploads a receipt screenshot for convenience
+  -> Admin checks their own bank/GCash and manually marks the booking "Paid"
+  -> Work proceeds
 ```
 
-**How it works:**
-1. Client pays via Stripe Checkout (money goes to your Stripe account balance)
-2. **Disable automatic payouts** in Stripe Dashboard
-3. You complete the work
-4. You manually initiate payout to your bank account
-5. If work is not completed or disputed, you can issue a full refund from your Stripe balance
-
-**Why this is best practice:**
-- Simple to implement (standard Stripe Checkout, no custom Payment Intents)
-- Money is secured - client has paid, you have the funds in Stripe
-- Full refund capability if work is not delivered
-- No authorization expiry issues (unlike manual capture which expires in 7 days)
-- Professional - client sees a real charge on their card
-
-### Alternative Models (For Reference)
-
-| Model | How It Works | Pros | Cons |
-|-------|-------------|------|------|
-| **Manual Payout** (recommended) | Client pays, Stripe holds, you payout after work | Simple, no expiry | Client charged immediately |
-| **Manual Capture** | Authorize card, capture after work | Client not charged until capture | Auth expires in 7 days (max 31) |
-| **Deposit + Final** | Charge deposit upfront, invoice remainder | Shared risk | More complex |
-| **Invoicing** | Send Stripe Invoice after work | Client pays only after seeing work | Risk of non-payment |
+**Why out-of-band:**
+- No payment processor account, fees, or PCI/webhook surface to maintain
+- The admin is the sole source of truth for "did the money arrive" — a screenshot is a claim, not
+  proof
+- Fits a low-volume freelance side-practice better than a full checkout integration
 
 ### Payment Flow by Package Type
 
-| Package | Payment Model | Reasoning |
-|---------|--------------|-----------|
-| 30-min Consultation | Pay upfront | Small amount, standard practice |
-| Day Rate | Manual payout | Complete work same day, payout next day |
-| Week Rate | Manual payout | Complete work, payout after delivery |
-| Month Rate | Deposit (50%) + Final invoice | Large amount, milestone-based |
+Payment terms (deposit vs. full-upfront vs. invoice-after) are a business decision communicated via
+the `paymentTermsSummary` and `paymentInstructions` fields below — the system itself doesn't
+enforce a particular model per package.
 
 ---
 
@@ -71,193 +59,113 @@ Client books -> Client pays -> Money held in Stripe balance -> You complete work
 ```
 Client submits booking request
         |
-[pending_review] -- You have 24 hours to accept/decline
+[pending_review] -- Admin has a window to accept/decline
         |
-[accepted] -- Client receives payment link
+[accepted] -- Admin moves to Pending Payment when ready to invoice
         |
-[pending_payment] -- Client has 24 hours to pay
+[pending_payment] -- Client is emailed payment instructions (bank/GCash/invoice)
         |
-[paid] -- Payment confirmed via Stripe webhook
+[payment_submitted] -- (optional) client uploaded a receipt screenshot; admin is emailed to verify
         |
-[in_progress] -- You start working
+[paid] -- Admin has manually confirmed the money arrived; client is emailed a confirmation
         |
-[work_completed] -- You mark work as done
+[in_progress] -- Admin starts working
         |
-[payment_released] -- You payout from Stripe to your bank
+[work_completed] -- Admin marks work as done
         |
    DONE
 ```
 
-### Cancellation and Refund Scenarios
+`payment_submitted` is optional — the admin can move a booking straight from `pending_payment` to
+`paid` once they see the transfer land, with or without the client uploading a receipt.
 
-| Scenario | Action |
-|----------|--------|
-| You decline booking | Status -> `cancelled`, no charge |
-| Client cancels before payment | Status -> `cancelled`, no charge |
-| Client cancels after payment, before work starts | Full refund from Stripe balance |
-| Client cancels during work | Partial refund (negotiated) |
-| You cannot complete work | Full refund from Stripe balance |
-| Dispute | Handle via Stripe dispute resolution |
+### Side States
+
+| State | Meaning |
+|-------|---------|
+| `cancelled` | Declined by admin, or cancelled by either party before payment |
+| `expired` | Client did not pay (or accept) within the confirmation window |
+| `refunded` | Money was returned to the client out of band |
+| `disputed` | Client disputes the charge/work; handled manually |
 
 ---
 
-## Stripe Setup Tasks
+## Booking Settings (Global)
 
-### Step 1: Create Stripe Account
+Configured in **Payload admin → Globals → Booking Settings** (`src/BookingSettings/config.ts`,
+slug `bookingSettings`):
 
-- [ ] Go to [stripe.com](https://stripe.com) and sign up
-- [ ] Choose your country (Philippines)
-- [ ] Select "Individual" or "Sole Proprietor"
-- [ ] Complete identity verification:
-  - [ ] Government ID (passport or national ID)
-  - [ ] Proof of address
-  - [ ] Tax information (TIN)
-- [ ] Add bank account for payouts:
-  - [ ] Bank name, account number, routing number
-  - [ ] Verify with micro-deposits (takes 1-2 business days)
+| Field | Type | Purpose |
+|-------|------|---------|
+| `bookingEnabled` | checkbox | Kill switch. When off, the booking form stops accepting new submissions. Defaults to `true`. |
+| `paymentTermsSummary` | text | One-line summary shown on the booking form before the client submits, e.g. "Payment is by invoice after I review and accept your request." |
+| `paymentInstructions` | textarea | Bank / GCash details and invoice terms. Emailed to the client verbatim (line breaks preserved) when a booking moves to `pending_payment`. |
+| `notificationEmail` | email | Where new-booking, proof-submitted, and payment alerts go. Falls back to the `BOOKING_NOTIFICATION_EMAIL` env var if unset. |
 
-### Step 2: Configure Stripe Dashboard
+All four are read server-side in `src/collections/Bookings/hooks/sendStatusEmails.ts` at the moment
+of a status transition — there's no caching to worry about when the admin edits them.
 
-- [ ] **Disable automatic payouts:**
-  - Go to Settings -> Payouts -> Payout schedule
-  - Set to "Manual" (you control when money goes to your bank)
-- [ ] **Set up branding:**
-  - Go to Settings -> Branding
-  - Upload logo
-  - Set brand colors to match your portfolio
-  - Set statement descriptor (what appears on client bank statement)
-    - Example: `ALLANAI.DEV`
-- [ ] **Configure payment methods:**
-  - Go to Settings -> Payment methods
-  - Enable: Credit/debit cards (Visa, Mastercard)
-  - Optional: Enable GCash/Maya if available in your Stripe region
-- [ ] **Set up receipts:**
-  - Go to Settings -> Emails
-  - Enable automatic receipts
-  - Customize receipt template
+---
 
-### Step 3: Get API Keys
+## Payment-Proof Upload
 
-- [ ] Go to Developers -> API keys
-- [ ] Copy **Publishable key** (`pk_test_...` for test, `pk_live_...` for production)
-- [ ] Copy **Secret key** (`sk_test_...` for test, `sk_live_...` for production)
-- [ ] **Never commit secret keys to git**
+Clients can (optionally) upload a screenshot of their payment at `/book/proof/[bookingId]`, which
+posts to `POST /api/bookings/proof`.
 
-### Step 4: Set Up Webhook
-
-- [ ] Go to Developers -> Webhooks -> Add endpoint
-- [ ] Set endpoint URL:
-  - Local: `https://your-ngrok-url/api/webhooks/stripe`
-  - Production: `https://allanai.dev/api/webhooks/stripe`
-- [ ] Select events to listen for:
-  - `checkout.session.completed`
-  - `checkout.session.expired`
-  - `payment_intent.succeeded`
-  - `payment_intent.payment_failed`
-  - `charge.refunded`
-  - `charge.dispute.created`
-- [ ] Copy **Webhook signing secret** (`whsec_...`)
-
-### Step 5: Install Stripe CLI (Local Development)
-
-- [ ] Install Stripe CLI:
-  ```bash
-  # macOS
-  brew install stripe/stripe-cli/stripe
-
-  # Linux
-  curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
-  echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
-  sudo apt update && sudo apt install stripe
-  ```
-- [ ] Login to Stripe CLI:
-  ```bash
-  stripe login
-  ```
-- [ ] Forward webhooks to local server:
-  ```bash
-  stripe listen --forward-to localhost:3000/api/webhooks/stripe
-  ```
-- [ ] Copy the webhook signing secret from CLI output
-
-### Step 6: Create Test Products (Optional)
-
-- [ ] Create test products in Stripe Dashboard:
-  - Go to Products -> Add product
-  - Create products matching your packages
-  - Copy Product ID and Price ID to Payload admin
-- [ ] Test with Stripe test cards:
-  - Success: `4242 4242 4242 4242`
-  - Decline: `4000 0000 0000 0002`
-  - 3D Secure: `4000 0025 0000 3155`
-
-### Step 7: Go Live
-
-- [ ] Complete Stripe account verification
-- [ ] Switch API keys from `test` to `live` in environment variables
-- [ ] Update webhook endpoint to production URL
-- [ ] Test with a real small payment ($1)
-- [ ] Verify payout works to your bank account
+- Rate-limited (5 uploads/hour/IP) and both size- and stream-bounded (10 MB cap enforced on the
+  request stream itself, not just the reported `Content-Length`, to close a DoS gap).
+- The image is sent to **Claude vision** (`src/lib/receipt-ocr.ts`, `@anthropic-ai/sdk`) to extract
+  amount, currency, reference number, sender name, timestamp, and channel (GCash/bank/etc.) — purely
+  as a convenience so the admin doesn't have to squint at the screenshot themselves.
+- **The extraction is never trusted.** It's a claim derived from an image the client controls. The
+  booking's status moves to `payment_submitted` (which emails the admin to go check their own
+  bank/GCash), but the app never auto-transitions a booking to `paid`. Only the admin, acting on
+  their own verification, does that.
+- The OCR call is designed to never throw: a garbled or unreadable image, or an API failure,
+  produces an empty/null extraction rather than blocking the upload.
 
 ---
 
 ## Environment Variables
 
-### Local Development (.env.local)
+### Booking configuration (`.env.example`)
 
 ```bash
-# Stripe Configuration (Test Keys)
-STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+# Booking Notifications (Resend — reuses RESEND_API_KEY)
+BOOKING_NOTIFICATION_EMAIL=your-email@gmail.com
 
 # Booking Configuration
-NEXT_PUBLIC_BOOKING_ENABLED=true
 BOOKING_TIMEZONE=Asia/Manila
 BOOKING_BUFFER_MINUTES=15
 BOOKING_CONFIRMATION_HOURS=24
 BOOKING_ADVANCE_NOTICE_DAYS=7
-BOOKING_PAYOUT_MODE=manual
-```
 
-### Production (Vercel Environment Variables)
-
-```bash
-# Stripe Configuration (Live Keys)
-STRIPE_PUBLISHABLE_KEY=pk_live_...
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-
-# Same booking configuration
-NEXT_PUBLIC_BOOKING_ENABLED=true
-BOOKING_TIMEZONE=Asia/Manila
-BOOKING_BUFFER_MINUTES=15
-BOOKING_CONFIRMATION_HOURS=24
-BOOKING_ADVANCE_NOTICE_DAYS=7
-BOOKING_PAYOUT_MODE=manual
+# Claude vision — payment-receipt OCR (src/lib/receipt-ocr.ts)
+ANTHROPIC_API_KEY=sk-ant-...
 ```
 
 ### Variable Reference
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `STRIPE_PUBLISHABLE_KEY` | Client-side Stripe key | `pk_test_...` |
-| `STRIPE_SECRET_KEY` | Server-side Stripe key (never expose) | `sk_test_...` |
-| `STRIPE_WEBHOOK_SECRET` | Webhook signature verification | `whsec_...` |
-| `NEXT_PUBLIC_BOOKING_ENABLED` | Toggle booking system on/off | `true` |
-| `BOOKING_TIMEZONE` | Your working timezone | `Asia/Manila` |
+| `BOOKING_NOTIFICATION_EMAIL` | Fallback admin address for booking alerts if `bookingSettings.notificationEmail` is unset | `you@gmail.com` |
+| `BOOKING_TIMEZONE` | Working timezone for availability calculations | `Asia/Manila` |
 | `BOOKING_BUFFER_MINUTES` | Buffer between bookings | `15` |
-| `BOOKING_CONFIRMATION_HOURS` | Hours to accept/decline a booking | `24` |
-| `BOOKING_ADVANCE_NOTICE_DAYS` | Minimum days in advance to book | `7` |
-| `BOOKING_PAYOUT_MODE` | `manual` or `automatic` | `manual` |
+| `BOOKING_CONFIRMATION_HOURS` | Hours to accept/decline a booking before it expires | `24` |
+| `BOOKING_ADVANCE_NOTICE_DAYS` | Minimum days in advance a client must book | `7` |
+| `ANTHROPIC_API_KEY` | Powers receipt OCR on the proof-upload endpoint | `sk-ant-...` |
+
+`bookingEnabled` (the on/off switch for the booking form) and payment terms/instructions live in the
+`bookingSettings` global now, not in env vars — see [Booking Settings](#booking-settings-global)
+above.
 
 ---
 
 ## Availability Configuration
 
-### Your Schedule (Full-Time Employee + Freelance)
+### Schedule (Full-Time Employee + Freelance)
 
-Since you have a full-time job, configure availability for **evenings and weekends only**:
+Since availability is typically evenings and weekends only:
 
 ```
 Example availability rules (configured in Payload admin):
@@ -283,95 +191,66 @@ Use the `blockedDates` field in Payload admin to block:
 - Public holidays
 - Vacation days
 - Personal events
-- Busy periods at full-time job
+- Busy periods at the full-time job
 
 ---
 
-## Implementation Checklist
+## Email Notifications
 
-### Phase 1: Foundation (Week 1)
+Implemented via `src/lib/booking-email.ts` using Resend, and dispatched from
+`src/collections/Bookings/hooks/sendStatusEmails.ts` on status transitions.
 
-- [ ] Set up Stripe account (Steps 1-3 above)
-- [ ] Add environment variables to `.env.local`
-- [ ] Install `stripe` npm package:
-  ```bash
-  npm install stripe
-  ```
-- [ ] Create `src/lib/stripe.ts` utility
-- [ ] Seed sample packages in Payload admin:
-  - 30-min Consultation ($50)
-  - Day Rate ($400)
-  - Week Rate ($1,800)
-  - Month Rate ($6,000)
-- [ ] Configure availability rules in Payload admin
+### Triggers
 
-### Phase 2: Pricing Page (Week 1)
+| Event | Customer Email | Admin Email | Notification address |
+|-------|---------------|-------------|-----------------------|
+| Booking submitted | "We received your request" | New booking alert | `bookingSettings.notificationEmail` (fallback `BOOKING_NOTIFICATION_EMAIL` / `CONTACT_FORM_TO_EMAIL`) |
+| Status → `pending_payment` | Payment instructions (bank/GCash/invoice) | — | — |
+| Status → `payment_submitted` | — | "Client uploaded a receipt — go verify it" | `bookingSettings.notificationEmail` |
+| Status → `paid` | Payment confirmation + next steps | — | — |
 
-- [ ] Finalize PricingPage component styling
-- [ ] Add package details and deliverables
-- [ ] Add availability status indicators
-- [ ] Test responsive design on mobile
+All are fire-and-forget — a mail failure is logged but never throws or blocks the status change /
+API response. Emails silently no-op if `RESEND_API_KEY` is not set.
 
-### Phase 3: Booking Flow (Week 2)
+### Functions
 
-- [ ] Create `/book/[packageId]` page
-- [ ] Build time slot picker component
-- [ ] Build customer information form
-- [ ] Implement booking request submission API (`/api/bookings`)
-- [x] Add booking confirmation email (via Resend) — `src/lib/booking-email.ts`
+```ts
+// src/lib/booking-email.ts
+sendBookingRequestEmails(customer, booking): Promise<void>
+sendPaymentInstructionsEmail(customer, booking, opts): Promise<void>
+sendProofSubmittedAdminEmail(customer, booking, opts): Promise<void>
+sendPaymentConfirmedEmails(customer, booking): Promise<void>
+```
 
-### Phase 4: Payment Integration (Week 2)
+### Remaining (Planned)
 
-- [ ] Create Stripe Checkout session endpoint (`/api/bookings/checkout`)
-- [ ] Create webhook handler (`/api/webhooks/stripe`)
-- [ ] Implement payment confirmation flow
-- [ ] Build success/cancel pages (`/book/success`, `/book/cancel`)
-- [ ] Test with Stripe test cards
-
-### Phase 5: Admin Management (Week 3)
-
-- [ ] Build admin booking dashboard (or use Payload admin)
-- [ ] Add accept/decline booking actions
-- [ ] Add payout tracking
-- [x] Add email notifications for booking request + payment (implemented)
-- [ ] Add email notifications for accept/decline status changes (planned)
-
-### Phase 6: Polish and Launch (Week 3-4)
-
-- [ ] Update Header navigation (add Pricing link)
-- [ ] Update CTAButtons across all pages
-- [ ] SEO metadata for pricing page
-- [ ] Test complete flow end-to-end
-- [ ] Switch to Stripe live keys
-- [ ] Deploy to production
+- Booking accepted/declined notification to customer
+- 24-hour reminder before session
+- 1-hour reminder before session
+- Post-booking follow-up
 
 ---
 
 ## Testing Checklist
 
-### Stripe Testing
-
-- [ ] Test successful payment with `4242 4242 4242 4242`
-- [ ] Test declined card with `4000 0000 0000 0002`
-- [ ] Test 3D Secure with `4000 0025 0000 3155`
-- [ ] Test webhook delivery (check Stripe Dashboard -> Webhooks -> Logs)
-- [ ] Test refund flow
-- [ ] Test manual payout from Stripe Dashboard
-
 ### Booking Flow Testing
 
 - [ ] Submit booking request as client
-- [ ] Verify 24-hour confirmation window
+- [ ] Verify confirmation window enforcement
 - [ ] Accept booking as admin
-- [ ] Complete payment as client
+- [ ] Move to Pending Payment, confirm client receives instructions email
+- [ ] Upload a receipt screenshot at `/book/proof/[bookingId]`, confirm admin receives the alert
+      email with the extracted fields
+- [ ] Mark Paid as admin, confirm client receives confirmation email
 - [ ] Mark work as completed
-- [ ] Initiate payout
 
 ### Edge Cases
 
 - [ ] Double booking prevention
 - [ ] Expired booking cleanup
-- [ ] Payment failure handling
+- [ ] Proof upload: oversized file rejected, rate limit enforced, non-image rejected
+- [ ] Proof upload: unreadable/garbled image degrades to an empty extraction rather than erroring
+- [ ] Re-saving a booking without a status change does not re-send any email
 - [ ] Timezone conversion accuracy
 - [ ] Mobile responsiveness
 
@@ -379,14 +258,15 @@ Use the `blockedDates` field in Payload admin to block:
 
 ## Security Checklist
 
-- [ ] Stripe webhook signature validation
-- [ ] Rate limiting on booking endpoints (3/hour/IP)
+- [ ] Rate limiting on booking + proof-upload endpoints
+- [ ] Proof-upload request size and stream bounded (not just `Content-Length` trusted)
 - [ ] Input validation with Zod schemas
 - [ ] HTTPS enforcement
 - [ ] No secret keys in client-side code
 - [ ] CSRF protection
 - [ ] SQL injection prevention (handled by Payload)
 - [ ] XSS prevention (handled by React)
+- [ ] Receipt OCR extraction never trusted as proof of payment — admin verification is mandatory
 
 ---
 
@@ -394,20 +274,18 @@ Use the `blockedDates` field in Payload admin to block:
 
 ### Weekly Tasks
 
-- [ ] Check Stripe Dashboard for pending payouts
-- [ ] Review and respond to booking requests within 24 hours
+- [ ] Review and respond to booking requests within the confirmation window
+- [ ] Check for bookings sitting in `payment_submitted` awaiting manual verification
 - [ ] Update blocked dates if schedule changes
 
 ### Monthly Tasks
 
 - [ ] Review booking analytics
-- [ ] Check for failed webhooks in Stripe Dashboard
 - [ ] Update package pricing if needed
 - [ ] Review and optimize conversion rates
 
 ### Quarterly Tasks
 
-- [ ] Review Stripe fees and pricing structure
 - [ ] Update availability rules for seasonal changes
 - [ ] Consider new package offerings based on demand
 
@@ -419,56 +297,15 @@ Use the `blockedDates` field in Payload admin to block:
 
 | Issue | Solution |
 |-------|----------|
-| Webhook not receiving events | Check endpoint URL, verify Stripe CLI is running (local dev) |
-| Payment not confirming | Check webhook logs in Stripe Dashboard |
-| Timezone mismatch | Ensure `BOOKING_TIMEZONE` matches Payload admin setting |
+| Client didn't receive payment instructions | Check `RESEND_API_KEY` is set and `bookingSettings.paymentInstructions` is non-empty; check Resend logs |
+| Admin didn't receive proof-submitted alert | Check `bookingSettings.notificationEmail` / `BOOKING_NOTIFICATION_EMAIL` is set |
+| Receipt OCR returns all-null fields | Expected for unreadable/garbled images — the extraction is best-effort, verify against your bank manually |
+| Timezone mismatch | Ensure `BOOKING_TIMEZONE` matches the Payload admin setting |
 | Booking slots not showing | Check availability rules are active and dates are not blocked |
-| Payout failing | Verify bank account details in Stripe Dashboard |
-
-### Support Resources
-
-- [Stripe Documentation](https://docs.stripe.com)
-- [Stripe API Reference](https://stripe.com/docs/api)
-- [Stripe CLI Reference](https://stripe.com/docs/stripe-cli)
-- [Stripe Test Cards](https://stripe.com/docs/testing)
-- [Stripe Webhooks Guide](https://stripe.com/docs/webhooks)
+| Proof upload rejected | Check file size (10 MB cap) and that the rate limit (5/hour/IP) hasn't been hit |
 
 ---
 
----
-
-## Email Notifications
-
-Implemented via `src/lib/booking-email.ts` using Resend.
-
-### Triggers
-
-| Event | Customer Email | Admin Email | Env Var for Admin |
-|-------|---------------|-------------|-------------------|
-| Booking submitted | "We received your request" | New booking alert | `BOOKING_NOTIFICATION_EMAIL` |
-| Payment confirmed | Payment receipt + next steps | Payment received alert | `BOOKING_NOTIFICATION_EMAIL` |
-
-If `BOOKING_NOTIFICATION_EMAIL` is not set, falls back to `CONTACT_FORM_TO_EMAIL`.
-
-### Functions
-
-```ts
-// src/lib/booking-email.ts
-sendBookingRequestEmails(customer: Customer, booking: Booking): Promise<void>
-sendPaymentConfirmedEmails(customer: Customer, booking: Booking): Promise<void>
-```
-
-Both are fire-and-forget — they never throw or block API responses. The email silently no-ops if `RESEND_API_KEY` is not set.
-
-### Remaining (Planned)
-
-- Booking accepted/declined notification to customer
-- 24-hour reminder before session
-- 1-hour reminder before session
-- Post-booking follow-up
-
----
-
-**Last Updated**: 2026-04-24
-**Version**: 1.1
-**Next Review**: 2026-07-24
+**Last Updated**: 2026-07-16
+**Version**: 2.0
+**Next Review**: 2026-10-16

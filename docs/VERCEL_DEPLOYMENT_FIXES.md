@@ -129,18 +129,7 @@ Collections with uploads enabled require a storage adapter when deploying to Ver
 
 **Future Solution**: To be fixed by adding `@payloadcms/storage-vercel-blob` adapter (requires Vercel Blob setup).
 
-### 4. Stripe Initialization (Previous Fix)
-
-**Problem**: `STRIPE_SECRET_KEY` not set during build causing build failures.
-
-**Solution**: Implemented lazy initialization of Stripe client.
-
-**Files Changed**:
-- `src/lib/stripe.ts` - Lazy initialization with `getStripe()` function
-- `src/app/api/bookings/checkout/route.ts` - Updated to use `getStripe()`
-- `src/app/api/webhooks/stripe/route.ts` - Updated to use `getStripe()`
-
-### 5. Prerendering Database Errors (Previous Fix)
+### 4. Prerendering Database Errors (Previous Fix)
 
 **Problem**: Pages trying to query database during build time.
 
@@ -163,10 +152,6 @@ DATABASE_SSL=true  # Set automatically in vercel.json
 
 # Payload
 PAYLOAD_SECRET=your-secret
-
-# Stripe (for booking system)
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
 
 # URLs
 NEXT_PUBLIC_SERVER_URL=https://www.allanai.dev
