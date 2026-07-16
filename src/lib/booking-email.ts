@@ -166,17 +166,17 @@ function buildCustomerBookingRequestHtml(
       Booking Request Received
     </h1>
     <p style="margin:0 0 32px;color:rgba(255,255,255,0.6);font-size:15px;">
-      Hi ${customer.name}, your booking request has been submitted successfully.
+      Hi ${escapeHtml(customer.name)}, your booking request has been submitted successfully.
       I&rsquo;ll review it and get back to you within <strong style="color:#fff;">24 hours</strong>.
     </p>
 
     <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
-      ${detailRow('Package', booking.packageName)}
+      ${detailRow('Package', escapeHtml(booking.packageName))}
       ${detailRow('Start', formatDatetime(booking.startAt, booking.timezone))}
       ${detailRow('End', formatDatetime(booking.endAt, booking.timezone))}
       ${detailRow('Amount', formatCurrency(booking.amount, booking.currency))}
       ${detailRow('Payment', paymentModeLabel(booking.paymentMode))}
-      ${booking.notes ? detailRow('Notes', booking.notes) : ''}
+      ${booking.notes ? detailRow('Notes', escapeHtml(booking.notes)) : ''}
       ${detailRow('Reference', `#${booking.bookingId}`)}
     </table>
 
@@ -203,19 +203,19 @@ function buildAdminBookingAlertHtml(
 
     <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Customer</h3>
     <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:28px;">
-      ${detailRow('Name', customer.name)}
-      ${detailRow('Email', customer.email)}
-      ${customer.company ? detailRow('Company', customer.company) : ''}
+      ${detailRow('Name', escapeHtml(customer.name))}
+      ${detailRow('Email', escapeHtml(customer.email))}
+      ${customer.company ? detailRow('Company', escapeHtml(customer.company)) : ''}
     </table>
 
     <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Booking</h3>
     <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
-      ${detailRow('Package', booking.packageName)}
+      ${detailRow('Package', escapeHtml(booking.packageName))}
       ${detailRow('Start', formatDatetime(booking.startAt, booking.timezone))}
       ${detailRow('End', formatDatetime(booking.endAt, booking.timezone))}
       ${detailRow('Amount', formatCurrency(booking.amount, booking.currency))}
       ${detailRow('Payment', paymentModeLabel(booking.paymentMode))}
-      ${booking.notes ? detailRow('Notes', booking.notes) : ''}
+      ${booking.notes ? detailRow('Notes', escapeHtml(booking.notes)) : ''}
       ${detailRow('Booking ID', `#${booking.bookingId}`)}
     </table>
 
@@ -236,12 +236,12 @@ function buildCustomerPaymentConfirmedHtml(
       Payment Confirmed
     </h1>
     <p style="margin:0 0 32px;color:rgba(255,255,255,0.6);font-size:15px;">
-      Hi ${customer.name}, your payment has been received and your booking is confirmed.
+      Hi ${escapeHtml(customer.name)}, your payment has been received and your booking is confirmed.
       Looking forward to working with you!
     </p>
 
     <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
-      ${detailRow('Package', booking.packageName)}
+      ${detailRow('Package', escapeHtml(booking.packageName))}
       ${detailRow('Start', formatDatetime(booking.startAt, booking.timezone))}
       ${detailRow('End', formatDatetime(booking.endAt, booking.timezone))}
       ${detailRow('Amount Paid', formatCurrency(booking.amount, booking.currency))}
@@ -271,14 +271,14 @@ function buildAdminPaymentReceivedHtml(
 
     <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Customer</h3>
     <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:28px;">
-      ${detailRow('Name', customer.name)}
-      ${detailRow('Email', customer.email)}
-      ${customer.company ? detailRow('Company', customer.company) : ''}
+      ${detailRow('Name', escapeHtml(customer.name))}
+      ${detailRow('Email', escapeHtml(customer.email))}
+      ${customer.company ? detailRow('Company', escapeHtml(customer.company)) : ''}
     </table>
 
     <h3 style="margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.4);">Payment</h3>
     <table cellpadding="0" cellspacing="0" width="100%" style="border-top:1px solid rgba(255,255,255,0.08);margin-bottom:32px;">
-      ${detailRow('Package', booking.packageName)}
+      ${detailRow('Package', escapeHtml(booking.packageName))}
       ${detailRow('Start', formatDatetime(booking.startAt, booking.timezone))}
       ${detailRow('End', formatDatetime(booking.endAt, booking.timezone))}
       ${detailRow('Amount', formatCurrency(booking.amount, booking.currency))}

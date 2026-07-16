@@ -120,3 +120,49 @@ describe('sendProofSubmittedAdminEmail', () => {
     expect(sent.html).not.toContain('verified')
   })
 })
+
+describe('sendBookingRequestEmails (older templates — customer/admin escaping)', () => {
+  beforeEach(() => {
+    sendMock.mockClear()
+    process.env.RESEND_API_KEY = 'test-key'
+    process.env.BOOKING_NOTIFICATION_EMAIL = 'admin@example.com'
+  })
+
+  it('escapes a malicious customer name in both the customer ack and admin alert HTML', async () => {
+    const { sendBookingRequestEmails } = await import('@/lib/booking-email')
+
+    const maliciousCustomer = {
+      name: '<script>alert(1)</script>',
+      email: 'attacker@example.com',
+      company: '<img src=x onerror=alert(2)>',
+    }
+
+    await sendBookingRequestEmails(maliciousCustomer, booking)
+
+    expect(sendMock).toHaveBeenCalledTimes(2)
+    const [customerSend, adminSend] = sendMock.mock.calls.map((call) => call[0])
+
+    // Customer acknowledgement (buildCustomerBookingRequestHtml)
+    expect(customerSend.html).not.toContain('<script>alert(1)</script>')
+    expect(customerSend.html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;')
+
+    // Admin alert (buildAdminBookingAlertHtml) — name AND company
+    expect(adminSend.html).not.toContain('<script>alert(1)</script>')
+    expect(adminSend.html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;')
+    expect(adminSend.html).not.toContain('<img src=x onerror=alert(2)>')
+    expect(adminSend.html).toContain('&lt;img src=x onerror=alert(2)&gt;')
+  })
+
+  it('escapes untrusted booking notes in the admin alert HTML', async () => {
+    const { sendBookingRequestEmails } = await import('@/lib/booking-email')
+
+    await sendBookingRequestEmails(customer, {
+      ...booking,
+      notes: '<script>document.location="https://evil.example"</script>',
+    })
+
+    const adminSend = sendMock.mock.calls[1][0]
+    expect(adminSend.html).not.toContain('<script>document.location')
+    expect(adminSend.html).toContain('&lt;script&gt;document.location')
+  })
+})
