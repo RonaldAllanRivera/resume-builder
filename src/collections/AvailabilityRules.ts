@@ -126,15 +126,6 @@ export const AvailabilityRules: CollectionConfig = {
       },
     },
     {
-      name: 'confirmationWindowHours',
-      type: 'number',
-      required: true,
-      defaultValue: 24,
-      admin: {
-        description: 'Hours you have to confirm/review a booking before it auto-expires',
-      },
-    },
-    {
       name: 'maxBookingsPerDay',
       type: 'number',
       defaultValue: 8,

@@ -97,7 +97,6 @@ describe('POST /api/bookings payment policy + deposit deadline', () => {
         bufferMinutes: 15,
         advanceNoticeDays: 1,
         maxAdvanceDays: 90,
-        confirmationWindowHours: 24,
         maxBookingsPerDay: 50,
         active: true,
       },

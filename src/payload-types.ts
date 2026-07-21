@@ -1210,10 +1210,6 @@ export interface AvailabilityRule {
    */
   maxAdvanceDays: number;
   /**
-   * Hours you have to confirm/review a booking before it auto-expires
-   */
-  confirmationWindowHours: number;
-  /**
    * Maximum number of bookings allowed per day
    */
   maxBookingsPerDay?: number | null;
@@ -1252,7 +1248,7 @@ export interface Booking {
    */
   package: number | Package;
   /**
-   * Booking lifecycle: pending_review → accepted → pending_payment → payment_submitted → paid → in_progress → work_completed. Pending Payment emails the client payment instructions. Payment Submitted means the client uploaded proof — VERIFY IT AGAINST YOUR OWN BANK/GCASH BEFORE setting Paid. Paid emails the client a confirmation.
+   * Booking lifecycle: pending_review → accepted → pending_payment → payment_submitted → paid → in_progress → work_completed (plus terminal side-states cancelled, expired, refunded, disputed). Pending Payment emails the client payment instructions, including the deposit amount and paymentDueAt deadline. Payment Submitted means the client uploaded proof — VERIFY IT AGAINST YOUR OWN BANK/GCASH BEFORE setting Paid. Paid emails the client a confirmation. Nothing here is automatic: there is no cron or auto-expiry — sort the admin list by paymentDueAt to spot overdue bookings, and set Expired by hand if a booking is abandoned.
    */
   status:
     | 'pending_review'
@@ -2225,7 +2221,6 @@ export interface AvailabilityRulesSelect<T extends boolean = true> {
   bufferMinutes?: T;
   advanceNoticeDays?: T;
   maxAdvanceDays?: T;
-  confirmationWindowHours?: T;
   maxBookingsPerDay?: T;
   active?: T;
   blockedDates?:

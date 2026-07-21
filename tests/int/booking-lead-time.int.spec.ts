@@ -105,7 +105,6 @@ describe('POST /api/bookings enforces the lead-time window', () => {
         bufferMinutes: 15,
         advanceNoticeDays: 7,
         maxAdvanceDays: 60,
-        confirmationWindowHours: 24,
         maxBookingsPerDay: 20,
         active: true,
       },

@@ -3,8 +3,9 @@
 ## Overview
 
 A custom freelance booking platform integrated into the portfolio, with availability management and
-a **pay-after-acceptance, out-of-band payment** workflow. Designed for a full-time employee doing
-freelance work on the side with 1-week advance booking notice.
+a **flat 50% deposit, out-of-band payment** workflow. Designed for a full-time employee doing
+freelance work on the side with a 7-day default advance booking notice (2 days for the free
+consultation), enforced server-side.
 
 There is no payment processor integration. Payment is settled by the client directly — bank
 transfer, GCash, or invoice — using instructions the admin writes once in Payload admin. The admin
@@ -46,9 +47,19 @@ Client submits request -> Admin accepts -> Admin moves status to "Pending Paymen
 
 ### Payment Flow by Package Type
 
-Payment terms (deposit vs. full-upfront vs. invoice-after) are a business decision communicated via
-the `paymentTermsSummary` and `paymentInstructions` fields below — the system itself doesn't
-enforce a particular model per package.
+`POST /api/bookings` derives `paymentMode` from the package's `durationType`:
+
+| `durationType` | `paymentMode` | Deposit |
+|---|---|---|
+| `call` (consultation) | `pay_after_completion` | None — no payment to book |
+| `day` / `week` / `month` | `deposit_final` | Flat `depositPercent` (default 50%) of `pkg.price`, computed as `Math.round(price * depositPercent / 100)` |
+
+The consultation is the sales conversation, so it takes no payment to book. Every paid package takes
+the same flat deposit; the remaining balance is invoiced manually after the work — the system tracks
+exactly one payment event per booking.
+
+Consultations never enter `pending_payment` — they run
+`pending_review → accepted → in_progress → work_completed` directly.
 
 ---
 
@@ -79,12 +90,35 @@ Client submits booking request
 `payment_submitted` is optional — the admin can move a booking straight from `pending_payment` to
 `paid` once they see the transfer land, with or without the client uploading a receipt.
 
+### Lead Time and Payment Deadline
+
+Two clocks govern a booking, both enforced server-side in `POST /api/bookings` via the shared
+`src/lib/booking-availability.ts` helpers (also used by `GET /api/availability/slots`, so the two
+endpoints cannot drift):
+
+- **Lead time** — the minimum notice a client must give before a session start. Resolved as
+  `pkg.advanceNoticeDays ?? rule.advanceNoticeDays ?? 7`. The consultation package overrides this to
+  `2` days; paid packages leave it empty and inherit the availability rule's `7`. A request outside
+  the window is rejected with **400** before anything is created (not just hidden from the calendar).
+- **Payment deadline** (`Bookings.paymentDueAt`) — computed at creation as `startAt` minus
+  `bookingSettings.depositDueDaysBeforeStart` (default 3 days), stored on the booking so the admin
+  list can sort/filter by it. Null for consultations, which never take a deposit. This is the admin's
+  guaranteed window to verify the deposit landed before the session starts — nothing expires it
+  automatically; the admin acts on it by hand.
+
+The governing constraint is lead time ≥ client payment window + admin verification buffer — at the
+defaults, 7 days splits into ~4 days for the client to pay and 3 for the admin to verify.
+
 ### Side States
+
+All side states are set **by hand** — there is no cron and no auto-expiry anywhere in the project.
+The admin spots bookings that need attention (e.g. an unpaid deposit past its deadline) by sorting
+the admin list by `paymentDueAt`, then sets the appropriate state manually.
 
 | State | Meaning |
 |-------|---------|
 | `cancelled` | Declined by admin, or cancelled by either party before payment |
-| `expired` | Client did not pay (or accept) within the confirmation window |
+| `expired` | Admin manually abandons a booking (e.g. the client never paid the deposit and went quiet) — never set automatically |
 | `refunded` | Money was returned to the client out of band |
 | `disputed` | Client disputes the charge/work; handled manually |
 
@@ -101,8 +135,10 @@ slug `bookingSettings`):
 | `paymentTermsSummary` | text | One-line summary shown on the booking form before the client submits, e.g. "Payment is by invoice after I review and accept your request." |
 | `paymentInstructions` | textarea | Bank / GCash details and invoice terms. Emailed to the client verbatim (line breaks preserved) when a booking moves to `pending_payment`. |
 | `notificationEmail` | email | Where new-booking, proof-submitted, and payment alerts go. Falls back to the `BOOKING_NOTIFICATION_EMAIL` env var if unset. |
+| `depositPercent` | number | Percentage of package price required as a deposit to secure a paid booking. Default `50`. |
+| `depositDueDaysBeforeStart` | number | Days before `startAt` the deposit must clear; the admin's verification buffer. Default `3`. Computes `Bookings.paymentDueAt` at creation. |
 
-All four are read server-side in `src/collections/Bookings/hooks/sendStatusEmails.ts` at the moment
+All six are read server-side in `src/collections/Bookings/hooks/sendStatusEmails.ts` at the moment
 of a status transition — there's no caching to worry about when the admin edits them.
 
 ---
@@ -136,9 +172,6 @@ BOOKING_NOTIFICATION_EMAIL=your-email@gmail.com
 
 # Booking Configuration
 BOOKING_TIMEZONE=Asia/Manila
-BOOKING_BUFFER_MINUTES=15
-BOOKING_CONFIRMATION_HOURS=24
-BOOKING_ADVANCE_NOTICE_DAYS=7
 
 # Claude vision — payment-receipt OCR (src/lib/receipt-ocr.ts)
 ANTHROPIC_API_KEY=sk-ant-...
@@ -150,14 +183,16 @@ ANTHROPIC_API_KEY=sk-ant-...
 |----------|-------------|---------|
 | `BOOKING_NOTIFICATION_EMAIL` | Fallback admin address for booking alerts if `bookingSettings.notificationEmail` is unset | `you@gmail.com` |
 | `BOOKING_TIMEZONE` | Working timezone for availability calculations | `Asia/Manila` |
-| `BOOKING_BUFFER_MINUTES` | Buffer between bookings | `15` |
-| `BOOKING_CONFIRMATION_HOURS` | Hours to accept/decline a booking before it expires | `24` |
-| `BOOKING_ADVANCE_NOTICE_DAYS` | Minimum days in advance a client must book | `7` |
 | `ANTHROPIC_API_KEY` | Powers receipt OCR on the proof-upload endpoint | `sk-ant-...` |
 
-`bookingEnabled` (the on/off switch for the booking form) and payment terms/instructions live in the
-`bookingSettings` global now, not in env vars — see [Booking Settings](#booking-settings-global)
-above.
+`bookingEnabled` (the on/off switch for the booking form), payment terms/instructions, and the
+deposit/deadline settings (`depositPercent`, `depositDueDaysBeforeStart`) live in the
+`bookingSettings` global, not in env vars — see [Booking Settings](#booking-settings-global) above.
+Buffer minutes and advance-notice days live on the `AvailabilityRules` collection (with an optional
+per-package `advanceNoticeDays` override on `Packages`) — there used to be `BOOKING_BUFFER_MINUTES`,
+`BOOKING_CONFIRMATION_HOURS`, and `BOOKING_ADVANCE_NOTICE_DAYS` env vars, but they were never read by
+any code and have been removed; `AvailabilityRules.confirmationWindowHours` (which implied an
+auto-expiry that never existed) has likewise been removed from the schema.
 
 ---
 
@@ -180,9 +215,9 @@ Rule 2: Weekend Full Day
   Hours: 09:00 - 18:00 (9 AM - 6 PM)
   Timezone: Asia/Manila
 
-Advance Notice: 7 days (clients must book 1 week ahead)
+Advance Notice: 7 days (clients must book 1 week ahead), enforced server-side in POST /api/bookings
+  — overridable per package (Packages.advanceNoticeDays); the consultation package overrides it to 2 days
 Max Advance: 60 days
-Confirmation Window: 24 hours
 ```
 
 ### Blocked Dates
@@ -236,9 +271,11 @@ sendPaymentConfirmedEmails(customer, booking): Promise<void>
 ### Booking Flow Testing
 
 - [ ] Submit booking request as client
-- [ ] Verify confirmation window enforcement
+- [ ] Verify a request inside the lead-time window is rejected (400) by `POST /api/bookings`
+- [ ] Verify the per-package `advanceNoticeDays` override is honoured (consultation books closer in)
 - [ ] Accept booking as admin
-- [ ] Move to Pending Payment, confirm client receives instructions email
+- [ ] Move to Pending Payment, confirm client receives instructions email with the deposit amount
+      and `paymentDueAt` deadline
 - [ ] Upload a receipt screenshot at `/book/proof/[bookingId]`, confirm admin receives the alert
       email with the extracted fields
 - [ ] Mark Paid as admin, confirm client receives confirmation email
@@ -247,7 +284,7 @@ sendPaymentConfirmedEmails(customer, booking): Promise<void>
 ### Edge Cases
 
 - [ ] Double booking prevention
-- [ ] Expired booking cleanup
+- [ ] Admin manually sets `expired` on an abandoned unpaid booking (there is no auto-expiry)
 - [ ] Proof upload: oversized file rejected, rate limit enforced, non-image rejected
 - [ ] Proof upload: unreadable/garbled image degrades to an empty extraction rather than erroring
 - [ ] Re-saving a booking without a status change does not re-send any email
@@ -274,7 +311,9 @@ sendPaymentConfirmedEmails(customer, booking): Promise<void>
 
 ### Weekly Tasks
 
-- [ ] Review and respond to booking requests within the confirmation window
+- [ ] Review and respond to new booking requests promptly
+- [ ] Sort the admin Bookings list by `paymentDueAt` to spot overdue deposits; follow up or set
+      `expired` by hand — nothing does this automatically
 - [ ] Check for bookings sitting in `payment_submitted` awaiting manual verification
 - [ ] Update blocked dates if schedule changes
 
@@ -306,6 +345,6 @@ sendPaymentConfirmedEmails(customer, booking): Promise<void>
 
 ---
 
-**Last Updated**: 2026-07-16
-**Version**: 2.0
-**Next Review**: 2026-10-16
+**Last Updated**: 2026-07-21
+**Version**: 2.1
+**Next Review**: 2026-10-21

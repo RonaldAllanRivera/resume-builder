@@ -85,14 +85,33 @@ there is no payment processor integration. Lifecycle:
 pending_review → accepted → pending_payment → payment_submitted → paid → in_progress → work_completed
 ```
 
-(plus terminal side-states `cancelled`, `expired`, `refunded`, `disputed`)
+(plus terminal side-states `cancelled`, `expired`, `refunded`, `disputed` — all of these are set by
+hand; there is no cron or auto-expiry anywhere in the project. `expired` in particular is for the
+admin to set manually when a booking is abandoned, e.g. the client never pays the deposit — the
+admin spots it by sorting the admin Bookings list by `paymentDueAt`, not from any automatic check.)
+
+**Payment policy**: derived from `pkg.durationType` in `POST /api/bookings`. The consultation
+(`durationType: 'call'`) takes no payment to book (`paymentMode: 'pay_after_completion'`) and skips
+`pending_payment` entirely, going `pending_review → accepted → in_progress → work_completed`. Every
+other package (`day`/`week`/`month`) takes a flat deposit (`paymentMode: 'deposit_final'`,
+`depositAmount = Math.round(price * bookingSettings.depositPercent / 100)`, default 50%); the
+balance is invoiced manually afterward. `Bookings.paymentDueAt` is computed at creation as `startAt`
+minus `bookingSettings.depositDueDaysBeforeStart` (default 3 days) and stored so the admin list can
+sort/filter by it — that's the mechanism for spotting overdue deposits, not an automatic expiry.
+
+**Lead-time enforcement**: `POST /api/bookings` rejects (400) any request whose `startAt` falls
+inside the minimum-notice window, resolved via the shared `src/lib/booking-availability.ts` helpers
+(`findMatchingRule`, `resolveAdvanceNoticeDays`, `isWithinBookingWindow`) also used by
+`GET /api/availability/slots`, so the two endpoints can't drift. The window is
+`Packages.advanceNoticeDays ?? AvailabilityRules.advanceNoticeDays ?? 7` — the consultation package
+overrides it to `2` days; paid packages inherit the rule's `7`.
 
 Moving a booking to `pending_payment` emails the client the payment instructions configured in
-**Globals → Booking Settings**; moving it to `payment_submitted` (the client uploaded a receipt
-screenshot) emails the ADMIN to go verify the payment by hand — nothing is auto-confirmed; moving
-it to `paid` emails the client a confirmation. All three are driven by
-`src/collections/Bookings/hooks/sendStatusEmails.ts`, guarded on an actual status change so re-saving
-a booking never re-sends mail.
+**Globals → Booking Settings**, including the deposit amount and the `paymentDueAt` deadline; moving
+it to `payment_submitted` (the client uploaded a receipt screenshot) emails the ADMIN to go verify
+the payment by hand — nothing is auto-confirmed; moving it to `paid` emails the client a
+confirmation. All three are driven by `src/collections/Bookings/hooks/sendStatusEmails.ts`, guarded
+on an actual status change so re-saving a booking never re-sends mail.
 
 Clients can upload a payment-receipt screenshot at `/book/proof/[bookingId]`, handled by
 `POST /api/bookings/proof` (rate-limited, size- and stream-bounded). Claude vision
@@ -110,7 +129,10 @@ Key files:
 - `src/app/api/bookings/proof/route.ts` — payment-proof upload + Claude OCR extraction
 - `src/collections/Bookings/hooks/sendStatusEmails.ts` — status-transition emails
 - `src/BookingSettings/config.ts` — global: `bookingEnabled` (kill switch), `paymentTermsSummary`,
-  `paymentInstructions`, `notificationEmail`
+  `paymentInstructions`, `notificationEmail`, `depositPercent` (default 50), `depositDueDaysBeforeStart`
+  (default 3)
+- `src/lib/booking-availability.ts` — shared lead-time/window resolution used by both the booking
+  submission endpoint and the availability-slots endpoint
 - `src/lib/booking-email.ts` — booking email templates via Resend
 - `src/app/(frontend)/book/[packageSlug]/` — booking flow pages
 - `src/app/(frontend)/book/proof/[bookingId]/` — client proof-upload page
@@ -165,8 +187,11 @@ See `.env.example` for all required variables. Key groups:
 - `OPENAI_API_KEY` — AI generation features (résumé/cover-letter generation)
 - `ANTHROPIC_API_KEY` — Claude vision for payment-receipt OCR (`src/lib/receipt-ocr.ts`)
 - `RESEND_API_KEY` + `CONTACT_FORM_*` — contact form emails
-- `BOOKING_*` — booking configuration (timezone, buffer, advance notice); payment terms/instructions
-  now live in the `bookingSettings` global, not env vars
+- `BOOKING_TIMEZONE` — working timezone for booking emails and availability calculations (read by
+  `src/lib/booking-email.ts`). Buffer minutes and advance-notice days live on the `AvailabilityRules`
+  collection (with a per-package override on `Packages.advanceNoticeDays`); payment terms,
+  instructions, and the deposit/deadline settings live in the `bookingSettings` global — none of
+  these are env vars
 - `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` — Google Docs export feature
 - `PAGESPEED_API_KEY` — recommended in production; anonymous PageSpeed API calls get 429-throttled. Used by the homepage Lighthouse badge.
 - `LIGHTHOUSE_AUDIT_URL` — optional dev override; points the Lighthouse audit at a public URL (e.g. the production domain) so the badge renders in local dev. Defaults to `NEXT_PUBLIC_SERVER_URL`.
