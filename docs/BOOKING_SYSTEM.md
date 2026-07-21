@@ -348,3 +348,17 @@ sendPaymentConfirmedEmails(customer, booking): Promise<void>
 **Last Updated**: 2026-07-21
 **Version**: 2.1
 **Next Review**: 2026-10-21
+
+## Deploy note (one-time, 2026-07 schema change)
+
+This change **drops the `confirmation_window_hours` column** from `availability_rules`.
+Payload runs in push mode, and dropping a populated column triggers Drizzle's interactive
+data-loss confirmation on the first boot against an existing database. A non-interactive
+deploy will stall on that prompt. Either accept the prompt from an interactive session
+against the prod DB once, or pre-drop the column manually:
+
+```sql
+ALTER TABLE availability_rules DROP COLUMN IF EXISTS confirmation_window_hours;
+```
+
+Safe to run: the column was read by no code (it promised an auto-expiry that never existed).
