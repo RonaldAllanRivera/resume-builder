@@ -297,6 +297,32 @@ export const seedResumeComplete = async ({
     const projects = [
       // FULL STACK DEVELOPMENT
       {
+        title: 'Wonderkin - Parent-Controlled, Child-Safe AI Companion',
+        slug: 'wonderkin-parent-controlled',
+        summary:
+          'Designed, built, and shipped wonderkin.net, a live production COPPA-minded AI companion where parents own the account and each child runs under age-adaptive safety policies, live oversight, and hard per-account cost limits. Built on Next.js 16 (App Router, Server Actions) and TypeScript with a strict server-only service layer over Supabase Postgres (Row-Level Security, Auth, Realtime, Storage), so safety rules cannot be bypassed by the client. Engineered defense-in-depth AI safety: age-adaptive prompts, OpenAI input/output moderation, a dedicated Anthropic Claude crisis classifier on its own independent model, and real-time parent alerts via Supabase Realtime and Web Push, plus moderation-gated child vision where photos are screened before the model sees them, read once, and never stored. Implemented token-accurate cost governance with per-account USD ceilings and an 80% model-downgrade governor so no account runs at a loss. Owned the full billing lifecycle: built a Stripe Checkout loop with a signed webhook as the single source of truth for paid state, then migrated to Lemon Squeezy as merchant of record behind a PaymentProvider seam. Hardened multi-tenant RLS in production, including a closed privilege-escalation fix, with GitHub Actions CI (Vitest, RLS integration tests against live Postgres) and $0 deterministic tests via a mock AI provider. Deployed on Vercel and Supabase with shadcn/ui and Tailwind v4.',
+        techStack: [
+          { name: 'Next.js 16' },
+          { name: 'TypeScript' },
+          { name: 'Tailwind v4' },
+          { name: 'shadcn/ui' },
+          { name: 'Supabase' },
+          { name: 'Anthropic Claude' },
+          { name: 'Lemon Squeezy' },
+          { name: 'Web Push' },
+          { name: 'Resend' },
+          { name: 'Vitest' },
+          { name: 'Docker' },
+          { name: 'GitHub Actions' },
+          { name: 'Vercel' },
+        ],
+        repoUrl: 'https://www.wonderkin.net/',
+        category: 'full-stack' as const,
+        featured: true,
+        order: 1,
+        _status: 'published' as const,
+      },
+      {
         title: 'Resume + Portfolio CMS',
         slug: 'resume-portfolio-cms',
         summary:
@@ -314,7 +340,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/auto-respond/',
         category: 'full-stack' as const,
         featured: true,
-        order: 1,
+        order: 2,
         _status: 'published' as const,
       },
       {
@@ -333,7 +359,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/auto-respond/',
         category: 'full-stack' as const,
         featured: true,
-        order: 1,
+        order: 3,
         _status: 'published' as const,
       },
       {
@@ -351,7 +377,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/forex',
         category: 'full-stack' as const,
         featured: true,
-        order: 2,
+        order: 4,
         _status: 'published' as const,
       },
       {
@@ -369,7 +395,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/aws_ecommerce',
         category: 'full-stack' as const,
         featured: true,
-        order: 3,
+        order: 5,
         _status: 'published' as const,
       },
       {
@@ -386,7 +412,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/traderai.live',
         category: 'full-stack' as const,
         featured: true,
-        order: 4,
+        order: 6,
         _status: 'published' as const,
       },
       {
@@ -398,7 +424,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/report-system-laravel',
         category: 'full-stack' as const,
         featured: false,
-        order: 5,
+        order: 7,
         _status: 'published' as const,
       },
       {
@@ -410,7 +436,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/cars-images-api',
         category: 'full-stack' as const,
         featured: false,
-        order: 6,
+        order: 8,
         _status: 'published' as const,
       },
       {
@@ -422,7 +448,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/book-reader',
         category: 'full-stack' as const,
         featured: false,
-        order: 7,
+        order: 9,
         _status: 'published' as const,
       },
       {
@@ -439,7 +465,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/elementor-clone',
         category: 'full-stack' as const,
         featured: false,
-        order: 8,
+        order: 10,
         _status: 'published' as const,
       },
       {
@@ -451,7 +477,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/featured-resource-block',
         category: 'wordpress' as const,
         featured: false,
-        order: 9,
+        order: 11,
         _status: 'published' as const,
       },
       {
@@ -463,7 +489,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/irank-calc-cards',
         category: 'wordpress' as const,
         featured: false,
-        order: 10,
+        order: 12,
         _status: 'published' as const,
       },
       {
@@ -475,7 +501,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/used-cars-search',
         category: 'wordpress' as const,
         featured: false,
-        order: 11,
+        order: 13,
         _status: 'published' as const,
       },
       {
@@ -487,7 +513,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/software-search',
         category: 'wordpress' as const,
         featured: false,
-        order: 12,
+        order: 14,
         _status: 'published' as const,
       },
       {
@@ -499,7 +525,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://artworkwebsite.com/',
         category: 'wordpress' as const,
         featured: false,
-        order: 13,
+        order: 15,
         _status: 'published' as const,
       },
       {
@@ -511,7 +537,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/cloudflare-multiple-domain-delete',
         category: 'automation' as const,
         featured: false,
-        order: 14,
+        order: 16,
         _status: 'published' as const,
       },
       {
@@ -523,7 +549,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/httrack-clone',
         category: 'automation' as const,
         featured: false,
-        order: 15,
+        order: 17,
         _status: 'published' as const,
       },
       {
@@ -535,7 +561,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://gaitbeacon.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 16,
+        order: 18,
         _status: 'published' as const,
       },
       {
@@ -547,7 +573,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://gaitbeacon.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 17,
+        order: 19,
         _status: 'published' as const,
       },
       {
@@ -559,7 +585,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://everythingusedcars.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 18,
+        order: 20,
         _status: 'published' as const,
       },
       {
@@ -571,7 +597,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://popularaisoftware.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 19,
+        order: 21,
         _status: 'published' as const,
       },
       {
@@ -583,7 +609,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://78dragons.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 20,
+        order: 22,
         _status: 'published' as const,
       },
       {
@@ -595,7 +621,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://smartersafetysystems.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 21,
+        order: 23,
         _status: 'published' as const,
       },
       {
@@ -607,7 +633,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://lumbardconsulting.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 22,
+        order: 24,
         _status: 'published' as const,
       },
       {
@@ -619,7 +645,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://24aries.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 23,
+        order: 25,
         _status: 'published' as const,
       },
       {
@@ -631,7 +657,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://pulseiq.com',
         category: 'wordpress' as const,
         featured: false,
-        order: 24,
+        order: 26,
         _status: 'published' as const,
       },
       {
@@ -643,7 +669,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/mapscraper',
         category: 'automation' as const,
         featured: false,
-        order: 25,
+        order: 27,
         _status: 'published' as const,
       },
       {
@@ -655,7 +681,7 @@ export const seedResumeComplete = async ({
         repoUrl: 'https://github.com/RonaldAllanRivera/csv_scraper_gui',
         category: 'automation' as const,
         featured: false,
-        order: 26,
+        order: 28,
         _status: 'published' as const,
       },
       {
@@ -667,7 +693,7 @@ export const seedResumeComplete = async ({
         liveUrl: 'https://www.flickr.com/photos/ronald-allan-rivera/',
         category: 'graphic-design' as const,
         featured: false,
-        order: 27,
+        order: 29,
         _status: 'published' as const,
       },
     ]
