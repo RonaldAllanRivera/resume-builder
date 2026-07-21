@@ -31,9 +31,16 @@ const user = await payload.create({
 ### Environment Variables for Tests
 
 1. **Local Testing:**
-   - Copy `.env.test.example` to `.env.test`
-   - Set `TEST_USER_PASSWORD` to a secure value
-   - `.env.test` is gitignored and won't be committed
+   - `.env.test` is committed and holds no real credentials — it points at the
+     isolated test database on port 5433 and uses mock keys. There is nothing to
+     copy; it works as checked in. (The former `.env.test.example` was an exact
+     duplicate of it and has been removed.)
+   - Every third-party key in it must stay **present and empty**, never deleted.
+     `vitest.setup.ts` runs `import 'dotenv/config'`, which loads `.env` to fill
+     any gap this file leaves — so an absent key is silently replaced by your
+     real one. `RESEND_API_KEY` was missing exactly this way, and the booking
+     suites (which invoke the real `POST /api/bookings` handler) sent live email
+     on every run.
 
 2. **CI/CD (GitHub Actions):**
    - The workflow uses a default password if no secret is set
