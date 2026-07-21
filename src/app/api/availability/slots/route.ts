@@ -2,6 +2,11 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextRequest, NextResponse } from 'next/server'
 import { TZDate } from '@date-fns/tz'
+import {
+  findMatchingRule,
+  isWithinBookingWindow,
+  type PackageWithOptionalAdvanceNotice,
+} from '@/lib/booking-availability'
 
 interface TimeSlot {
   start: string
@@ -65,42 +70,26 @@ export async function GET(request: NextRequest) {
 
     const requestedDate = new Date(date + 'T00:00:00')
     const now = new Date()
-    const dayOfWeek = requestedDate.getDay() === 0 ? 7 : requestedDate.getDay() // ISO: Mon=1, Sun=7
 
     // Find a rule that matches the requested day of week
-    const matchingRule = rules.find((rule) => {
-      const daysOfWeek = (rule.daysOfWeek as string[]) || []
-      return daysOfWeek.includes(String(dayOfWeek))
-    })
+    const rule = findMatchingRule(rules, requestedDate)
 
-    if (!matchingRule) {
+    if (!rule) {
       return NextResponse.json({ slots: [], message: 'Not available on this day' })
     }
 
-    const rule = matchingRule
-    const advanceNoticeDays = rule.advanceNoticeDays ?? 7
-    const maxAdvanceDays = rule.maxAdvanceDays ?? 60
+    // `Package.advanceNoticeDays` doesn't exist yet (a later task adds it) —
+    // this cast is safe: the field is simply absent today, so the resolver
+    // falls through to the rule's value, matching current behaviour exactly.
+    const window = isWithinBookingWindow({
+      startAt: requestedDate,
+      pkg: pkg as PackageWithOptionalAdvanceNotice,
+      rule,
+      now,
+    })
 
-    const minDate = new Date(now)
-    minDate.setDate(minDate.getDate() + advanceNoticeDays)
-    minDate.setHours(0, 0, 0, 0)
-
-    const maxDate = new Date(now)
-    maxDate.setDate(maxDate.getDate() + maxAdvanceDays)
-    maxDate.setHours(23, 59, 59, 999)
-
-    if (requestedDate < minDate) {
-      return NextResponse.json({
-        slots: [],
-        message: `Bookings require at least ${advanceNoticeDays} days advance notice`,
-      })
-    }
-
-    if (requestedDate > maxDate) {
-      return NextResponse.json({
-        slots: [],
-        message: `Bookings can only be made up to ${maxAdvanceDays} days in advance`,
-      })
+    if (!window.ok) {
+      return NextResponse.json({ slots: [], message: window.reason })
     }
 
     // Check blocked dates
