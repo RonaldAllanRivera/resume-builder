@@ -137,6 +137,14 @@ export const Packages: CollectionConfig = {
       defaultValue: true,
     },
     {
+      name: 'advanceNoticeDays',
+      type: 'number',
+      admin: {
+        description:
+          'Minimum days in advance this package can be booked. Leave empty to inherit the availability rule (currently 7). Set to 2 for consultations.',
+      },
+    },
+    {
       name: 'active',
       type: 'checkbox',
       defaultValue: true,

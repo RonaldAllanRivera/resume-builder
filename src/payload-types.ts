@@ -1112,6 +1112,10 @@ export interface Package {
     | null;
   requiresScheduling?: boolean | null;
   /**
+   * Minimum days in advance this package can be booked. Leave empty to inherit the availability rule (currently 7). Set to 2 for consultations.
+   */
+  advanceNoticeDays?: number | null;
+  /**
    * Show this package on the pricing page
    */
   active?: boolean | null;
@@ -2175,6 +2179,7 @@ export interface PackagesSelect<T extends boolean = true> {
         id?: T;
       };
   requiresScheduling?: T;
+  advanceNoticeDays?: T;
   active?: T;
   sortOrder?: T;
   updatedAt?: T;

@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendBookingRequestEmails } from '@/lib/booking-email'
+import { findMatchingRule, isWithinBookingWindow } from '@/lib/booking-availability'
 
 /**
  * POST /api/bookings
@@ -77,6 +78,36 @@ export async function POST(request: NextRequest) {
     }
 
     const pkg = packages[0]
+
+    // Enforce the lead-time / availability window — this is the fix: the
+    // slots endpoint only hid non-compliant dates from the calendar, but
+    // this endpoint accepted them outright. Share the resolution logic with
+    // the slots endpoint so the two cannot drift apart.
+    const { docs: rules } = await payload.find({
+      collection: 'availabilityRules',
+      where: { active: { equals: true } },
+      limit: 10,
+    })
+
+    const matchingRule = findMatchingRule(rules, startDate)
+
+    if (!matchingRule) {
+      return NextResponse.json(
+        { error: 'No availability configured for this day. Please choose a different date.' },
+        { status: 400 },
+      )
+    }
+
+    const window = isWithinBookingWindow({
+      startAt: startDate,
+      pkg,
+      rule: matchingRule,
+      now: new Date(),
+    })
+
+    if (!window.ok) {
+      return NextResponse.json({ error: window.reason }, { status: 400 })
+    }
 
     // Check for double booking
     const { docs: conflicting } = await payload.find({

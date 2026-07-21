@@ -42,6 +42,7 @@ export const seedBookingData = async ({
         ],
         limits: [{ type: 'Follow-up', value: '1 email within 48 hours' }],
         requiresScheduling: true,
+        advanceNoticeDays: 2,
         active: true,
         sortOrder: 1,
       },

@@ -2,11 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { NextRequest, NextResponse } from 'next/server'
 import { TZDate } from '@date-fns/tz'
-import {
-  findMatchingRule,
-  isWithinBookingWindow,
-  type PackageWithOptionalAdvanceNotice,
-} from '@/lib/booking-availability'
+import { findMatchingRule, isWithinBookingWindow } from '@/lib/booking-availability'
 
 interface TimeSlot {
   start: string
@@ -78,12 +74,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ slots: [], message: 'Not available on this day' })
     }
 
-    // `Package.advanceNoticeDays` doesn't exist yet (a later task adds it) —
-    // this cast is safe: the field is simply absent today, so the resolver
-    // falls through to the rule's value, matching current behaviour exactly.
     const window = isWithinBookingWindow({
       startAt: requestedDate,
-      pkg: pkg as PackageWithOptionalAdvanceNotice,
+      pkg,
       rule,
       now,
     })
