@@ -5,8 +5,9 @@
  */
 
 import 'dotenv/config'
-import { getPayload } from 'payload'
+import { createLocalReq, getPayload } from 'payload'
 import config from '../src/payload.config'
+import { seedBookingData } from '../src/endpoints/seed-booking'
 
 async function seedE2E() {
   console.log('Seeding database for E2E tests...')
@@ -121,12 +122,23 @@ async function seedE2E() {
       },
     })
 
+    // Booking data. tests/e2e/booking.e2e.spec.ts drives the wizard from
+    // /services, which only renders `/book/<slug>` links for active packages,
+    // and the time step calls /api/availability/slots, which returns nothing
+    // without availability rules. Without this the whole booking suite fails
+    // on an empty services page.
+    console.log('Seeding booking packages and availability rules...')
+    const req = await createLocalReq({ req: { headers: new Headers() } }, payload)
+    const booking = await seedBookingData({ payload, req })
+
     console.log('✓ Database seeded successfully for E2E tests')
     console.log(`  - 1 admin user`)
     console.log(`  - 1 resume profile`)
     console.log(`  - 2 projects`)
     console.log(`  - 1 company`)
     console.log(`  - 1 job ad`)
+    console.log(`  - ${booking.packages} packages`)
+    console.log(`  - ${booking.availabilityRules} availability rules`)
     process.exit(0)
   } catch (error) {
     console.error('✗ Failed to seed database:', error)
