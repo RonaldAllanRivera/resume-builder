@@ -21,6 +21,19 @@ export interface BookingEmailData {
    * the upload link) — never the sequential `bookingId`, which is enumerable.
    */
   proofToken?: string
+  /**
+   * Deposit amount in minor units (centavos/cents), and the percentage it
+   * represents of the package price. Both null/undefined for consultations,
+   * which take no deposit — `buildCustomerPaymentInstructionsHtml` must not
+   * render a deadline line in that case.
+   */
+  depositAmount?: number | null
+  depositPercent?: number | null
+  /**
+   * ISO datetime the deposit must clear by (startAt minus
+   * BookingSettings.depositDueDaysBeforeStart). Null for consultations.
+   */
+  paymentDueAt?: string | null
 }
 
 export interface CustomerEmailData {
@@ -294,6 +307,26 @@ function buildAdminPaymentReceivedHtml(
   return emailShell('Payment Received', body)
 }
 
+/**
+ * "Your 50% deposit (₱500.00) must clear by Friday, 8 August 2026." — or
+ * empty string when there is no deposit/deadline to state (consultations,
+ * which take no payment to book). Deliberately requires BOTH depositAmount
+ * and paymentDueAt so a partially-populated booking never renders a
+ * half-sentence or an "Invalid Date".
+ */
+function buildDeadlineLine(booking: BookingEmailData): string {
+  if (booking.depositAmount == null || !booking.paymentDueAt) return ''
+
+  const percent = booking.depositPercent ?? 50
+  const depositFormatted = formatCurrency(booking.depositAmount, booking.currency)
+  const deadlineFormatted = formatDatetime(booking.paymentDueAt, booking.timezone)
+
+  return `<p style="margin:0 0 24px;color:#fff;font-size:14px;line-height:1.7;">
+    Your ${percent}% deposit (<strong>${depositFormatted}</strong>) must clear by
+    <strong>${deadlineFormatted}</strong>.
+  </p>`
+}
+
 function buildCustomerPaymentInstructionsHtml(
   customer: CustomerEmailData,
   booking: BookingEmailData,
@@ -313,6 +346,8 @@ function buildCustomerPaymentInstructionsHtml(
       ${detailRow('Amount Due', formatCurrency(booking.amount, booking.currency))}
       ${detailRow('Reference', `#${booking.bookingId}`)}
     </table>
+
+    ${buildDeadlineLine(booking)}
 
     <div style="background:#0d0e17;border-radius:8px;padding:24px;margin-bottom:32px;">
       <p style="margin:0 0 12px;color:rgba(255,255,255,0.5);font-size:13px;text-transform:uppercase;letter-spacing:0.5px;">

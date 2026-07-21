@@ -81,6 +81,49 @@ describe('sendPaymentInstructionsEmail', () => {
     expect(sent.html).not.toContain('<script>')
     expect(sent.html).toContain('&lt;script&gt;')
   })
+
+  it('renders the deposit amount and the payment deadline for a paid (deposit_final) booking', async () => {
+    const { sendPaymentInstructionsEmail } = await import('@/lib/booking-email')
+
+    await sendPaymentInstructionsEmail(
+      customer,
+      {
+        ...booking,
+        paymentMode: 'deposit_final',
+        depositAmount: 100000,
+        depositPercent: 50,
+        paymentDueAt: '2026-08-08T02:00:00.000Z',
+      },
+      { paymentInstructions: 'GCash 0917-000-0000' },
+    )
+
+    const sent = sendMock.mock.calls[0][0]
+    expect(sent.html).toContain('must clear by')
+    expect(sent.html).toContain('50%')
+    // 100000 minor units of PHP formatted via the existing formatCurrency helper.
+    expect(sent.html).toContain('₱1,000.00')
+    // 2026-08-08T02:00:00Z rendered in Asia/Manila via the existing formatDatetime helper.
+    expect(sent.html).toContain('Saturday, August 8, 2026')
+  })
+
+  it('renders no deadline line — and no "Invalid Date" — for a consultation with no deposit', async () => {
+    const { sendPaymentInstructionsEmail } = await import('@/lib/booking-email')
+
+    await sendPaymentInstructionsEmail(
+      customer,
+      {
+        ...booking,
+        paymentMode: 'pay_after_completion',
+        depositAmount: null,
+        paymentDueAt: null,
+      },
+      { paymentInstructions: 'GCash 0917-000-0000' },
+    )
+
+    const sent = sendMock.mock.calls[0][0]
+    expect(sent.html).not.toContain('must clear by')
+    expect(sent.html).not.toContain('Invalid Date')
+  })
 })
 
 describe('sendProofSubmittedAdminEmail', () => {

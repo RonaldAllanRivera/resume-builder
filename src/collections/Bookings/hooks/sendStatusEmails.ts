@@ -59,6 +59,11 @@ export const sendStatusEmails: CollectionAfterChangeHook = async ({
       company: customerDoc.company ?? null,
     }
 
+    // Fetched once up front — every branch below needs the admin notification
+    // email, and pending_payment additionally needs depositPercent to render
+    // the deadline line in the invoice email.
+    const settings = await req.payload.findGlobal({ slug: 'bookingSettings', depth: 0, req })
+
     const booking: BookingEmailData = {
       bookingId: doc.id,
       packageName: packageDoc.name,
@@ -70,11 +75,12 @@ export const sendStatusEmails: CollectionAfterChangeHook = async ({
       notes: doc.notes ?? null,
       timezone: doc.timezoneAtBooking,
       proofToken: doc.proofToken ?? undefined,
+      depositAmount: doc.depositAmount ?? null,
+      depositPercent: settings.depositPercent ?? null,
+      paymentDueAt: doc.paymentDueAt ?? null,
     }
 
     if (doc.status === 'pending_payment') {
-      const settings = await req.payload.findGlobal({ slug: 'bookingSettings', depth: 0, req })
-
       await sendPaymentInstructionsEmail(customer, booking, {
         paymentInstructions: settings.paymentInstructions ?? '',
         adminEmail: settings.notificationEmail ?? undefined,
@@ -83,8 +89,6 @@ export const sendStatusEmails: CollectionAfterChangeHook = async ({
       // The client uploaded proof. This confirms NOTHING — it is a claim.
       // Tell the admin to go verify it against their own bank/GCash.
       // Deliberately no email to the client: nothing has been confirmed yet.
-      const settings = await req.payload.findGlobal({ slug: 'bookingSettings', depth: 0, req })
-
       await sendProofSubmittedAdminEmail(customer, booking, {
         adminEmail: settings.notificationEmail ?? undefined,
         extractedAmountMinor: doc.proofExtracted?.amountMinor ?? null,
