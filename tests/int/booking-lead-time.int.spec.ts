@@ -100,32 +100,13 @@ async function bookingCount(): Promise<number> {
  * customer emails before creating anything new.
  */
 async function sweepLeftoverBookings(payload: Payload) {
-  const emailPrefixes = [
-    'jane-inside-',
-    'jane-outside-',
-    'jane-control-',
-    'jane-override-',
-    'jane-norule-',
-  ]
-
-  for (const prefix of emailPrefixes) {
-    const { docs: customers } = await payload.find({
-      collection: 'customers',
-      where: { email: { contains: prefix } },
-      limit: 0,
-    })
-
-    for (const cust of customers) {
-      const { docs: bookings } = await payload.find({
-        collection: 'bookings',
-        where: { customer: { equals: cust.id } },
-        limit: 0,
-      })
-
-      for (const booking of bookings) {
-        await payload.delete({ collection: 'bookings', id: booking.id }).catch(() => {})
-      }
-    }
+  // Full sweep: other suites leave bookings at hardcoded dates that the
+  // route's overlap check treats as conflicting (see the identical helper in
+  // booking-payment-policy.int.spec.ts for the full rationale). Dedicated
+  // test DB + serial suites make this safe.
+  const { docs: bookings } = await payload.find({ collection: 'bookings', limit: 0 })
+  for (const booking of bookings) {
+    await payload.delete({ collection: 'bookings', id: booking.id }).catch(() => {})
   }
 }
 

@@ -38,40 +38,30 @@ function futureBookableDate(daysOut: number): Date {
 }
 
 /**
- * Deletes bookings left behind by a prior run of this suite.
+ * Deletes ALL bookings left behind by prior runs — this suite's and others'.
  *
  * `futureBookableDate(daysOut)` always lands on the same calendar day for a
- * given `daysOut` (it only nudges the time-of-day), so a booking this suite
- * created on an earlier run — one that crashed before `afterAll` ran, or one
- * that ran against this same persistent test-DB volume in a previous session —
- * can still be sitting in the exact `startAt`/`endAt` window a later run
- * re-derives. `POST /api/bookings`'s double-booking check then (correctly)
- * 409s against the leftover. Sweep anything tied to this suite's distinctive
- * customer emails before creating anything new.
+ * given `daysOut`, and this suite books through the real route, whose
+ * double-booking check (correctly) 409s against any conflicting leftover.
  */
 async function sweepLeftoverBookings(payload: Payload) {
-  const emailPrefixes = ['jane-call-', 'jane-day-', 'jane-week-', 'jane-month-']
-
-  for (const prefix of emailPrefixes) {
-    const { docs: customers } = await payload.find({
-      collection: 'customers',
-      where: { email: { contains: prefix } },
-      limit: 0,
-    })
-
-    for (const cust of customers) {
-      const { docs: bookings } = await payload.find({
-        collection: 'bookings',
-        where: { customer: { equals: cust.id } },
-        limit: 0,
-      })
-
-      for (const booking of bookings) {
-        await payload.delete({ collection: 'bookings', id: booking.id }).catch(() => {})
-      }
-    }
+  // Delete ALL bookings, not just this suite's. Other suites (booking-email,
+  // booking-status-emails, booking-enabled, booking-proof) create bookings via
+  // direct payload.create at a hardcoded 2026-08-01T02:00Z with statuses the
+  // route's overlap check treats as conflicting. Those leftovers persist across
+  // runs and intermittently 409 this suite's route-driven bookings whenever the
+  // dates draw near each other. This is a dedicated test DB and suites run
+  // serially (fileParallelism: false), and every suite creates its own bookings
+  // in its own beforeAll — a full sweep here cannot break them.
+  const { docs: bookings } = await payload.find({
+    collection: 'bookings',
+    limit: 0,
+  })
+  for (const booking of bookings) {
+    await payload.delete({ collection: 'bookings', id: booking.id }).catch(() => {})
   }
 }
+
 
 async function createPackage(
   durationType: 'call' | 'day' | 'week' | 'month',
