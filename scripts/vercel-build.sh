@@ -13,21 +13,23 @@ if [ -n "$DATABASE_URL" ] && [ -n "$VERCEL_ENV" ]; then
   echo "📊 Database URL found, running migrations..."
   echo "🔗 Using database: ${DATABASE_URL%%@*}...@..." # Hide credentials
   
-  # Step 1: Initialize database schema using init-db script
-  echo "🔧 Step 1: Initializing database schema..."
-  if NODE_OPTIONS='--no-deprecation' npx tsx scripts/init-db.ts 2>&1; then
-    echo "✅ Database initialized successfully"
-  else
-    echo "⚠️ Database init had issues, continuing to migrations..."
-  fi
-  
-  # Step 2: Run Payload migrations using the CLI
-  echo "🔧 Step 2: Running Payload migrations..."
-  if NODE_OPTIONS='--no-deprecation' npx payload migrate 2>&1; then
-    echo "✅ Migrations completed successfully"
-  else
-    echo "⚠️ Migrations had issues, but continuing with build..."
-  fi
+  # Migrations must succeed or the build fails. Previously this step was
+  # wrapped in `if ...; else echo "continuing"`, which swallowed every failure
+  # and let deploys go green against an unmigrated database — that is how
+  # /admin ended up 500ing on a missing payment_proofs_id column.
+  #
+  # scripts/init-db.ts used to run here as "Step 1: Initializing database
+  # schema". It never created anything: it only calls getPayload() and two
+  # find() queries, and Payload disables schema push when NODE_ENV=production.
+  # Migrations are the only thing that changes the schema, so it is gone.
+  # Without this, migrate() blocks on a TTY-less confirm and exits 0 having done
+  # nothing. See the script's header for the full explanation.
+  echo "🔧 Clearing any dev-push migration marker..."
+  NODE_OPTIONS='--no-deprecation' npx tsx scripts/clear-dev-migration-marker.ts
+
+  echo "🔧 Running Payload migrations..."
+  NODE_OPTIONS='--no-deprecation' npx payload migrate
+  echo "✅ Migrations completed successfully"
 else
   echo "📋 Skipping migrations (no DATABASE_URL or not in Vercel environment)"
 fi
