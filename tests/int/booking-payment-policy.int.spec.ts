@@ -37,6 +37,42 @@ function futureBookableDate(daysOut: number): Date {
   return d
 }
 
+/**
+ * Deletes bookings left behind by a prior run of this suite.
+ *
+ * `futureBookableDate(daysOut)` always lands on the same calendar day for a
+ * given `daysOut` (it only nudges the time-of-day), so a booking this suite
+ * created on an earlier run — one that crashed before `afterAll` ran, or one
+ * that ran against this same persistent test-DB volume in a previous session —
+ * can still be sitting in the exact `startAt`/`endAt` window a later run
+ * re-derives. `POST /api/bookings`'s double-booking check then (correctly)
+ * 409s against the leftover. Sweep anything tied to this suite's distinctive
+ * customer emails before creating anything new.
+ */
+async function sweepLeftoverBookings(payload: Payload) {
+  const emailPrefixes = ['jane-call-', 'jane-day-', 'jane-week-', 'jane-month-']
+
+  for (const prefix of emailPrefixes) {
+    const { docs: customers } = await payload.find({
+      collection: 'customers',
+      where: { email: { contains: prefix } },
+      limit: 0,
+    })
+
+    for (const cust of customers) {
+      const { docs: bookings } = await payload.find({
+        collection: 'bookings',
+        where: { customer: { equals: cust.id } },
+        limit: 0,
+      })
+
+      for (const booking of bookings) {
+        await payload.delete({ collection: 'bookings', id: booking.id }).catch(() => {})
+      }
+    }
+  }
+}
+
 async function createPackage(
   durationType: 'call' | 'day' | 'week' | 'month',
   price: number,
@@ -75,6 +111,8 @@ function buildBookingRequest(opts: { packageSlug: string; startAt: Date; email: 
 describe('POST /api/bookings payment policy + deposit deadline', () => {
   beforeAll(async () => {
     payload = await getPayload({ config: await config })
+
+    await sweepLeftoverBookings(payload)
 
     await payload.updateGlobal({
       slug: 'bookingSettings',
