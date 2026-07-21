@@ -175,12 +175,25 @@ export async function POST(request: NextRequest) {
       customerId = newCustomer.id
     }
 
-    // Determine payment mode based on package type
-    let paymentMode: 'pay_after_completion' | 'pay_upfront' | 'deposit_final' = 'pay_after_completion'
-    if (pkg.durationType === 'call') {
-      paymentMode = 'pay_upfront'
-    } else if (pkg.durationType === 'month') {
-      paymentMode = 'deposit_final'
+    // Determine payment mode based on package type. Consultations take no
+    // payment to book (the call itself is the sales conversation — friction
+    // there costs leads); every paid package (day/week/month) requires a
+    // deposit up front, with the balance invoiced manually after the work.
+    const paymentMode: 'pay_after_completion' | 'deposit_final' =
+      pkg.durationType === 'call' ? 'pay_after_completion' : 'deposit_final'
+
+    const depositPercent = bookingSettings?.depositPercent ?? 50
+    const depositDueDaysBeforeStart = bookingSettings?.depositDueDaysBeforeStart ?? 3
+
+    // paymentDueAt is the admin's guaranteed verification window before the
+    // session starts — stored (not computed on read) so the admin list can
+    // sort/filter by it. Consultations never enter pending_payment, so they
+    // get no deadline.
+    let paymentDueAt: string | undefined
+    if (paymentMode === 'deposit_final') {
+      const dueDate = new Date(startDate)
+      dueDate.setDate(dueDate.getDate() - depositDueDaysBeforeStart)
+      paymentDueAt = dueDate.toISOString()
     }
 
     // Create booking
@@ -198,8 +211,9 @@ export async function POST(request: NextRequest) {
         amount: pkg.price,
         currency: pkg.currency,
         ...(paymentMode === 'deposit_final' && {
-          depositAmount: Math.round(pkg.price * 0.5),
+          depositAmount: Math.round((pkg.price * depositPercent) / 100),
         }),
+        ...(paymentDueAt && { paymentDueAt }),
       },
     })
 

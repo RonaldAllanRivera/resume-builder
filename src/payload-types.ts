@@ -1283,6 +1283,10 @@ export interface Booking {
    */
   endAt: string;
   /**
+   * Computed at creation as startAt minus BookingSettings.depositDueDaysBeforeStart. This is the admin verification deadline — there is deliberately no cron/auto-expiry, so an overdue deposit must be spotted here (sort/filter this column) and handled by hand. Null for consultations, which take no deposit.
+   */
+  paymentDueAt?: string | null;
+  /**
    * Customer timezone at time of booking
    */
   timezoneAtBooking: string;
@@ -2246,6 +2250,7 @@ export interface BookingsSelect<T extends boolean = true> {
   depositAmount?: T;
   startAt?: T;
   endAt?: T;
+  paymentDueAt?: T;
   timezoneAtBooking?: T;
   notes?: T;
   termsAcceptedAt?: T;
@@ -2725,6 +2730,14 @@ export interface BookingSetting {
    * Where new booking alerts go. Falls back to the BOOKING_NOTIFICATION_EMAIL env var.
    */
   notificationEmail?: string | null;
+  /**
+   * Percentage of the package price required as a deposit to secure a booking.
+   */
+  depositPercent?: number | null;
+  /**
+   * How many days before the session start the deposit must clear. This is the admin’s window to verify the payment landed in their own bank/GCash before the session starts.
+   */
+  depositDueDaysBeforeStart?: number | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2858,6 +2871,8 @@ export interface BookingSettingsSelect<T extends boolean = true> {
   paymentTermsSummary?: T;
   paymentInstructions?: T;
   notificationEmail?: T;
+  depositPercent?: T;
+  depositDueDaysBeforeStart?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

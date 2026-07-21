@@ -45,5 +45,22 @@ export const BookingSettings: GlobalConfig = {
           'Where new booking alerts go. Falls back to the BOOKING_NOTIFICATION_EMAIL env var.',
       },
     },
+    {
+      name: 'depositPercent',
+      type: 'number',
+      defaultValue: 50,
+      admin: {
+        description: 'Percentage of the package price required as a deposit to secure a booking.',
+      },
+    },
+    {
+      name: 'depositDueDaysBeforeStart',
+      type: 'number',
+      defaultValue: 3,
+      admin: {
+        description:
+          'How many days before the session start the deposit must clear. This is the admin’s window to verify the payment landed in their own bank/GCash before the session starts.',
+      },
+    },
   ],
 }

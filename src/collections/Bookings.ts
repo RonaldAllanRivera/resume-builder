@@ -7,7 +7,7 @@ export const Bookings: CollectionConfig = {
   slug: 'bookings',
   admin: {
     useAsTitle: 'id',
-    defaultColumns: ['customer', 'package', 'status', 'startAt', 'amount'],
+    defaultColumns: ['customer', 'package', 'status', 'startAt', 'amount', 'paymentDueAt'],
     group: 'Booking',
   },
   access: {
@@ -141,6 +141,18 @@ export const Bookings: CollectionConfig = {
           displayFormat: 'MMM dd, yyyy HH:mm',
         },
         description: 'Booking end time in UTC',
+      },
+    },
+    {
+      name: 'paymentDueAt',
+      type: 'date',
+      admin: {
+        readOnly: true,
+        date: {
+          displayFormat: 'MMM dd, yyyy HH:mm',
+        },
+        description:
+          'Computed at creation as startAt minus BookingSettings.depositDueDaysBeforeStart. This is the admin verification deadline — there is deliberately no cron/auto-expiry, so an overdue deposit must be spotted here (sort/filter this column) and handled by hand. Null for consultations, which take no deposit.',
       },
     },
     {
