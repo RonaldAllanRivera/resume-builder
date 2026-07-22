@@ -11,14 +11,18 @@ import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Page, Post } from '@/payload-types'
-import { getServerSideURL } from '@/utilities/getURL'
+import { getCanonicalURL } from '@/utilities/getURL'
 
+const SITE_NAME = 'Ronald Allan Rivera'
+
+// This drove the SEO plugin's default titles for Pages and Posts, which is why
+// /posts rendered as "Payload Website Template Posts" in production.
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  return doc?.title ? `${doc.title} | ${SITE_NAME}` : SITE_NAME
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
-  const url = getServerSideURL()
+  const url = getCanonicalURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
 }

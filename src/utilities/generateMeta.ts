@@ -3,12 +3,14 @@ import type { Metadata } from 'next'
 import type { Media, Page, Post, Config } from '../payload-types'
 
 import { mergeOpenGraph } from './mergeOpenGraph'
-import { getServerSideURL } from './getURL'
+import { getCanonicalURL } from './getURL'
+
+const SITE_NAME = 'Ronald Allan Rivera'
 
 const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
-  const serverUrl = getServerSideURL()
+  const serverUrl = getCanonicalURL()
 
-  let url = serverUrl + '/website-template-OG.webp'
+  let url = serverUrl + '/og-default.png'
 
   if (image && typeof image === 'object' && 'url' in image) {
     const ogUrl = image.sizes?.og?.url
@@ -19,6 +21,11 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   return url
 }
 
+/**
+ * Drives metadata for every CMS Page and Post. It previously appended
+ * "| Payload Website Template" to every title and fell back to the starter
+ * template's OG image.
+ */
 export const generateMeta = async (args: {
   doc: Partial<Page> | Partial<Post> | null
 }): Promise<Metadata> => {
@@ -26,23 +33,17 @@ export const generateMeta = async (args: {
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+  const title = doc?.meta?.title ? `${doc.meta.title} | ${SITE_NAME}` : SITE_NAME
+
+  const slugPath = Array.isArray(doc?.slug) ? doc?.slug.join('/') : doc?.slug
 
   return {
     description: doc?.meta?.description,
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      images: ogImage ? [{ url: ogImage }] : undefined,
       title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
+      url: slugPath ? `/${slugPath}` : '/',
     }),
     title,
   }

@@ -58,6 +58,9 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Posts`,
+    title: 'Blog | Ronald Allan Rivera',
+    description:
+      'Notes on full-stack engineering — Laravel, Python, React and Next.js, WordPress, AI automation, and the architecture decisions behind real production systems.',
+    alternates: { canonical: '/posts' },
   }
 }

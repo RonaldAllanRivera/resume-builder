@@ -11,7 +11,7 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { StarfieldClient } from '@/components/StarfieldClient'
 
 import './globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
+import { getCanonicalURL } from '@/utilities/getURL'
 
 // Font optimization: Prevent invisible text during font loading
 const fontOptimizationStyles = `
@@ -46,10 +46,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  metadataBase: new URL(getCanonicalURL()),
+  // Relative canonicals resolve against metadataBase, so the host comes from
+  // exactly one place. Per-route pages override this with their own path.
+  alternates: { canonical: '/' },
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
+    // `creator` is intentionally absent. It used to say '@payloadcms' — the
+    // starter template's handle — which credited Payload on every share. It is
+    // omitted rather than guessed: a wrong handle credits a stranger, which is
+    // worse than none. Add Allan's real X handle here when known.
   },
 }
