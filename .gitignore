@@ -12,8 +12,12 @@ node_modules
 # Payload default media upload directory
 public/media/
 
-public/robots.txt
-public/sitemap*.xml
+# public/robots.txt and public/sitemap*.xml are deliberately NOT ignored.
+# They used to be, which hid next-sitemap's stale localhost output from review.
+# robots.txt and sitemap.xml are now App Router metadata routes (src/app/), and
+# a static file in public/ would SHADOW them — silently reintroducing the 404
+# this replaced. Leaving these paths tracked means a stray file shows up in
+# git status instead of quietly breaking indexing.
 
 # pnpm
 .pnpm-store/

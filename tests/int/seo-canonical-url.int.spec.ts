@@ -32,8 +32,10 @@ describe('getCanonicalURL', () => {
   })
 
   it('falls back to localhost when nothing is configured', async () => {
-    delete process.env.NEXT_PUBLIC_SERVER_URL
-    delete process.env.VERCEL_PROJECT_PRODUCTION_URL
+    // Assigned empty rather than deleted: environment.d.ts declares these as
+    // required strings, and empty exercises the same falsy fallback branch.
+    process.env.NEXT_PUBLIC_SERVER_URL = ''
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = ''
     const { getCanonicalURL } = await import('@/utilities/getURL')
     expect(getCanonicalURL()).toBe('http://localhost:3000')
   })
