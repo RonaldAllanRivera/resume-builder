@@ -1,10 +1,11 @@
 import type { Project, Certification, ResumeProfile1, SiteSetting } from '@/payload-types'
+import { getCanonicalURL } from './getURL'
 
 /**
  * Generate Person schema for homepage
  */
 export function generatePersonSchema(profile: ResumeProfile1 | null, settings: SiteSetting | null) {
-  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const baseUrl = getCanonicalURL()
 
   const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -13,6 +14,29 @@ export function generatePersonSchema(profile: ResumeProfile1 | null, settings: S
     jobTitle: profile?.headline || '',
     url: baseUrl,
     sameAs: settings?.socialLinks?.map((link) => link.url).filter(Boolean) || [],
+  }
+
+  // knowsAbout gives search and answer engines an explicit competency list
+  // instead of making them infer one from prose. This is the cheapest lever for
+  // entity resolution — it's what lets an LLM answer "who is Ronald Allan
+  // Rivera and what does he do" with confidence rather than a guess.
+  schema.knowsAbout = [
+    'Full-Stack Web Development',
+    'Python',
+    'Django',
+    'Laravel',
+    'PHP',
+    'React',
+    'Next.js',
+    'TypeScript',
+    'WordPress Plugin Development',
+    'AI Automation',
+    'API Design',
+    'DevOps',
+  ]
+
+  if (profile?.summary) {
+    schema.description = profile.summary
   }
 
   // Add email if available
@@ -27,7 +51,7 @@ export function generatePersonSchema(profile: ResumeProfile1 | null, settings: S
  * Generate WebSite schema
  */
 export function generateWebSiteSchema(settings: SiteSetting | null) {
-  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const baseUrl = getCanonicalURL()
 
   return {
     '@context': 'https://schema.org',
@@ -55,7 +79,7 @@ export function generateWebPageSchema(title: string, description: string, url: s
  * Generate SoftwareApplication or CreativeWork schema for projects
  */
 export function generateProjectSchema(project: Project) {
-  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const baseUrl = getCanonicalURL()
 
   // Determine if it's a software project or creative work
   const isSoftware =
