@@ -7,6 +7,9 @@ declare global {
       DATABASE_URL: string
       NEXT_PUBLIC_SERVER_URL: string
       VERCEL_PROJECT_PRODUCTION_URL: string
+      // Optional: unset disables GA4 (dev and preview stay out of the
+      // production property without extra config).
+      NEXT_PUBLIC_GA_MEASUREMENT_ID?: string
     }
   }
 }

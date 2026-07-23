@@ -9,6 +9,8 @@ import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { StarfieldClient } from '@/components/StarfieldClient'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { GoogleAnalytics } from '@/components/Analytics/GoogleAnalytics'
 
 import './globals.css'
 import { getCanonicalURL } from '@/utilities/getURL'
@@ -40,6 +42,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <StarfieldClient />
 
         <Providers>{children}</Providers>
+
+        {/*
+          Analytics mount in the LAYOUT, never at the page level of
+          src/app/(frontend)/page.tsx — client-side data access there would opt
+          the homepage out of static rendering and force a serverless execution
+          on every visit (see CLAUDE.md).
+        */}
+        <SpeedInsights />
+        <GoogleAnalytics />
       </body>
     </html>
   )
