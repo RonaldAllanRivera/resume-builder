@@ -7,6 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
 
   return {
+    alternates: { canonical: '/contact' },
     title: `Contact | ${settings?.siteName || 'Resume'}`,
     description:
       'Hire a senior full-stack developer for your web development, SaaS, AI automation, or WordPress project. Specializing in Python, Laravel, React, and Next.js. 24-hour response time.',

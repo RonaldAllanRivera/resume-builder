@@ -28,8 +28,14 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
  */
 export const generateMeta = async (args: {
   doc: Partial<Page> | Partial<Post> | null
+  /**
+   * URL prefix for the document's collection — '/posts' for Posts, '' for
+   * top-level Pages. Used to build the canonical path, since the doc itself
+   * only carries a bare slug.
+   */
+  pathPrefix?: string
 }): Promise<Metadata> => {
-  const { doc } = args
+  const { doc, pathPrefix = '' } = args
 
   const ogImage = getImageURL(doc?.meta?.image)
 
@@ -37,13 +43,20 @@ export const generateMeta = async (args: {
 
   const slugPath = Array.isArray(doc?.slug) ? doc?.slug.join('/') : doc?.slug
 
+  // 'home' renders at the site root, not /home — without this both URLs would
+  // claim to be canonical for the same content.
+  const pathname = !slugPath || slugPath === 'home' ? '/' : `${pathPrefix}/${slugPath}`
+
   return {
     description: doc?.meta?.description,
+    // Relative — resolves against metadataBase (the canonical www origin) set
+    // in the root layout.
+    alternates: { canonical: pathname },
     openGraph: mergeOpenGraph({
       description: doc?.meta?.description || '',
       images: ogImage ? [{ url: ogImage }] : undefined,
       title,
-      url: slugPath ? `/${slugPath}` : '/',
+      url: pathname,
     }),
     title,
   }

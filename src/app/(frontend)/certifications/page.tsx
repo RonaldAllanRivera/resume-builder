@@ -7,6 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
 
   return {
+    alternates: { canonical: '/certifications' },
     title: `Certifications | ${settings?.siteName || 'Resume'}`,
     description:
       '60+ professional certifications in full-stack development, Python, Laravel, WordPress, React, Next.js, AI/ML, cloud computing, and DevOps. Continuous learning in modern web technologies and best practices.',

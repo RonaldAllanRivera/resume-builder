@@ -6,6 +6,7 @@ import { getTemplate } from '@/utilities/getTemplate'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/services' },
   title: 'Services — Hire Me',
   description:
     'Freelance engineering services and engagement options. Consultations, project work, and retainers — pick the package that fits.',
