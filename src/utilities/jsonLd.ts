@@ -168,3 +168,49 @@ export function generateBreadcrumbSchema(items: { name: string; url: string }[])
 export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data)
 }
+
+/**
+ * BlogPosting schema for individual posts.
+ *
+ * This is what makes a post eligible for article rich results, and it is one of
+ * the structures AI answer engines lean on most heavily when deciding whether a
+ * page is a citable source — so it matters more than its size suggests.
+ */
+export function generateBlogPostingSchema(post: {
+  title?: string | null
+  slug?: string | null
+  publishedAt?: string | null
+  updatedAt?: string | null
+  meta?: { description?: string | null; image?: unknown } | null
+  populatedAuthors?: Array<{ name?: string | null }> | null
+}) {
+  const baseUrl = getCanonicalURL()
+  const url = post.slug ? `${baseUrl}/posts/${post.slug}` : `${baseUrl}/posts`
+
+  const authorName =
+    post.populatedAuthors?.map((a) => a?.name).filter(Boolean)[0] || 'Ronald Allan Rivera'
+
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title || '',
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    author: { '@type': 'Person', name: authorName, url: baseUrl },
+    publisher: { '@type': 'Person', name: 'Ronald Allan Rivera', url: baseUrl },
+  }
+
+  if (post.meta?.description) schema.description = post.meta.description
+  if (post.publishedAt) schema.datePublished = post.publishedAt
+  // Fall back to publishedAt so dateModified is never absent — Google treats a
+  // missing dateModified as "unknown freshness" rather than "never changed".
+  schema.dateModified = post.updatedAt || post.publishedAt || undefined
+
+  const image = post.meta?.image
+  if (image && typeof image === 'object' && 'url' in image) {
+    const imageUrl = (image as { url?: string }).url
+    if (imageUrl) schema.image = imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl}`
+  }
+
+  return schema
+}

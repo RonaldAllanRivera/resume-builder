@@ -110,9 +110,15 @@ describe('sitemap.xml', () => {
         'https://www.allanai.dev/services',
         'https://www.allanai.dev/certifications',
         'https://www.allanai.dev/contact',
-        'https://www.allanai.dev/posts',
       ]),
     )
+  })
+
+  it('includes /posts only because a published post exists', () => {
+    // The blog index is conditional: an empty listing page is thin content, so
+    // it enters the sitemap on the day the first post is published. This suite
+    // creates one, so it must be present here.
+    expect(urls()).toContain('https://www.allanai.dev/posts')
   })
 
   it('includes published posts', () => {

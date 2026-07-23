@@ -56,6 +56,11 @@ export interface TemplateComponents {
   PricingPage?: ComponentType<{
     packages: Package[]
   }>
+  BlogPage?: ComponentType<{
+    posts?: BlogPostSummary[]
+    settings?: SiteSetting | null
+    totalDocs?: number
+  }>
 }
 
 export type TemplateKey = 'rainbow'
@@ -71,6 +76,8 @@ import { EducationPage as RainbowEducationPage } from './rainbow/EducationPage'
 import { ProjectsPage as RainbowProjectsPage } from './rainbow/ProjectsPage'
 import { ProjectCategoryPage as RainbowProjectCategoryPage } from './rainbow/ProjectCategoryPage'
 import { AllCertificationsPage as RainbowCertificationsPage } from './rainbow/AllCertificationsPage'
+import { BlogPage as RainbowBlogPage } from './rainbow/BlogPage'
+import type { BlogPostSummary } from './rainbow/BlogPage'
 
 // Template registry
 const templates: Record<TemplateKey, TemplateComponents> = {
@@ -85,6 +92,7 @@ const templates: Record<TemplateKey, TemplateComponents> = {
     ContactPage: RainbowContactPage,
     SearchPage: RainbowSearchPage,
     PricingPage: RainbowPricingPage,
+    BlogPage: RainbowBlogPage,
   },
 }
 

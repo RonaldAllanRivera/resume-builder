@@ -1,18 +1,22 @@
 import type { Metadata } from 'next/types'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-import PageClient from './page.client'
+
+import { getTemplate, getSiteSettings } from '@/utilities/getTemplate'
+import { Pagination } from '@/components/Pagination'
+import { JsonLd } from '@/components/JsonLd'
+import { generateBreadcrumbSchema, generateWebPageSchema } from '@/utilities/jsonLd'
+import { canonicalPath } from '@/utilities/getURL'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
 
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })
+  const template = await getTemplate()
+  const settings = await getSiteSettings()
 
   const posts = await payload.find({
     collection: 'posts',
@@ -24,35 +28,40 @@ export default async function Page() {
       slug: true,
       categories: true,
       meta: true,
+      publishedAt: true,
     },
   })
 
+  const { Layout, BlogPage } = template
+
   return (
-    <div className="pt-24 pb-24">
-      <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
-        </div>
-      </div>
-
-      <div className="container mb-8">
-        <PageRange
-          collection="posts"
-          currentPage={posts.page}
-          limit={12}
-          totalDocs={posts.totalDocs}
-        />
-      </div>
-
-      <CollectionArchive posts={posts.docs} />
-
-      <div className="container">
-        {posts.totalPages > 1 && posts.page && (
-          <Pagination page={posts.page} totalPages={posts.totalPages} />
+    <Layout>
+      <JsonLd
+        data={generateWebPageSchema(
+          'Blog',
+          'Practical write-ups on full-stack engineering — Laravel, Python, React and Next.js, WordPress, and AI automation.',
+          canonicalPath('/posts'),
         )}
-      </div>
-    </div>
+      />
+      <JsonLd
+        data={generateBreadcrumbSchema([
+          { name: 'Home', url: canonicalPath('/') },
+          { name: 'Blog', url: canonicalPath('/posts') },
+        ])}
+      />
+
+      {BlogPage && (
+        <BlogPage posts={posts.docs} settings={settings} totalDocs={posts.totalDocs} />
+      )}
+
+      {posts.totalPages > 1 && posts.page && (
+        <div className="px-4 pb-20 sm:px-6 lg:px-10">
+          <div className="mx-auto max-w-[1700px]">
+            <Pagination page={posts.page} totalPages={posts.totalPages} />
+          </div>
+        </div>
+      )}
+    </Layout>
   )
 }
 

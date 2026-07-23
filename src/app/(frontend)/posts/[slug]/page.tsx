@@ -6,6 +6,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
+import Link from 'next/link'
 import RichText from '@/components/RichText'
 
 import type { Post } from '@/payload-types'
@@ -14,6 +15,10 @@ import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { getTemplate } from '@/utilities/getTemplate'
+import { JsonLd } from '@/components/JsonLd'
+import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@/utilities/jsonLd'
+import { canonicalPath } from '@/utilities/getURL'
 
 // Force dynamic to prevent database queries during build
 export const dynamic = 'force-dynamic'
@@ -54,8 +59,10 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
+  const { Layout } = await getTemplate()
+
   return (
-    <article className="pt-16 pb-16">
+    <Layout>
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
@@ -63,20 +70,60 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <PostHero post={post} />
+      <JsonLd data={generateBlogPostingSchema(post)} />
+      <JsonLd
+        data={generateBreadcrumbSchema([
+          { name: 'Home', url: canonicalPath('/') },
+          { name: 'Blog', url: canonicalPath('/posts') },
+          { name: post.title, url: canonicalPath(`/posts/${post.slug}`) },
+        ])}
+      />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container">
-          <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
+      <article className="px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-28">
+        <div className="mx-auto w-full max-w-[52rem]">
+          <Link
+            href="/posts"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-white/60 transition hover:text-white"
+          >
+            ← Back to blog
+          </Link>
+
+          <PostHero post={post} />
+
+          <RichText
+            className="prose prose-invert mt-10 max-w-none prose-headings:tracking-[-0.02em] prose-a:text-cyan-300 hover:prose-a:text-cyan-200"
+            data={post.content}
+            enableGutter={false}
+          />
+
           {post.relatedPosts && post.relatedPosts.length > 0 && (
             <RelatedPosts
-              className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+              className="mt-16"
               docs={post.relatedPosts.filter((post) => typeof post === 'object')}
             />
           )}
+
+          {/* Route readers somewhere useful instead of ending on a dead stop —
+              this is also the internal link the SEO plan wants pointing at the
+              conversion page. */}
+          <div className="mt-16 rounded-[1.9rem] border border-white/10 bg-card-bg p-8 shadow-[0_18px_50px_rgba(0,0,0,0.32)]">
+            <h2 className="text-xl font-bold tracking-[-0.02em] text-white">
+              Working on something similar?
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-white/65">
+              I take on full-stack builds, WordPress work, and AI automation — from a scoped
+              consultation through to shipped production systems.
+            </p>
+            <Link
+              href="/services"
+              className="mt-6 inline-flex items-center rounded-2xl bg-gradient-to-r from-amber-300 via-orange-400 to-red-400 px-6 py-3 text-sm font-extrabold text-[#111111] transition hover:-translate-y-0.5"
+            >
+              SEE SERVICES
+            </Link>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </Layout>
   )
 }
 

@@ -26,7 +26,6 @@ const STATIC_ROUTES: Array<{
   { path: '/', changeFrequency: 'weekly', priority: 1 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/certifications', changeFrequency: 'monthly', priority: 0.8 },
-  { path: '/posts', changeFrequency: 'weekly', priority: 0.7 },
   { path: '/contact', changeFrequency: 'yearly', priority: 0.6 },
 ]
 
@@ -62,6 +61,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         select: { slug: true, updatedAt: true },
       }),
     ])
+
+    // Only advertise the blog index once it actually lists something. An empty
+    // listing page is a thin-content signal, and submitting one is worst at
+    // exactly the moment Google is forming its first impression of the domain.
+    // It appears here automatically the day a post is published.
+    if (posts.docs.length > 0) {
+      entries.push({
+        url: canonicalPath('/posts'),
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      })
+      seen.add(canonicalPath('/posts'))
+    }
 
     for (const post of posts.docs) {
       if (!post.slug) continue
