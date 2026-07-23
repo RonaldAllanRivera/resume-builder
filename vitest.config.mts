@@ -17,5 +17,13 @@ export default defineConfig({
     // Integration tests share ONE Postgres test DB. Running files in parallel
     // races Payload's schema push ("type ... already exists") on a fresh volume.
     fileParallelism: false,
+    // getPayload() on a cold connection is genuinely slow: against a fresh
+    // volume the first file pays the whole schema push (~6.7s locally, more on
+    // a shared CI runner), which blew vitest's 10s default and failed
+    // booking-proof.int.spec.ts in beforeAll with every assertion in it fine.
+    // CI now runs init:db first so the push happens outside the hook — this is
+    // the backstop for a cold local run, where nobody does that.
+    hookTimeout: 60_000,
+    testTimeout: 30_000,
   },
 })

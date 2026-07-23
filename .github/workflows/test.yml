@@ -43,6 +43,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # Push the Payload schema BEFORE vitest starts, exactly as the e2e job
+      # does. Without this the first test file to call getPayload() absorbs a
+      # multi-second cold schema push inside its beforeAll, and on a slower
+      # shared runner that blows the hook timeout — which is what made
+      # booking-proof.int.spec.ts fail with "Hook timed out in 10000ms" while
+      # every assertion in it was fine.
+      - name: Initialize database schema
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
+          PAYLOAD_SECRET: test-secret-key
+          NODE_ENV: test
+        run: pnpm run init:db
+
       - name: Run integration tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/payload_test
