@@ -21,6 +21,30 @@ export const Code: Block = {
           label: 'CSS',
           value: 'css',
         },
+        {
+          label: 'PHP',
+          value: 'php',
+        },
+        {
+          label: 'Bash',
+          value: 'bash',
+        },
+        {
+          label: 'JSON',
+          value: 'json',
+        },
+        {
+          label: 'SQL',
+          value: 'sql',
+        },
+        {
+          label: 'HTML / Markup',
+          value: 'markup',
+        },
+        {
+          label: 'Plain text',
+          value: 'text',
+        },
       ],
     },
     {
